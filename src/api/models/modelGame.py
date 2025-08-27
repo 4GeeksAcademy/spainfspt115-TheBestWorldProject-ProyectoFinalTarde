@@ -12,8 +12,8 @@ db = SQLAlchemy()
 game_word =Table(
     "game_words",
     db.Model.metadata,
-    Column("id_game", ForeignKey("games.id_game")),
-    Column("id_word", ForeignKey("dictionary.id_word"))
+    Column("id_game", ForeignKey("games.id_game"), primary_key=True),
+    Column("id_word", ForeignKey("dictionary.id_word"), primary_key=True)
 
 )
 
@@ -33,7 +33,7 @@ class Game (db.Model):
     #relationships
 
     game_words: Mapped[List["Dictionary"]] = relationship(
-        secondary="game_word",
+        secondary=game_word,
         back_populates="game_words_by"
     )
 
@@ -50,7 +50,7 @@ class Game (db.Model):
             "average_precision": self.average_precision,
             "wpm_average": self.wpm_average,
             "difficulty": self.difficulty,
-            "game_words": [game_word.serialize() for game_word in self.game_words]
+            "game_words": [word.serialize() for word in self.game_words]
         }
         
 

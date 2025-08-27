@@ -25,10 +25,10 @@ class Dictionary(db.Model):
         nullable=False
     )
 
-    word_for_game: Mapped[List["Game"]] = relationship(
+    game_words_by: Mapped[List["Game"]] = relationship(
         "Game",
-        secondary="game_word",
-        back_populates="word_for_game"
+        secondary="game_words",
+        back_populates="game_words"
     )
 
     def serialize(self):
