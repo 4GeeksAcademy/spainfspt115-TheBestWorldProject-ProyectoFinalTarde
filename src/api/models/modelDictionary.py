@@ -1,7 +1,9 @@
 import enum
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Enum
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from typing import List
+from modelGame import Game
 
 db = SQLAlchemy()
 
@@ -21,6 +23,12 @@ class Dictionary(db.Model):
     difficulty: Mapped[DifficultyEnum] = mapped_column(
         Enum(DifficultyEnum, name="difficulty_enum"),
         nullable=False
+    )
+
+    word_for_game: Mapped[List["Game"]] = relationship(
+        "Game",
+        secondary="game_word",
+        back_populates="word_for_game"
     )
 
     def serialize(self):

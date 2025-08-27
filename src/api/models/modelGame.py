@@ -49,7 +49,8 @@ class Game (db.Model):
             "failed_words": self.failed_words,
             "average_precision": self.average_precision,
             "wpm_average": self.wpm_average,
-            "difficulty": self.difficulty
+            "difficulty": self.difficulty,
+            "game_words": [game_word.serialize() for game_word in self.game_words]
         }
         
 
