@@ -1,10 +1,23 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, DateTime, func, Float
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import String, Boolean, DateTime, func, Float, Table, Column, ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
+from typing import List
+from modelDictionary import Dictionary
 
 
 db = SQLAlchemy()
+#tabla de asociacion game-wordss
+
+game_word =Table(
+    "game_words",
+    db.Model.metadata,
+    Column("id_game", ForeignKey("games.id_game")),
+    Column("id_word", ForeignKey("dictionary.id_word"))
+
+)
+
+
 
 class Game (db.Model):
     __tablename__ = 'games' #nombre de la tabla
@@ -16,6 +29,15 @@ class Game (db.Model):
     average_precision: Mapped[float] = mapped_column(nullable=False)
     wpm_average: Mapped[float] = mapped_column(nullable=False)
     difficulty: Mapped[int] = mapped_column(nullable=False)
+
+    #relationships
+
+    game_words: Mapped[List["Dictionary"]] = relationship(
+        secondary="game_word",
+        back_populates="game_words_by"
+    )
+
+
 
 
     def serialize(self):
@@ -30,6 +52,5 @@ class Game (db.Model):
             "difficulty": self.difficulty
         }
         
-
 
 
