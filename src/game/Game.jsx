@@ -2,8 +2,8 @@ import Phaser from "phaser";
 import React, { useEffect } from "react";
 import bgImg from "../front/assets/bg.png";
 import bgMusic from "../front/assets/bg.mp3";
+import startBtn from "../front/assets/StartBtn.png"; //ejemplo
 
-//Escena de juego
 export default function Game() {
     useEffect(() => {
         const game = new Phaser.Game({
@@ -24,16 +24,28 @@ export default function Game() {
 class GameScene extends Phaser.Scene {
     constructor() {
         super("scene-game");
-
-        this.words = ["resident", "fortnite", "bycarloss", "onichan", "itadori", "gojo", "repo", "programar", "fokin", "hola"];
+        this.words = ["phaser", "react", "game", "javascript", "coding", "final", "vaca"];
     }
-    //Imagen y musica
+
     preload() {
         this.load.image("bg", bgImg);
         this.load.audio("bgMusic", bgMusic);
+        this.load.image("buttonImg", startBtn);
     }
     
     create() {
+        // Botón de inicio
+        this.startButton = this.add.image(400, 300, "buttonImg")
+            .setInteractive();
+
+        this.startButton.on("pointerdown", () => {
+            console.log("Juego iniciado!");
+            this.startButton.destroy();
+            this.startGame();
+        });
+    }
+
+    startGame() {
         this.score = 0;
         this.isPlaying = true;
 
@@ -54,6 +66,7 @@ class GameScene extends Phaser.Scene {
 
         this.timedEvent = this.time.delayedCall(10000, this.gameOver, [], this);
 
+        // Input del jugador
         const inputEl = document.createElement("input");
         Object.assign(inputEl.style, {
             padding: "8px 12px",
@@ -79,8 +92,10 @@ class GameScene extends Phaser.Scene {
     }
 
     update() {
-        this.remainingTime = this.timedEvent.getRemainingSeconds();
-        this.textTime.setText(`Remaining Time: ${Math.round(this.remainingTime)}`);
+        if (this.timedEvent) {
+            this.remainingTime = this.timedEvent.getRemainingSeconds();
+            this.textTime.setText(`Remaining Time: ${Math.round(this.remainingTime)}`);
+        }
     }
 
     newWord() {
@@ -105,7 +120,7 @@ class GameScene extends Phaser.Scene {
 
     gameOver() {
         this.isPlaying = false;
-        this.add.text(this.sys.game.config.width / 2 - 100, this.sys.game.config.height / 2, "¡Game Over!", {
+        this.add.text(this.sys.game.config.width / 2 - 100, this.sys.game.config.height / 2, "Game Over", {
             font: "40px Arial",
             fill: "#ff0000",
         });
