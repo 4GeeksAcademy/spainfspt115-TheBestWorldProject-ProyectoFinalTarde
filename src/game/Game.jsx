@@ -24,7 +24,7 @@ export default function Game() {
 class GameScene extends Phaser.Scene {
     constructor() {
         super("scene-game");
-        this.words = ["phaser", "react", "game", "javascript", "coding", "final"];
+        this.words = ["phaser", "react", "game", "javascript", "coding", "final", "vaca"];
     }
 
     preload() {
