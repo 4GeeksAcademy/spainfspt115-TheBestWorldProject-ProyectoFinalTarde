@@ -20,7 +20,7 @@ export default function Game() {
 
     return <div id="game-container" style={{ width: 800, height: 600, margin: "auto" }} />;
 }
-
+//fokin prueba
 class GameScene extends Phaser.Scene {
     constructor() {
         super("scene-game");
@@ -32,7 +32,7 @@ class GameScene extends Phaser.Scene {
         this.load.image("bg", bgImg);
         this.load.audio("bgMusic", bgMusic);
     }
-
+    
     create() {
         this.score = 0;
         this.isPlaying = true;
@@ -52,7 +52,7 @@ class GameScene extends Phaser.Scene {
             fill: "#ffffffff",
         });
 
-        this.timedEvent = this.time.delayedCall(60000, this.gameOver, [], this);
+        this.timedEvent = this.time.delayedCall(10000, this.gameOver, [], this);
 
         const inputEl = document.createElement("input");
         Object.assign(inputEl.style, {
@@ -104,8 +104,8 @@ class GameScene extends Phaser.Scene {
     }
 
     gameOver() {
-        this.physics.pause();
-        this.add.text(this.sys.game.config.width / 2 - 100, this.sys.game.config.height / 2, "Game Over", {
+        this.isPlaying = false;
+        this.add.text(this.sys.game.config.width / 2 - 100, this.sys.game.config.height / 2, "¡Game Over!", {
             font: "40px Arial",
             fill: "#ff0000",
         });
