@@ -3,23 +3,22 @@ from sqlalchemy import String, Boolean, DateTime, func, Float, Table, Column, Fo
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from typing import List
-from modelDictionary import Dictionary
-from modelUser import User
-from extensions import db
+from api.extensions import db
 
 game_word =Table(
     "game_words",
     db.Model.metadata,
-    Column("id_game", ForeignKey("games.id_game"), primary_key=True),
+    Column("id_game", ForeignKey("game.id_game"), primary_key=True),
     Column("id_word", ForeignKey("dictionary.id_word"), primary_key=True)
 
 )
 
 class Game (db.Model):
 
-    __tablename__ = 'games' #nombre de la tabla
+    __tablename__ = 'game' #nombre de la tabla
 
     id_game: Mapped[int] = mapped_column(primary_key=True,)
+    id_user: Mapped[int] = mapped_column(ForeignKey("user.id_user"), nullable=False)
     final_score: Mapped[int] = mapped_column(nullable=False)
     played_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     correct_words: Mapped[int] = mapped_column(nullable=False)
@@ -28,18 +27,17 @@ class Game (db.Model):
     wpm_average: Mapped[float] = mapped_column(nullable=False)
     difficulty: Mapped[int] = mapped_column(nullable=False)
 
-
-
     #relationships
 
     game_words: Mapped[List["Dictionary"]] = relationship(
+        "Dictionary",
         secondary=game_word,
         back_populates="game_words_by"
     )
 
     user: Mapped["User"] = relationship(
         "User",
-        back_populates= "user"
+        back_populates= "games"
     )
 
     def serialize(self):

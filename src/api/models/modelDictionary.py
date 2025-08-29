@@ -3,13 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
-from modelGame import Game
-from extensions import db
-
-class DifficultyEnum(enum.IntEnum):
-    EASY = 1
-    MEDIUM = 2
-    HARD = 3
+from api.extensions import db
 
 class Dictionary(db.Model):
 
@@ -19,11 +13,7 @@ class Dictionary(db.Model):
     word: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     length: Mapped[int] = mapped_column(nullable=False)
     points_per_word: Mapped[int] = mapped_column(nullable=False)
-
-    difficulty: Mapped[DifficultyEnum] = mapped_column(
-        Enum(DifficultyEnum, name="difficulty_enum"),
-        nullable=False
-    )
+    difficulty: Mapped[int] = mapped_column(nullable=False)
 
     game_words_by: Mapped[List["Game"]] = relationship(
         "Game",

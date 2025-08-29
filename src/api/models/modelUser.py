@@ -2,19 +2,18 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import String, Boolean, DateTime, func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
-from modelGame import Game
 from typing import List
-from extensions import db
+from api.extensions import db
 
 
 class User(db.Model):
 
-    __tablename__ = "User"
+    __tablename__ = "user"
 
     id_user: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(String(50), unique=True, nullable=True)
-    email: Mapped[str] = mapped_column(unique=True, nullable=True)
-    password: Mapped[str] = mapped_column(nullable=True)
+    username: Mapped[str] = mapped_column(String(50), unique=True, nullable=False)
+    email: Mapped[str] = mapped_column(unique=True, nullable=False)
+    password: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
 
     games: Mapped[List["Game"]] = relationship(
@@ -22,7 +21,7 @@ class User(db.Model):
         back_populates = "user",
     )
 
-    def serlialize(self):
+    def serialize(self):
         return{
             "id_user" : self.id_user ,
             "username" : self.username ,
