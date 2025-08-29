@@ -4,8 +4,7 @@ from sqlalchemy import String, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 from modelGame import Game
-
-db = SQLAlchemy()
+from extensions import db
 
 class DifficultyEnum(enum.IntEnum):
     EASY = 1
@@ -13,6 +12,7 @@ class DifficultyEnum(enum.IntEnum):
     HARD = 3
 
 class Dictionary(db.Model):
+
     __tablename__ = "dictionary"
 
     id_word: Mapped[int] = mapped_column(primary_key=True)
