@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import React, { useEffect } from "react";
 import bgImg from "../front/assets/bg.png";
 import bgMusic from "../front/assets/bg.mp3";
-import startBtn from "../front/assets/StartBtn.png";
+import startBtn from "../front/assets/StartBtn.png"; //ejemplo
 
 export default function Game() {
     useEffect(() => {
