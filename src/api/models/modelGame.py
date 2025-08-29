@@ -4,10 +4,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from typing import List
 from modelDictionary import Dictionary
-
-
-db = SQLAlchemy()
-#tabla de asociacion game-wordss
+from modelUser import User
+from extensions import db
 
 game_word =Table(
     "game_words",
@@ -17,10 +15,10 @@ game_word =Table(
 
 )
 
-
-
 class Game (db.Model):
+
     __tablename__ = 'games' #nombre de la tabla
+
     id_game: Mapped[int] = mapped_column(primary_key=True,)
     final_score: Mapped[int] = mapped_column(nullable=False)
     played_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now(), nullable=False)
@@ -30,6 +28,8 @@ class Game (db.Model):
     wpm_average: Mapped[float] = mapped_column(nullable=False)
     difficulty: Mapped[int] = mapped_column(nullable=False)
 
+
+
     #relationships
 
     game_words: Mapped[List["Dictionary"]] = relationship(
@@ -37,8 +37,10 @@ class Game (db.Model):
         back_populates="game_words_by"
     )
 
-
-
+    user: Mapped["User"] = relationship(
+        "User",
+        back_populates= "user"
+    )
 
     def serialize(self):
         return{
@@ -50,7 +52,8 @@ class Game (db.Model):
             "average_precision": self.average_precision,
             "wpm_average": self.wpm_average,
             "difficulty": self.difficulty,
-            "game_words": [word.serialize() for word in self.game_words]
+            "game_words": [word.serialize() for word in self.game_words],
+            "id_user": self.id_user
         }
         
 
