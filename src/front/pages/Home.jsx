@@ -33,20 +33,25 @@ export const Home = () => {
 	}, [])
 
 	return (
-		<div className="text-center mt-5">
-			<h1 className="display-4">Hello Rigo!!</h1>
-			<p className="lead">
-				<img src={rigoImageUrl} className="img-fluid rounded-circle mb-3" alt="Rigo Baby" />
-			</p>
-			<div className="alert alert-info">
-				{store.message ? (
-					<span>{store.message}</span>
-				) : (
-					<span className="text-danger">
-						Loading message from the backend (make sure your python 🐍 backend is running)...
-					</span>
-				)}
+		<>
+			<div className="d-flex flex-column justify-content-center align-items-center ">
+				<h1 className="mb-4 mt-5">Bienvenido a Nombrejuego</h1>
+				<div className="position-absolute top-50 start-50 translate-middle">
+					<div className="card " style={{ width: "38rem" }}>
+						<div className="card-body text-center">
+							<h3 className="card-title">User Name</h3>
+							<p className="card-text">
+								Si te registras podrás obtener varias bonificaciones y podrás acceder a tus estadísticas
+							</p>
+							<a href="#" className="btn btn-primary w-100">Play</a>
+						</div>
+					</div>
+					<div className="Creadores d-flex flex-column justify-content-center align-items-center mt-5">
+						<h5>Created By: Carlos, Arturo, Constantin, Javier y Kostantin</h5>
+					</div>
+				</div>
 			</div>
-		</div>
+		</>
+
 	);
 }; 
