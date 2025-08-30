@@ -2,8 +2,9 @@ import Phaser from "phaser";
 import React, { useEffect } from "react";
 import bgImg from "../front/assets/bg.png";
 import bgMusic from "../front/assets/bg.mp3";
-import startBtn from "../front/assets/StartBtn.png"; //ejemplo
-
+import startBtn from "../front/assets/StartBtn.png";
+import ResetBtn from "../front/assets/ResetBtn.png";
+//Escena del fokin juego
 export default function Game() {
     useEffect(() => {
         const game = new Phaser.Game({
@@ -20,21 +21,22 @@ export default function Game() {
 
     return <div id="game-container" style={{ width: 800, height: 600, margin: "auto" }} />;
 }
-//fokin prueba
+
 class GameScene extends Phaser.Scene {
+    // Arreglo de palabras random
     constructor() {
         super("scene-game");
-        this.words = ["phaser", "react", "game", "javascript", "coding", "final", "vaca"];
+        this.words = ["resident", "fortnite", "bycarloss", "onichan", "itadori", "gojo", "repo", "programar", "fokin", "hola"];
     }
-
+    //Aquí es donde se precargan las imagenes, y audio 
     preload() {
         this.load.image("bg", bgImg);
         this.load.audio("bgMusic", bgMusic);
         this.load.image("buttonImg", startBtn);
+        this.load.image("resetBtn", ResetBtn);
     }
-    
+    // Botón de inicio vinculado con la imagen
     create() {
-        // Botón de inicio
         this.startButton = this.add.image(400, 300, "buttonImg")
             .setInteractive();
 
@@ -44,7 +46,7 @@ class GameScene extends Phaser.Scene {
             this.startGame();
         });
     }
-
+    //Logica del juego y añadimos elementos como la imagen de gojo, record, tiempo
     startGame() {
         this.score = 0;
         this.isPlaying = true;
@@ -66,7 +68,7 @@ class GameScene extends Phaser.Scene {
 
         this.timedEvent = this.time.delayedCall(10000, this.gameOver, [], this);
 
-        // Input del jugador
+        // Input del jugador (solo diseño del input)
         const inputEl = document.createElement("input");
         Object.assign(inputEl.style, {
             padding: "8px 12px",
@@ -79,31 +81,31 @@ class GameScene extends Phaser.Scene {
             outline: "none"
         });
         this.domInput = this.add.dom(400, 520, inputEl).setOrigin(0.5);
-
+        // Input del jugador (evento al darle ENTER)
         inputEl.addEventListener("keydown", (e) => {
             if (e.key === "Enter" && inputEl.value.trim() !== "") {
                 this.checkWord(inputEl.value.trim());
                 inputEl.value = "";
             }
         });
-
+        //Inicialización de la primera palabra
         this.newWord();
         inputEl.focus();
     }
-
+    //Basicamente aqui es donde se actualiza en tiempo real el tiempo de juego, score (es necesario para dar fin a la partida)
     update() {
         if (this.timedEvent) {
             this.remainingTime = this.timedEvent.getRemainingSeconds();
             this.textTime.setText(`Remaining Time: ${Math.round(this.remainingTime)}`);
         }
     }
-
+    //Aqui se generan las palabras random del array
     newWord() {
         this.currentWord = Phaser.Utils.Array.GetRandom(this.words);
         if (this.wordText) this.wordText.destroy();
         this.wordText = this.add.text(400, 300, this.currentWord, { fontSize: "48px", fill: "#aaa" }).setOrigin(0.5);
     }
-
+    //Validacion si la palabra esta bien fokin escrita o no mi gente
     checkWord(word) {
         if (!this.isPlaying) return;
 
@@ -119,6 +121,7 @@ class GameScene extends Phaser.Scene {
     }
 
     gameOver() {
+        //Sale game over al finalizar partida mas el score final
         this.isPlaying = false;
         this.add.text(this.sys.game.config.width / 2 - 100, this.sys.game.config.height / 2, "Game Over", {
             font: "40px Arial",
@@ -131,5 +134,11 @@ class GameScene extends Phaser.Scene {
             `Score: ${this.score}`,
             { font: "30px Arial", fill: "#000" }
         );
+        //Añado boton de reset que devuelve al boton de start
+        this.resetButton = this.add.image(400, 450, "resetBtn")
+            .setInteractive()
+            .on("pointerdown", () => {
+                this.scene.restart(); //vuelve al Start
+            });
     }
 }
