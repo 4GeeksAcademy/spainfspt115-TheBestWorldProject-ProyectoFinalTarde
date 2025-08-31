@@ -12,7 +12,7 @@ export default function Game() {
       height: 600,
       backgroundColor: "#222",
       parent: "game-container",
-      scene: [PreloadScene, MenuScene, GameScene], // 👈 escenas separadas
+      scene: [PreloadScene, MenuScene, GameScene],
       dom: { createContainer: true }
     });
 

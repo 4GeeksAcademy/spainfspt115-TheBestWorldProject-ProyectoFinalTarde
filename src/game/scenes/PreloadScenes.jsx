@@ -17,6 +17,6 @@ export default class PreloadScene extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start("MenuScene"); // 👈 cuando acaba, pasamos al menú
+    this.scene.start("MenuScene");
   }
 }

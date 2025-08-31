@@ -89,7 +89,7 @@ export default class GameScene extends Phaser.Scene {
     this.add.image(400, 400, "resetBtn")
       .setInteractive()
       .on("pointerdown", () => {
-        this.scene.start("MenuScene"); // 👈 vuelve al menú
+        this.scene.start("MenuScene");
       });
   }
 }
