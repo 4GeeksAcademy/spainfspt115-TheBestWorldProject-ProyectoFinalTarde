@@ -14,7 +14,19 @@ api = Blueprint('api', __name__)
 # Allow CORS requests to this API
 CORS(api)
 
+@api.route('/user', methods =['GET'])
+def get_users():
+    users = User.query.all()
+    result = [user.serialize() for user in users]
+    print(result)
+    return jsonify(result)
 
+@api.route('/user/<int:user_id>', methods = ['GET'])
+def get_user(user_id):
+    user = user.query.get(user_id)
+    if user is None:
+        return jsonify({"error":"Usuario no existe"}),400
+    return jsonify(user.serialize()), 200
 @api.route('/hello', methods=['POST', 'GET'])
 def handle_hello():
 
