@@ -72,6 +72,9 @@ export const Navbar = () => {
 						</Link>
 						<button className="btn btn-outline-dark fw-bold"> SignUp</button>
 					</div>
+					<Link to="/profile" className="btn btn-primary w-100">
+							Profile
+						</Link>
 				</div>
 			</nav>
 
