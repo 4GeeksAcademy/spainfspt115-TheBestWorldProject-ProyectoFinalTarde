@@ -94,6 +94,10 @@ export const Profile = () => {
                                 placeholder="Escribe aquí lo que quieras que los demás vean"
                             ></textarea>
                         </div>
+                        <div className="d-flex justify-content-around gap-5 mt-3">
+                            <button className="btn btn-primary">LogOut</button>
+                            <button className="btn btn-danger ">Eliminar cuenta</button>
+                        </div>
                     </div>
                 </div>
             </div>
