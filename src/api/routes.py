@@ -8,30 +8,53 @@ from api.models.modelUser import User
 from api.extensions import db
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from datetime import datetime
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
 
-@api.route('/user', methods =['GET'])
-def get_users():
-    users = User.query.all()
-    result = [user.serialize() for user in users]
-    print(result)
-    return jsonify(result)
+#Creación del usuario basado en el modelUser pa mi gente 
+@api.route('/user', methods=['POST'])
+def create_user():
+    data = request.get_json()
+    if not data or not "username" in data or not "email" in data or not "password" in data:
+        return jsonify({"msg": "Missing required fields"}), 400
 
-@api.route('/user/<int:user_id>', methods = ['GET'])
-def get_user(user_id):
-    user = user.query.get(user_id)
+    # Verificar si ya existe username o email
+    if User.query.filter_by(username=data["username"]).first():
+        return jsonify({"msg": "Usuario ya fokin existe"}), 400
+    if User.query.filter_by(email=data["email"]).first():
+        return jsonify({"msg": "Email ya fokin existe"}), 400
+
+    new_user = User(
+        username=data["username"],
+        email=data["email"],
+        password=data["password"]
+    )
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify(new_user.serialize()), 201
+
+# Actualizar info del usuario
+@api.route('/user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    data = request.get_json()
+    user = User.query.get(user_id)
     if user is None:
-        return jsonify({"error":"Usuario no existe"}),400
+        return jsonify({"msg": "Usuario no existe"}), 404
+
+    if "username" in data:
+        user.username = data["username"]
+    if "email" in data:
+        if User.query.filter(User.email == data["email"], User.id_user != user_id).first():
+            return jsonify({"msg": "Email ya está en uso"}), 400
+        user.email = data["email"]
+    if "password" in data:
+        user.password = data["password"]
+
+    user.last_update = datetime.now()
+    db.session.commit()
     return jsonify(user.serialize()), 200
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
-
-    return jsonify(response_body), 200
