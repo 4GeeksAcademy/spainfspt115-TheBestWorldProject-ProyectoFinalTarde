@@ -10,7 +10,9 @@ export const Navbar = () => {
 						className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
 						style={{ height: "50px", width: "50px" }}
 					>
-						<span className="fw-bold">Logo</span>
+						<Link to="/" className="text-decoration-none">
+							LOGO
+						</Link>
 					</div>
 
 					<button
@@ -65,7 +67,9 @@ export const Navbar = () => {
 					</div>
 
 					<div className="d-flex gap-2">
-						<button className="btn btn-outline-dark fw-bold">LogIn</button>
+						<Link to="/login" className="btn btn-primary w-100">
+							LogIn
+						</Link>
 						<button className="btn btn-outline-dark fw-bold"> SignUp</button>
 					</div>
 				</div>
