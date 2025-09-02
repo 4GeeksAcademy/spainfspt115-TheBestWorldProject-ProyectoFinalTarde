@@ -10,7 +10,10 @@ export const Layout = () => {
       <div className="d-flex flex-column min-vh-100">
         <Navbar />
 
-        <main className="flex-grow-1 d-flex justify-content-center align-items-center">
+        <main
+          className="flex-grow-1 d-flex flex-column justify-content-center"
+          style={{ paddingTop: '80px', paddingBottom: '70px' }}
+        >
           <Outlet />
         </main>
 

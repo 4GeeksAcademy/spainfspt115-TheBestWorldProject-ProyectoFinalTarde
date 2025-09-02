@@ -4,7 +4,7 @@ export const Navbar = () => {
 
 	return (
 		<>
-			<nav className="navbar navbar-expand-lg bg-white border border-dark rounded px-3">
+			<nav className="navbar navbar-expand-lg bg-white border border-dark rounded px-3 fixed-top">
 				<div className="container-fluid">
 					<div
 						className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
@@ -30,7 +30,9 @@ export const Navbar = () => {
 								<a className="nav-link fw-bold text-dark" href="#">Play</a>
 							</li>
 							<li className="nav-item">
-								<a className="nav-link fw-bold text-dark" href="#">About</a>
+								<Link to="/about" className="nav-link fw-bold text-dark">
+									About
+								</Link>
 							</li>
 							<li className="nav-item">
 								<a
@@ -43,7 +45,6 @@ export const Navbar = () => {
 								</a>
 							</li>
 
-							{/* Dropdown para Mode */}
 							<li className="nav-item dropdown">
 								<a
 									className="nav-link dropdown-toggle fw-bold text-dark"
@@ -75,7 +76,6 @@ export const Navbar = () => {
 				</div>
 			</nav>
 
-			{/* Modal Soporte */}
 			<div className="modal fade" id="supportModal" tabIndex="-1" aria-hidden="true">
 				<div className="modal-dialog modal-dialog-centered">
 					<div className="modal-content">
