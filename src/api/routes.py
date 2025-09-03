@@ -1,6 +1,7 @@
 """
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
+
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models.modelGame import Game
 from api.models.modelDictionary import Dictionary
@@ -11,18 +12,23 @@ from flask_cors import CORS
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+from datetime import datetime
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
 
+
+#USER ROUTES
+#---obtener todos los usuarios
 @api.route('/user', methods =['GET'])
 def get_users():
     users = User.query.all()
     result = [user.serialize() for user in users]
     return jsonify(result)
 
+#---obtener usuario por id
 @api.route('/user/<int:user_id>', methods = ['GET'])
 def get_user(user_id):
     user = user.query.get(user_id)
@@ -30,6 +36,7 @@ def get_user(user_id):
         return jsonify({"error":"Usuario no existe"}),400
     return jsonify(user.serialize()), 200
 
+#---creacion usuario
 @api.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
@@ -45,14 +52,18 @@ def signup():
     if existing_user:
         return jsonify({"msg": "user already exist"}), 400
     
-    new_user = User(email = data["email"],
-                     username = data["username"])
+    new_user = User(
+        email = data["email"],
+        username = data["username"],
+        created_at = datetime.now()
+    )
     new_user.set_password(data["password"])
     db.session.add(new_user)
     db.session.commit()
 
     return jsonify({"msg": "user created succesfully"}), 201
 
+#---login usuario
 @api.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
@@ -73,18 +84,7 @@ def login():
     else:
         return jsonify({"msg": "Invalid username or password"}), 401
     
-# @api.route("/profile", methods=['GET'])
-# @jwt_required()
-# def profile():
-#     user_id = get_jwt_identity()
-#     user = db.session.get(User, int(user_id))
-#     if not user:
-#         return jsonify({"msg": "user not found"}), 404
-#     return jsonify(user.serialize()), 200
-
-
-
-# Actualizar info del usuario
+#---Actualizar info del usuario
 @api.route('/user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     data = request.get_json()
@@ -101,17 +101,19 @@ def update_user(user_id):
     if "password" in data:
         user.password = user.set_password(data["password"])
 
-    user.last_update = datetime.now()
     db.session.commit()
     return jsonify(user.serialize()), 200
 
 
+# GAME ROUTES
+#--- Obtener todas las partidas
 @api.route('/game', methods = ['GET'])
 def get_games():
     games = Game.query.all()
     result = [game.serialize() for game in games]
     return jsonify(result), 200
 
+#--- Obtener partida por id
 @api.route('/game/<int:id_game>', methods = ['GET'])
 def get_game(id_game):
     game = game.query.get(id_game)
@@ -119,6 +121,7 @@ def get_game(id_game):
         return jsonify({"error":"Usuario no existe"}),400
     return jsonify(game.serialize()), 200
 
+#--- Crear juego
 @api.route('/game', methods = ['POST'])
 def create_game():
     body = request.get_json()
@@ -139,7 +142,6 @@ def create_game():
     if not user:
         return jsonify({"error": "El usuario no existe"}), 400
 
-
     game = Game (
         id_user=id_user,
         final_score=final_score,
@@ -150,13 +152,12 @@ def create_game():
         difficulty=difficulty,
     )
 
-
     db.session.add(game)
     db.session.commit()
 
     return jsonify(game.serialize()), 201
 
-
+# DICTIONARY ROUTES
 # POST --> Add new words to the dictionary
 @api.route("/words", methods=["POST"])
 def add_word():
