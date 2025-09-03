@@ -8,35 +8,81 @@ from api.models.modelUser import User
 from api.extensions import db
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
-from datetime import datetime
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
 
-#Creación del usuario basado en el modelUser pa mi gente 
-@api.route('/user', methods=['POST'])
-def create_user():
+@api.route('/user', methods =['GET'])
+def get_users():
+    users = User.query.all()
+    result = [user.serialize() for user in users]
+    return jsonify(result)
+
+@api.route('/user/<int:user_id>', methods = ['GET'])
+def get_user(user_id):
+    user = user.query.get(user_id)
+    if user is None:
+        return jsonify({"error":"Usuario no existe"}),400
+    return jsonify(user.serialize()), 200
+
+@api.route('/signup', methods=['POST'])
+def signup():
     data = request.get_json()
-    if not data or not "username" in data or not "email" in data or not "password" in data:
-        return jsonify({"msg": "Missing required fields"}), 400
+    
+    if not data["email"] or not data["password"] or not data["username"]:
+        return jsonify({"msg" : "Email, username and password required"}), 400
+    
+    existing_user = db.session.execute(db.select(User).where(
+        User.email == data["email"],
+        User.username == data["username"]
+    )).scalar_one_or_none()
 
-    # Verificar si ya existe username o email
-    if User.query.filter_by(username=data["username"]).first():
-        return jsonify({"msg": "Usuario ya fokin existe"}), 400
-    if User.query.filter_by(email=data["email"]).first():
-        return jsonify({"msg": "Email ya fokin existe"}), 400
-
-    new_user = User(
-        username=data["username"],
-        email=data["email"],
-        password=data["password"]
-    )
+    if existing_user:
+        return jsonify({"msg": "user already exist"}), 400
+    
+    new_user = User(email = data["email"],
+                     username = data["username"])
+    new_user.set_password(data["password"])
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify(new_user.serialize()), 201
+    return jsonify({"msg": "user created succesfully"}), 201
+
+@api.route('/login', methods=['GET'])
+def login():
+    data = request.get_json()
+
+    if not data["username"] or not data["password"]:
+        return jsonify({"msg" : "Username and Password are required"}), 400
+    
+    user = db.session.execute(db.select(User).where(
+        User.username == data["username"],
+    )).scalar_one_or_none()
+
+    if user is None:
+        return jsonify({"msg": "Invalid username or password"}), 401
+    
+    if user.check_password(data["password"]):
+        access_token = create_access_token(identy=str(user.id))
+        return jsonify({"msg": "login Succesfully", "token": access_token})
+    else:
+        return jsonify({"msg": "Invalid username or password"}), 401
+    
+# @api.route("/profile", methods=['GET'])
+# @jwt_required()
+# def profile():
+#     user_id = get_jwt_identity()
+#     user = db.session.get(User, int(user_id))
+#     if not user:
+#         return jsonify({"msg": "user not found"}), 404
+#     return jsonify(user.serialize()), 200
+
+
 
 # Actualizar info del usuario
 @api.route('/user/<int:user_id>', methods=['PUT'])
@@ -53,26 +99,12 @@ def update_user(user_id):
             return jsonify({"msg": "Email ya está en uso"}), 400
         user.email = data["email"]
     if "password" in data:
-        user.password = data["password"]
+        user.password = user.set_password(data["password"])
 
     user.last_update = datetime.now()
     db.session.commit()
     return jsonify(user.serialize()), 200
 
-
-
-@api.route('/user', methods =['GET'])
-def get_users():
-    users = User.query.all()
-    result = [user.serialize() for user in users]
-    return jsonify(result)
-
-@api.route('/user/<int:user_id>', methods = ['GET'])
-def get_user(user_id):
-    user = user.query.get(user_id)
-    if user is None:
-        return jsonify({"error":"Usuario no existe"}),400
-    return jsonify(user.serialize()), 200
 
 @api.route('/game', methods = ['GET'])
 def get_games():
@@ -123,3 +155,50 @@ def create_game():
     db.session.commit()
 
     return jsonify(game.serialize()), 201
+
+
+# POST --> Add new words to the dictionary
+@api.route("/words", methods=["POST"])
+def add_word():
+    data = request.get_json()
+
+    if not data or "word" not in data:
+        return jsonify({"error": "Se necesita al menos 'word'"}), 400
+
+    # calcular datos derivados
+    word = data["word"]
+    length = len(word)
+    points = data.get("points_per_word", length)   # Ejemplo: puntos = longitud
+    difficulty = data.get("difficulty", 1)         # valor por defecto
+
+    new_word = Dictionary(
+        word=word,
+        length=length,
+        points_per_word=points,
+        difficulty=difficulty
+    )
+
+    try:
+        db.session.add(new_word)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify(new_word.serialize()), 201
+
+
+# GET --> Obtener todas las palabras
+@api.route("/words", methods=["GET"])
+def get_words():
+    words = Dictionary.query.all()
+    return jsonify([w.serialize() for w in words]), 200
+
+
+# GET por ID --> Obtener palabra concreta
+@api.route("/words/<int:word_id>", methods=["GET"])
+def get_word(word_id):
+    word = Dictionary.query.get(word_id)
+    if not word:
+        return jsonify({"error": f"La palabra con id {word_id} no existe"}), 404
+    return jsonify(word.serialize()), 200
