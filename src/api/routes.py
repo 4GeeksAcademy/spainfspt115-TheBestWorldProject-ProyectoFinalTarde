@@ -106,15 +106,6 @@ def update_user(user_id):
     return jsonify(user.serialize()), 200
 
 
-@api.route('/hello', methods=['POST', 'GET'])
-def handle_hello():
-
-    response_body = {
-        "message": "Hello! I'm a message that came from the backend, check the network tab on the google inspector and you will see the GET request"
-    }
-
-    return jsonify(response_body), 200
-
 @api.route('/game', methods = ['GET'])
 def get_games():
     games = Game.query.all()
@@ -164,3 +155,50 @@ def create_game():
     db.session.commit()
 
     return jsonify(game.serialize()), 201
+
+
+# POST --> Add new words to the dictionary
+@api.route("/words", methods=["POST"])
+def add_word():
+    data = request.get_json()
+
+    if not data or "word" not in data:
+        return jsonify({"error": "Se necesita al menos 'word'"}), 400
+
+    # calcular datos derivados
+    word = data["word"]
+    length = len(word)
+    points = data.get("points_per_word", length)   # Ejemplo: puntos = longitud
+    difficulty = data.get("difficulty", 1)         # valor por defecto
+
+    new_word = Dictionary(
+        word=word,
+        length=length,
+        points_per_word=points,
+        difficulty=difficulty
+    )
+
+    try:
+        db.session.add(new_word)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify(new_word.serialize()), 201
+
+
+# GET --> Obtener todas las palabras
+@api.route("/words", methods=["GET"])
+def get_words():
+    words = Dictionary.query.all()
+    return jsonify([w.serialize() for w in words]), 200
+
+
+# GET por ID --> Obtener palabra concreta
+@api.route("/words/<int:word_id>", methods=["GET"])
+def get_word(word_id):
+    word = Dictionary.query.get(word_id)
+    if not word:
+        return jsonify({"error": f"La palabra con id {word_id} no existe"}), 404
+    return jsonify(word.serialize()), 200

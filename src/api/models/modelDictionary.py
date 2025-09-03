@@ -5,6 +5,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import List
 from api.extensions import db
 
+
 class Dictionary(db.Model):
 
     __tablename__ = "dictionary"
