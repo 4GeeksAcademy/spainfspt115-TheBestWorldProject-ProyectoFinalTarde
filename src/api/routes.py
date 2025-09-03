@@ -86,6 +86,15 @@ def login():
         return jsonify({"msg": "login Succesfully", "token": access_token})
     else:
         return jsonify({"msg": "Invalid email or password"}), 401
+    
+@api.route("/profile", methods=['GET'])
+@jwt_required()
+def profile():
+    user_id = get_jwt_identity()
+    user = db.session.get(User, int(user_id))
+    if not user:
+        return jsonify({"msg": "user not found"}), 404
+    return jsonify(user.serialize()), 200
 
 
 
