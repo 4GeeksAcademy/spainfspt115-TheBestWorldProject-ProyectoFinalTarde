@@ -13,6 +13,7 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 
 api = Blueprint('api', __name__)
+bp_dictionary = Blueprint("bp_dictionary", __name__)
 
 # Allow CORS requests to this API
 CORS(api)
@@ -178,3 +179,50 @@ def create_game():
     db.session.commit()
 
     return jsonify(game.serialize()), 201
+
+
+# POST --> Add new words to the dictionary
+@bp_dictionary.route("/words", methods=["POST"])
+def add_word():
+    data = request.get_json()
+
+    if not data or "word" not in data:
+        return jsonify({"error": "Se necesita al menos 'word'"}), 400
+
+    # calcular datos derivados
+    word = data["word"]
+    length = len(word)
+    points = data.get("points_per_word", length)   # Ejemplo: puntos = longitud
+    difficulty = data.get("difficulty", 1)         # valor por defecto
+
+    new_word = Dictionary(
+        word=word,
+        length=length,
+        points_per_word=points,
+        difficulty=difficulty
+    )
+
+    try:
+        db.session.add(new_word)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+
+    return jsonify(new_word.serialize()), 201
+
+
+# GET --> Obtener todas las palabras
+@bp_dictionary.route("/words", methods=["GET"])
+def get_words():
+    words = Dictionary.query.all()
+    return jsonify([w.serialize() for w in words]), 200
+
+
+# GET por ID --> Obtener palabra concreta
+@bp_dictionary.route("/words/<int:word_id>", methods=["GET"])
+def get_word(word_id):
+    word = Dictionary.query.get(word_id)
+    if not word:
+        return jsonify({"error": f"La palabra con id {word_id} no existe"}), 404
+    return jsonify(word.serialize()), 200
