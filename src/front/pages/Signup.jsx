@@ -20,7 +20,6 @@ export const Signup = () => {
 
   }
 
-
   return (
     <div>
       <div className="container  mt-5">
@@ -39,41 +38,32 @@ export const Signup = () => {
                   required />
                 <label htmlFor="contraseña" className="form-label mt-2">Password</label>
                 <input type="password"
-                       className="form-control" 
-                       id="contraseña" 
-                       placeholder="********"
-                       value={password}
-                       onChange={(e) => setPassword(e.target.value)} 
-                       required />
+                  className="form-control"
+                  id="contraseña"
+                  placeholder="********"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required />
                 <label htmlFor="confirmarContraseña" className="form-label mt-2">Confirm your password</label>
-                <input type="password" 
-                       className="form-control" 
-                       id="confirmarContraseña" 
-                       placeholder="********"
-                       value={confirmPassword}
-                       onChange={(e) => setConfirmPassword(e.target.value)} 
-                       required />
+                <input type="password"
+                  className="form-control"
+                  id="confirmarContraseña"
+                  placeholder="********"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required />
                 <div className="d-flex gap-2">
                   <button className="btn btn-success mt-3" type="submit">Registrar</button>
                   <Link to="/">
-                  <button className="btn btn-primary mt-3">Login</button></Link>
+                    <button className="btn btn-primary mt-3">Login</button></Link>
                 </div>
-
-
 
               </form>
             </div>
 
-
-
           </div>
         </div>
       </div>
-
-
-
-
-
 
       <Link to="/">
         <button className="btn btn-primary">Back home</button>
