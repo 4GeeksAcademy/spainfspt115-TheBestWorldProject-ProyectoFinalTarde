@@ -8,6 +8,9 @@ from api.models.modelUser import User
 from api.extensions import db
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
 
 api = Blueprint('api', __name__)
 
@@ -43,27 +46,48 @@ def get_user(user_id):
         return jsonify({"error":"Usuario no existe"}),400
     return jsonify(user.serialize()), 200
 
-@api.route('/user', methods=['POST'])
-def create_user():
+@api.route('/signup', methods=['POST'])
+def signup():
     data = request.get_json()
-    if not data or not "username" in data or not "email" in data or not "password" in data:
-        return jsonify({"msg": "Missing required fields"}), 400
+    
+    if not data["email"] or not data["password"]:
+        return jsonify({"msg" : "Email and Password are required"}), 400
+    
+    existing_user = db.session.execute(db.select(User).where(
+        User.email == data["email"],
+    )).scalar_one_or_none()
 
-    # Verificar si ya existe username o email
-    if User.query.filter_by(username=data["username"]).first():
-        return jsonify({"msg": "Usuario ya fokin existe"}), 400
-    if User.query.filter_by(email=data["email"]).first():
-        return jsonify({"msg": "Email ya fokin existe"}), 400
-
-    new_user = User(
-        username=data["username"],
-        email=data["email"],
-        password=data["password"]
-    )
+    if existing_user:
+        return jsonify({"msg": "user with email already exist"}), 400
+    
+    new_user = User(email = data["email"])
+    new_user.set_password(data["password"])
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify(new_user.serialize()), 201
+    return jsonify({"msg": "user created succesfully"}), 201
+
+@api.route('/login', methods=['GET'])
+def login():
+    data = request.get_json()
+
+    if not data["email"] or not data["password"]:
+        return jsonify({"msg" : "Email and Password are required"}), 400
+    
+    user = db.session.execute(db.select(User).where(
+        User.email == data["email"],
+    )).scalar_one_or_none()
+
+    if user is None:
+        return jsonify({"msg": "Invalid email or password"}), 401
+    
+    if user.check_password(data["password"]):
+        access_token = create_access_token(identy=str(user.id))
+        return jsonify({"msg": "login Succesfully", "token": access_token})
+    else:
+        return jsonify({"msg": "Invalid email or password"}), 401
+
+
 
 # Actualizar info del usuario
 @api.route('/user/<int:user_id>', methods=['PUT'])
