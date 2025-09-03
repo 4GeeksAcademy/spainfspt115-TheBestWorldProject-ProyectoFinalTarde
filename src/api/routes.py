@@ -21,22 +21,6 @@ CORS(api)
 def get_users():
     users = User.query.all()
     result = [user.serialize() for user in users]
-    print(result)
-    return jsonify(result)
-
-@api.route('/user/<int:user_id>', methods = ['GET'])
-def get_user(user_id):
-    user = user.query.get(user_id)
-    if user is None:
-        return jsonify({"error":"Usuario no existe"}),400
-    return jsonify(user.serialize()), 200
-
-
-
-@api.route('/user', methods =['GET'])
-def get_users():
-    users = User.query.all()
-    result = [user.serialize() for user in users]
     return jsonify(result)
 
 @api.route('/user/<int:user_id>', methods = ['GET'])
@@ -50,17 +34,19 @@ def get_user(user_id):
 def signup():
     data = request.get_json()
     
-    if not data["email"] or not data["password"]:
-        return jsonify({"msg" : "Email and Password are required"}), 400
+    if not data["email"] or not data["password"] or not data["username"]:
+        return jsonify({"msg" : "Email, username and password required"}), 400
     
     existing_user = db.session.execute(db.select(User).where(
         User.email == data["email"],
+        User.username == data["username"]
     )).scalar_one_or_none()
 
     if existing_user:
-        return jsonify({"msg": "user with email already exist"}), 400
+        return jsonify({"msg": "user already exist"}), 400
     
-    new_user = User(email = data["email"])
+    new_user = User(email = data["email"],
+                     username = data["username"])
     new_user.set_password(data["password"])
     db.session.add(new_user)
     db.session.commit()
@@ -71,30 +57,30 @@ def signup():
 def login():
     data = request.get_json()
 
-    if not data["email"] or not data["password"]:
-        return jsonify({"msg" : "Email and Password are required"}), 400
+    if not data["username"] or not data["password"]:
+        return jsonify({"msg" : "Username and Password are required"}), 400
     
     user = db.session.execute(db.select(User).where(
-        User.email == data["email"],
+        User.username == data["username"],
     )).scalar_one_or_none()
 
     if user is None:
-        return jsonify({"msg": "Invalid email or password"}), 401
+        return jsonify({"msg": "Invalid username or password"}), 401
     
     if user.check_password(data["password"]):
         access_token = create_access_token(identy=str(user.id))
         return jsonify({"msg": "login Succesfully", "token": access_token})
     else:
-        return jsonify({"msg": "Invalid email or password"}), 401
+        return jsonify({"msg": "Invalid username or password"}), 401
     
-@api.route("/profile", methods=['GET'])
-@jwt_required()
-def profile():
-    user_id = get_jwt_identity()
-    user = db.session.get(User, int(user_id))
-    if not user:
-        return jsonify({"msg": "user not found"}), 404
-    return jsonify(user.serialize()), 200
+# @api.route("/profile", methods=['GET'])
+# @jwt_required()
+# def profile():
+#     user_id = get_jwt_identity()
+#     user = db.session.get(User, int(user_id))
+#     if not user:
+#         return jsonify({"msg": "user not found"}), 404
+#     return jsonify(user.serialize()), 200
 
 
 
@@ -113,7 +99,7 @@ def update_user(user_id):
             return jsonify({"msg": "Email ya está en uso"}), 400
         user.email = data["email"]
     if "password" in data:
-        user.password = data["password"]
+        user.password = user.set_password(data["password"])
 
     user.last_update = datetime.now()
     db.session.commit()
