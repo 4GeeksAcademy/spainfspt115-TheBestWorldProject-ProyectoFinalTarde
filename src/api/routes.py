@@ -53,7 +53,7 @@ def signup():
 
     return jsonify({"msg": "user created succesfully"}), 201
 
-@api.route('/login', methods=['GET'])
+@api.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
 
@@ -68,7 +68,7 @@ def login():
         return jsonify({"msg": "Invalid username or password"}), 401
     
     if user.check_password(data["password"]):
-        access_token = create_access_token(identy=str(user.id))
+        access_token = create_access_token(identity=str(user.id_user))
         return jsonify({"msg": "login Succesfully", "token": access_token})
     else:
         return jsonify({"msg": "Invalid username or password"}), 401
