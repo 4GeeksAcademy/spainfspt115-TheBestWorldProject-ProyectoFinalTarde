@@ -13,12 +13,12 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from datetime import datetime
+from sqlalchemy import func
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
-
 
 #USER ROUTES
 #---obtener todos los usuarios
@@ -29,11 +29,26 @@ def get_users():
     return jsonify(result)
 
 #---obtener usuario por id
-@api.route('/user/<int:user_id>', methods = ['GET'])
+@api.route('/user/<int:user_id>', methods=['GET'])
+@jwt_required()
 def get_user(user_id):
-    user = user.query.get(user_id)
-    if user is None:
-        return jsonify({"error":"Usuario no existe"}),400
+    current_user_id = int(get_jwt_identity())
+    if current_user_id != user_id:
+        return jsonify({"error": "Not Authorized"}), 403
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error":"User not found"}),404
+    return jsonify(user.serialize()), 200
+
+#---para la pagina de profile
+@api.route("/profile", methods=["GET"])
+@jwt_required()
+def profile():
+    current_user_id = int(get_jwt_identity())
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({"error": "User not found"}), 404
     return jsonify(user.serialize()), 200
 
 #---creacion usuario
@@ -44,10 +59,12 @@ def signup():
     if not data["email"] or not data["password"] or not data["username"]:
         return jsonify({"msg" : "Email, username and password required"}), 400
     
-    existing_user = db.session.execute(db.select(User).where(
-        User.email == data["email"],
-        User.username == data["username"]
-    )).scalar_one_or_none()
+    existing_user = db.session.execute(
+        db.select(User).where(
+            User.email == data["email"],
+            User.username == data["username"]
+        )
+    ).scalar_one_or_none()
 
     if existing_user:
         return jsonify({"msg": "user already exist"}), 400
@@ -85,21 +102,24 @@ def login():
         return jsonify({"msg": "Invalid username or password"}), 401
     
 #---Actualizar info del usuario
-@api.route('/user/<int:user_id>', methods=['PUT'])
-def update_user(user_id):
-    data = request.get_json()
-    user = User.query.get(user_id)
-    if user is None:
-        return jsonify({"msg": "Usuario no existe"}), 404
+@api.route('/user', methods=['PUT'])
+@jwt_required()
+def update_user():
+    current_user_id = int(get_jwt_identity())
+    user = User.query.get(current_user_id)
 
+    if not user:
+        return jsonify({"error": "Usuario not found"}), 404
+
+    data = request.get_json()
     if "username" in data:
         user.username = data["username"]
     if "email" in data:
-        if User.query.filter(User.email == data["email"], User.id_user != user_id).first():
-            return jsonify({"msg": "Email ya está en uso"}), 400
+        if User.query.filter(User.email == data["email"], User.id_user != current_user_id).first():
+            return jsonify({"error": "Email used"}), 400
         user.email = data["email"]
     if "password" in data:
-        user.password = user.set_password(data["password"])
+        user.set_password(data["password"])
 
     db.session.commit()
     return jsonify(user.serialize()), 200
@@ -116,40 +136,26 @@ def get_games():
 #--- Obtener partida por id
 @api.route('/game/<int:id_game>', methods = ['GET'])
 def get_game(id_game):
-    game = game.query.get(id_game)
+    game = Game.query.get(id_game)
     if game is None:
-        return jsonify({"error":"Usuario no existe"}),400
+        return jsonify({"msg":"User doesn't exists"}),400
     return jsonify(game.serialize()), 200
 
 #--- Crear juego
 @api.route('/game', methods = ['POST'])
+@jwt_required()
 def create_game():
     body = request.get_json()
-
-    id_user =body.get("id_user")
-    final_score = body.get("final_score")
-    correct_words = body.get("correct_words")
-    failed_words = body.get("failed_words")
-    average_precision = body.get("average_precision")
-    wpm_average = body.get("wpm_average")
-    difficulty = body.get("difficulty")
-
-
-    if not id_user:
-          return jsonify({"error": "id_user es obligatorio"}), 400
+    current_user_id = int(get_jwt_identity())  # del token
     
-    user = User.query.get(id_user)
-    if not user:
-        return jsonify({"error": "El usuario no existe"}), 400
-
-    game = Game (
-        id_user=id_user,
-        final_score=final_score,
-        correct_words=correct_words,
-        failed_words=failed_words,
-        average_precision=average_precision,
-        wpm_average=wpm_average,
-        difficulty=difficulty,
+    game = Game(
+        id_user=current_user_id,
+        final_score=body.get("final_score", 0),
+        correct_words=body.get("correct_words", 0),
+        failed_words=body.get("failed_words", 0),
+        average_precision=body.get("average_precision", 0.0),
+        wpm_average=body.get("wpm_average", 0.0),
+        difficulty=body.get("difficulty", 1),
     )
 
     db.session.add(game)
@@ -157,20 +163,74 @@ def create_game():
 
     return jsonify(game.serialize()), 201
 
+# LeaderBoard Rout --> query exclusiva para generar la tabla de score
+@api.route("/leaderboard", methods=["GET"])
+def leaderboard():
+    top = Game.query.order_by(Game.final_score.desc()).limit(10).all()
+
+    return jsonify([g.serialize() for g in top]), 200
+
 # DICTIONARY ROUTES
-# POST --> Add new words to the dictionary
+# --- GAME WODS ROUTES ---
+# Obtener X palabras aleatorias
+@api.route("/words/random", methods=["GET"])
+def random_words():
+    amount = request.args.get("amount", default=1, type=int)
+    words = Dictionary.query.order_by(func.random()).limit(amount).all()
+    
+    return jsonify([w.serialize() for w in words]), 200
+
+# Obtener X palabras aleatorias por dificultad
+@api.route("/words/random/<int:difficulty>", methods=["GET"])
+def random_words_by_difficulty(difficulty):
+    amount = request.args.get("amount", default=1, type=int)
+    words = Dictionary.query.filter_by(difficulty=difficulty).order_by(func.random()).limit(amount).all()
+   
+    if not words:
+        return jsonify({"error": "No words for this difficulty"}), 404
+    
+    return jsonify([w.serialize() for w in words]), 200
+
+
+# Obtener palabras de un nivel
+@api.route("/words/level", methods=["GET"])
+def words_for_level():
+    difficulty = request.args.get("difficulty", default=1, type=int)
+    amount = request.args.get("amount", default=10, type=int)
+
+    words = Dictionary.query.filter_by(difficulty=difficulty).order_by(func.random()).limit(amount).all()
+    
+    return jsonify({
+        "difficulty": difficulty,
+        "words": [w.serialize() for w in words]
+    }), 200
+
+
+# === ADMIN ROUTES ===
+# Insertar una nueva palabra en el diccionario
 @api.route("/words", methods=["POST"])
+@jwt_required()
 def add_word():
     data = request.get_json()
 
     if not data or "word" not in data:
-        return jsonify({"error": "Se necesita al menos 'word'"}), 400
+        return jsonify({"msg": "Se necesita al menos 'word'"}), 400
 
-    # calcular datos derivados
-    word = data["word"]
+    word = data["word"].strip().lower()
     length = len(word)
-    points = data.get("points_per_word", length)   # Ejemplo: puntos = longitud
-    difficulty = data.get("difficulty", 1)         # valor por defecto
+    points = data.get("points_per_word", length)   # default = longitud
+
+    # Calcular dificultad en base a la longitud
+    if length < 6:
+        difficulty = 1   # Fácil
+    elif 6 <= length <= 8:
+        difficulty = 2   # Media
+    else:
+        difficulty = 3   # Difícil
+
+    # Evitar duplicados
+    if Dictionary.query.filter_by(word=word).first():
+        return jsonify({"msg": "The Word already exists"}), 400
 
     new_word = Dictionary(
         word=word,
@@ -179,27 +239,27 @@ def add_word():
         difficulty=difficulty
     )
 
-    try:
-        db.session.add(new_word)
-        db.session.commit()
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 500
+    db.session.add(new_word)
+    db.session.commit()
 
     return jsonify(new_word.serialize()), 201
 
 
-# GET --> Obtener todas las palabras
+# Obtener todas las palabras
 @api.route("/words", methods=["GET"])
+@jwt_required()
 def get_words():
     words = Dictionary.query.all()
+
     return jsonify([w.serialize() for w in words]), 200
 
-
-# GET por ID --> Obtener palabra concreta
+# Obtener palabra concreta por ID
 @api.route("/words/<int:word_id>", methods=["GET"])
+@jwt_required()
 def get_word(word_id):
     word = Dictionary.query.get(word_id)
+
     if not word:
-        return jsonify({"error": f"La palabra con id {word_id} no existe"}), 404
+        return jsonify({"msg": f"La palabra con id {word_id} no existe"}), 404
+    
     return jsonify(word.serialize()), 200
