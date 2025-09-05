@@ -259,6 +259,8 @@ def get_words():
 def get_word(word_id):
     word = Dictionary.query.get(word_id)
 
+    return jsonify(response_body), 200
+
     if not word:
         return jsonify({"msg": f"La palabra con id {word_id} no existe"}), 404
     
