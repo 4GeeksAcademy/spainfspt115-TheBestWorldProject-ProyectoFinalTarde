@@ -19,8 +19,8 @@ export const Layout = () => {
           className="flex-grow-1 d-flex flex-column justify-content-center"
           style={{ paddingTop: '80px', paddingBottom: '70px' }}
         >
-          {store.isRegistered ? <Outlet /> : <Navigate to="/signup" />}
-
+          {/* {store.isRegistered ? <Outlet /> : <Navigate to="/signup" />} */}
+          {<Outlet />}
 
         </main>
 

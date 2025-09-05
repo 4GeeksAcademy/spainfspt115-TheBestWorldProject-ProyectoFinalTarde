@@ -3,26 +3,26 @@ import React from "react";
 // Componente Footer
 export const Footer = () => (
     <footer className="d-flex align-items-center justify-content-between px-4 py-2 bg-light border-top border-secondary fixed-bottom">
-        
+
         {/* Menú desplegable de perfil (CONVERTIR EN COMPONENTE UNICO PARA SU FUNCIONALIDAD)*/}
         <div className="dropup">
-            <a 
-                className="d-flex align-items-center dropdown-toggle text-decoration-none text-dark" 
-                href="#" 
-                role="button" 
-                id="profileDropdown" 
-                data-bs-toggle="dropdown" 
+            <a
+                className="d-flex align-items-center dropdown-toggle text-decoration-none text-dark"
+                href="#"
+                role="button"
+                id="profileDropdown"
+                data-bs-toggle="dropdown"
                 aria-expanded="false"
             >
                 {/* Avatar de usuario */}
-                <img 
+                {/* <img 
                     src="https://via.placeholder.com/40" 
                     alt="Avatar" 
                     className="rounded-circle me-2" 
                     width="40" 
                     height="40" 
-                />
-                
+                /> */}
+
                 {/* Información del usuario */}
                 <div className="d-flex flex-column">
                     <span className="fw-bold">User Name</span>

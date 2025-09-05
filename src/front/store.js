@@ -1,7 +1,7 @@
 export const initialStore = () => {
   return {
     user: null,
-    isRegistered: false,
+    isRegistered: true,
   };
 };
 
