@@ -9,6 +9,7 @@ export default class GameScene extends Phaser.Scene {
   create() {
     this.score = 0;
     this.isPlaying = true;
+    this.locked = false;
 
     this.bgMusic = this.sound.add("bgMusic");
     this.bgMusic.play();
@@ -28,8 +29,8 @@ export default class GameScene extends Phaser.Scene {
     this.timedEvent = this.time.delayedCall(10000, this.gameOver, [], this);
 
     // input del jugador
-    const inputEl = document.createElement("input");
-    Object.assign(inputEl.style, {
+    const inputPlayer = document.createElement("input");
+    Object.assign(inputPlayer.style, {
       padding: "8px 12px",
       fontSize: "18px",
       width: "360px",
@@ -40,56 +41,84 @@ export default class GameScene extends Phaser.Scene {
       outline: "none",
     });
 
-    this.domInput = this.add.dom(400, 520, inputEl).setOrigin(0.5);
+    this.domInput = this.add.dom(400, 520, inputPlayer).setOrigin(0.5);
 
-    inputEl.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" && inputEl.value.trim() !== "") {
-        this.checkWord(inputEl.value.trim());
-        inputEl.value = "";
+    inputPlayer.addEventListener("input", () => {
+      let typed = inputPlayer.value.trim().toLowerCase();
+
+      // si esta bloqueado, solo dejar borrar
+      if (this.locked && typed.length >= this.errorIndex + 1) {
+        inputPlayer.value = typed.slice(0, this.errorIndex + 1); 
+        return;
+      }
+
+      this.renderWord(inputPlayer.value);
+
+      // si hay error bloquear
+      if (!this.currentWord.startsWith(typed)) {
+        this.locked = true;
+        this.errorIndex = typed.length - 1; // posición donde ocurre el error
+      } else {
+        this.locked = false; // desbloquear al corregir
+      }
+
+      // si la palabra esta completa y correcta
+      if (typed === this.currentWord) {
+        this.score += 10;
+        
+        inputPlayer.value = "";
+        this.newWord();
       }
     });
 
     this.newWord();
-    inputEl.focus();
+    inputPlayer.focus();
   }
 
   update() {
     if (this.timedEvent) {
       this.remainingTime = this.timedEvent.getRemainingSeconds();
       this.textTime.setText(`Remaining Time: ${Math.round(this.remainingTime)}`);
+      this.textScore.setText("Score: " + this.score);
     }
   }
 
   newWord() {
     this.currentWord = Phaser.Utils.Array.GetRandom(this.words);
-    if (this.wordText) this.wordText.destroy();
-    this.wordText = this.add.text(400, 300, this.currentWord, { fontSize: "48px", fill: "#aaa" }).setOrigin(0.5);
+
+    if (this.wordGroup) {
+      this.wordGroup.clear(true, true);
+    }
+
+    this.wordGroup = this.add.group();
+
+    const startX = 400 - (this.currentWord.length * 15);
+    for (let i = 0; i < this.currentWord.length; i++) {
+      const letter = this.add.text(startX + i * 30, 300, this.currentWord[i], {
+        fontSize: "48px",
+        fill: "#aaa",
+      }).setOrigin(0.5);
+
+      this.wordGroup.add(letter);
+    }
   }
 
-  checkWord(word) {
-    if (!this.isPlaying) return;
+  renderWord(typed) {
+    const letters = this.wordGroup.getChildren();
+    for (let i = 0; i < this.currentWord.length; i++) {
+      let color = "#aaa"; // gris por defecto
 
-    if (word.toLowerCase() === this.currentWord) {
-      this.score += 10;
-      this.textScore.setText("Score: " + this.score);
-      this.wordText.setStyle({ fill: "#0f0" });
-      this.time.delayedCall(200, () => this.newWord());
-    } else {
-      this.wordText.setTint(0xff0000);
-      this.time.delayedCall(300, () => this.wordText.clearTint());
+      if (i < typed.length) {
+        color = typed[i] === this.currentWord[i] ? "#0f0" : "#f00"; // verde o rojo
+      }
+
+      letters[i].setStyle({ fill: color });
     }
   }
 
   gameOver() {
     this.isPlaying = false;
-
-    this.add.text(400, 250, "Game Over", { font: "40px Arial", fill: "#ff0000" }).setOrigin(0.5);
-    this.add.text(400, 300, `Score: ${this.score}`, { font: "30px Arial", fill: "#000" }).setOrigin(0.5);
-
-    this.add.image(400, 400, "resetBtn")
-      .setInteractive()
-      .on("pointerdown", () => {
-        this.scene.start("MenuScene");
-      });
+    this.bgMusic.stop();
+    this.scene.start("GameOverScene", { score: this.score });
   }
 }

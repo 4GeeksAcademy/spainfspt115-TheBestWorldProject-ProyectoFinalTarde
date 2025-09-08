@@ -3,6 +3,7 @@ import Phaser from "phaser";
 import PreloadScene from "./scenes/PreloadScenes";
 import MenuScene from "./scenes/MenuScene";
 import GameScene from "./scenes/GameScene";
+import GameOverScene from "./scenes/GameOverScene";
 
 export default function Game() {
   useEffect(() => {
@@ -12,7 +13,7 @@ export default function Game() {
       height: 600,
       backgroundColor: "#222",
       parent: "game-container",
-      scene: [PreloadScene, MenuScene, GameScene],
+      scene: [PreloadScene, MenuScene, GameScene, GameOverScene],
       dom: { createContainer: true }
     });
 
