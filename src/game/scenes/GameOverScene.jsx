@@ -25,23 +25,29 @@ export default class GameOverScene extends Phaser.Scene {
     }).setOrigin(0.5);
 
     // boton reiniciar
-    const restartBtn = this.add.text(centerX, centerY, "Reintentar", {
+    const restartButton = this.add.text(centerX, centerY + height * 0.1, "Reintentar", {
         fontSize: "28px",
-        fill: "#0f0",
+        fill: "#fff",
     }).setOrigin(0.5).setInteractive();
 
-    restartBtn.on("pointerdown", () => {
+    restartButton.on("pointerdown", () => {
         this.scene.start("GameScene");
     });
 
-    // btono volver al menu
-    const menuBtn = this.add.text(centerX, centerY + height * 0.1, "Volver al menú", {
+    // boton volver al menu
+    const menuButton = this.add.text(centerX, centerY + height * 0.2, "Volver al menú", {
       fontSize: "24px",
-      fill: "#ff0",
+      fill: "#fff",
     }).setOrigin(0.5).setInteractive();
 
-    menuBtn.on("pointerdown", () => {
+    menuButton.on("pointerdown", () => {
         this.scene.start("MenuScene");
+    });
+
+    // === EFECTO HOVER para botones ===
+    [menuButton, restartButton].forEach(button => {
+      button.on("pointerover", () => button.setStyle({ fill: "#ff0" }));
+      button.on("pointerout", () => button.setStyle({ fill: "#fff" }));
     });
   }
 }

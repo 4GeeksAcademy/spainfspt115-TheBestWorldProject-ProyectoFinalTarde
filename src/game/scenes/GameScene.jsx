@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { createWord, moveWord } from "../managers/WordManager";
 import { handleInput } from "../managers/InputManager";
+import { animateScaleText } from "../managers/Effects";
 
 export default class GameScene extends Phaser.Scene {
     constructor() {
@@ -12,7 +13,7 @@ export default class GameScene extends Phaser.Scene {
         const { width, height } = this.sys.game.config;
 
         this.score = 0;
-        this.isPlaying = true;
+        this.isPlaying = false; // el juego inicia bloqueado
         this.locked = false;
         this.errorIndex = -1;
         this.typed = "";
@@ -20,9 +21,6 @@ export default class GameScene extends Phaser.Scene {
         // musica
         this.bgMusic = this.sound.add("bgMusic");
         this.bgMusic.play();
-
-        // Fondo "--- DESABILITADO DEMOMENTO ---"
-        // this.add.image(0, 0, "bg").setOrigin(0, 0);
 
         // UI
         this.textScore = this.add.text(width - 80, 10, "Score: 0", {
@@ -39,14 +37,11 @@ export default class GameScene extends Phaser.Scene {
             fill: "#fff",
         });
 
-        // timer de juego
-        this.timedEvent = this.time.delayedCall(10000, this.gameOver, [], this);
-
-        // crear primera palabra
-        createWord(this, this.words);
-
         // input teclado
         this.input.keyboard.on("keydown", (event) => handleInput(event, this));
+
+        // contador inicial
+        this.startCountdown();
 
         // limpieza al cerrar la escena
         this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
@@ -66,9 +61,47 @@ export default class GameScene extends Phaser.Scene {
         });
     }
 
+    startCountdown() {
+        const { width, height } = this.sys.game.config;
+
+        let count = 3;
+        const countdownText = this.add.text(width / 2, height / 2, count, {
+            font: "80px Arial Black",
+            fill: "#ff0",
+            stroke: "#000",
+            strokeThickness: 6,
+        }).setOrigin(0.5);
+
+        this.time.addEvent({
+            delay: 1000,
+            repeat: 3,
+            callback: () => {
+                count--;
+                if (count > 0) {
+                    countdownText.setText(count);
+                } else if (count === 0) {
+                    countdownText.setText("YA!");
+                } else {
+                    countdownText.destroy();
+
+                    // arrancar juego
+                    this.isPlaying = true;
+
+                    // timer de juego
+                    this.timedEvent = this.time.delayedCall(20000, this.gameOver, [], this);
+
+                    // crear primera palabra
+                    createWord(this, this.words);
+                }
+
+                animateScaleText(this, countdownText);
+            }
+        });
+    }
+
     update() {
-        // actualizacion de eventos
-        
+        if (!this.isPlaying) return;
+
         if (this.timedEvent) {
             const remaining = this.timedEvent.getRemainingSeconds();
             this.textTime.setText(`Remaining Time: ${Math.round(remaining)}`);

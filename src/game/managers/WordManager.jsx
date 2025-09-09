@@ -1,28 +1,42 @@
 import Phaser from "phaser";
+import { spawnWordEffect } from "./Effects";
 
 // --- crea una nueva palabra y sus letras en posiciones aleatorias ---
 export function createWord(scene, words) {
-  const { width } = scene.sys.game.config;
+  const { width, height } = scene.sys.game.config;
   const currentWord = Phaser.Utils.Array.GetRandom(words);
   const wordGroup = scene.add.group();
 
   const letterSpacing = 30;
   const wordWidth = currentWord.length * letterSpacing;
-  const margin = 50;
+  const margin = 20;
 
   const startX = Phaser.Math.Between(
     margin,
     width - margin - wordWidth
   );
 
+  // --- rango vertical: debajo de UI hasta mitad pantalla ---
+  const topMargin = 30;
+  const bottomLimit = height * 0.25;
+  const startY = Phaser.Math.Between(topMargin, bottomLimit);
+
+  const letters = [];
+
   for (let i = 0; i < currentWord.length; i++) {
-    const letter = scene.add.text(startX + i * letterSpacing, 0, currentWord[i], {
+    const letter = scene.add.text(startX + i * letterSpacing, startY, currentWord[i], {
       fontSize: "48px",
       fill: "#aaa",
     }).setOrigin(0.5);
+
     wordGroup.add(letter);
+    letters.push(letter);
   }
 
+  // animación de aparición
+  spawnWordEffect(scene, letters);
+
+  // guardar info en la escena
   scene.currentWord = currentWord;
   scene.wordGroup = wordGroup;
   scene.typed = "";
@@ -46,7 +60,7 @@ export function renderWord(scene, wordGroup, currentWord, typed) {
 }
 
 // --- mueve la palabra hacia abajo ---
-export function moveWord(scene, speed = 0.5) {
+export function moveWord(scene, speed = 1.75) {
   if (!scene.wordGroup) return;
   const { height } = scene.sys.game.config;
 

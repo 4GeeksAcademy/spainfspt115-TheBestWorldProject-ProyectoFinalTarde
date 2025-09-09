@@ -1,25 +1,42 @@
+import Phaser from "phaser";
+
 // --- temblor de letra para indicar error ---
 export function shakeLetter(scene, letter) {
-    if (!letter) return;
-    scene.tweens.add({
-        targets: letter,
-        x: letter.x + 4,
-        yoyo: true,
-        repeat: 2,
-        duration: 50,
-    });
+  if (!letter) return;
+  scene.tweens.add({
+    targets: letter,
+    x: letter.x + 4,
+    yoyo: true,
+    repeat: 2,
+    duration: 50,
+  });
 }
 
 // --- flash para indicar error en toda la palabra ---
 export function flashError(scene, wordGroup) {
-    if (!wordGroup) return;
+  if (!wordGroup) return;
+  scene.tweens.add({
+    targets: wordGroup.getChildren(),
+    alpha: 0.6,
+    yoyo: true,
+    repeat: 1,
+    duration: 80,
+  });
+}
+
+// --- animación de aparición de palabra ---
+export function spawnWordEffect(scene, letters) {
+  letters.forEach((letter, i) => {
+    letter.setScale(0).setAlpha(0);
     scene.tweens.add({
-        targets: wordGroup.getChildren(),
-        alpha: 0.6,
-        yoyo: true,
-        repeat: 1,
-        duration: 80,
+      targets: letter,
+      scale: 1,
+      alpha: 1,
+      duration: 400,
+      ease: "Back.Out",
+      delay: i * 50, // efecto cascada
     });
+  });
 }
 
 // --- explosion de palabra ---
@@ -52,7 +69,7 @@ export function animateScore(scene) {
     scale: 1.3,
     duration: 150,
     yoyo: true,
-    ease: "Back.easeOut"
+    ease: "Back.easeOut",
   });
 
   scene.tweens.add({
@@ -60,7 +77,7 @@ export function animateScore(scene) {
     alpha: 0.5,
     duration: 100,
     yoyo: true,
-    repeat: 1
+    repeat: 1,
   });
 }
 
@@ -80,6 +97,17 @@ export function floatingScore(scene, x, y, points = 10) {
     alpha: 0,
     duration: 800,
     ease: "Cubic.easeOut",
-    onComplete: () => floatText.destroy()
+    onComplete: () => floatText.destroy(),
+  });
+}
+
+// --- animacion de escalado de texto ---
+export function animateScaleText(scene, target) {
+  scene.tweens.add({
+    targets: target,
+    scale: { from: 1.5, to: 1 },
+    alpha: { from: 0, to: 1 },
+    duration: 400,
+    ease: "Back.Out",
   });
 }
