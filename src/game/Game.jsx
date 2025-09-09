@@ -9,8 +9,8 @@ export default function Game() {
   useEffect(() => {
     const game = new Phaser.Game({
       type: Phaser.AUTO,
-      width: 800,
-      height: 600,
+      width: 600,
+      height: 800,
       backgroundColor: "#222",
       parent: "game-container",
       scene: [PreloadScene, MenuScene, GameScene, GameOverScene],
@@ -20,5 +20,5 @@ export default function Game() {
     return () => game.destroy(true);
   }, []);
 
-  return <div id="game-container" style={{ width: 800, height: 600, margin: "auto" }} />;
+  return <div id="game-container" style={{ width: 600, height: 800, margin: "auto" }} />;
 }

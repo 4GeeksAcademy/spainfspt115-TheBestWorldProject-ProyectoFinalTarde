@@ -10,19 +10,22 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   create() {
+    const { width, height } = this.sys.game.config;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
-    this.add.text(400, 200, "GAME OVER", {
+    this.add.text(centerX, centerY - height * 0.2, "GAME OVER", {
         fontSize: "48px",
         fill: "#ff0000",
     }).setOrigin(0.5);
 
-    this.add.text(400, 280, `Puntaje: ${this.finalScore}`, {
+    this.add.text(centerX, centerY - height * 0.1, `Puntaje: ${this.finalScore}`, {
         fontSize: "32px",
         fill: "#fff",
     }).setOrigin(0.5);
 
-    // Botón reiniciar
-    const restartBtn = this.add.text(400, 360, "Reintentar", {
+    // boton reiniciar
+    const restartBtn = this.add.text(centerX, centerY, "Reintentar", {
         fontSize: "28px",
         fill: "#0f0",
     }).setOrigin(0.5).setInteractive();
@@ -31,8 +34,8 @@ export default class GameOverScene extends Phaser.Scene {
         this.scene.start("GameScene");
     });
 
-    // Botón volver al menú
-    const menuBtn = this.add.text(400, 420, "Volver al menú", {
+    // btono volver al menu
+    const menuBtn = this.add.text(centerX, centerY + height * 0.1, "Volver al menú", {
       fontSize: "24px",
       fill: "#ff0",
     }).setOrigin(0.5).setInteractive();

@@ -7,8 +7,18 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create() {
-    // === BOTÓN: INICIAR PARTIDA ===
-    const startButton = this.add.text(400, 200, "Iniciar Partida", {
+    const { width, height } = this.sys.game.config;
+    const centerX = width / 2;
+
+    // --- titulo ---
+    const title = this.add.text(centerX, height * 0.15, "- NOMBRE DEL JUEGO -", {
+      fontSize: "40px",
+      color: "#fff",
+      fontStyle: "bold"
+    }).setOrigin(0.5);
+
+    // === boton: iniciar partida ===
+    const startButton = this.add.text(centerX, height * 0.35, "Iniciar Partida", {
       fontSize: "32px",
       fill: "#fff"
     }).setOrigin(0.5).setInteractive();
@@ -17,8 +27,8 @@ export default class MenuScene extends Phaser.Scene {
       this.scene.start("GameScene");
     });
 
-    // === BOTÓN: TABLA DE SCORES ===
-    const scoreButton = this.add.text(400, 260, "Tabla de Scores", {
+    // === boton: tabla de scores ===
+    const scoreButton = this.add.text(centerX, height * 0.43, "Tabla de Scores", {
       fontSize: "32px",
       fill: "#fff"
     }).setOrigin(0.5).setInteractive();
@@ -27,8 +37,8 @@ export default class MenuScene extends Phaser.Scene {
       this.showModal();
     });
 
-    // === BOTÓN: AJUSTES ===
-    const settingsButton = this.add.text(400, 320, "Ajustes", {
+    // === boton: ajustes ===
+    const settingsButton = this.add.text(centerX, height * 0.51, "Ajustes", {
       fontSize: "32px",
       fill: "#fff"
     }).setOrigin(0.5).setInteractive();
@@ -37,60 +47,65 @@ export default class MenuScene extends Phaser.Scene {
       this.scene.start("SettingsScene");
     });
 
-    // === BOTÓN: SALIR (cerrar motor) ===
-    const exitButton = this.add.text(400, 380, "Salir", {
+    // === boton: salir ===
+    const exitButton = this.add.text(centerX, height * 0.59, "Salir", {
       fontSize: "32px",
       fill: "#fff"
-    }).setOrigin(0.5)
-      .setInteractive();
+    }).setOrigin(0.5).setInteractive();
 
     exitButton.on("pointerdown", () => {
       this.game.destroy(true);
     });
 
-    // === EFECTO HOVER ===
+    // === EFECTO HOVER para botones ===
     [startButton, scoreButton, settingsButton, exitButton].forEach(button => {
-      button.on("pointerover", () => {
-        button.setStyle({ fill: "#ff0" });
-      });
-      button.on("pointerout", () => {
-        button.setStyle({ fill: "#fff" });
-      });
+      button.on("pointerover", () => button.setStyle({ fill: "#ff0" }));
+      button.on("pointerout", () => button.setStyle({ fill: "#fff" }));
     });
   }
 
   showModal() {
     if (this.modal) return;
 
-    // Fondo semitransparente
-    const bg = this.add.rectangle(400, 300, 800, 600, 0x000000, 0.5);
+    const { width, height } = this.sys.game.config;
+    const centerX = width / 2;
+    const centerY = height / 2;
 
-    // Caja del modal
-    const box = this.add.rectangle(400, 300, 650, 450, 0xffffff);
+    // sombra 
+    const shadow = this.add.graphics();
+    shadow.fillStyle(0x000000, 0.3);
+    shadow.fillRoundedRect(centerX - width * 0.4 + 5, centerY - height * 0.3 + 5, width * 0.8, height * 0.6, 20);
 
-    // Texto del modal
-    const title = this.add.text(400, 220, "Tabla de Scores", {
+    // caja blanca + bordes redondeados
+    const graphics = this.add.graphics();
+    graphics.fillStyle(0xffffff, 1);
+    graphics.fillRoundedRect(centerX - width * 0.4, centerY - height * 0.3, width * 0.8, height * 0.6, 20);
+
+    // texto del modal
+    const title = this.add.text(centerX, centerY - height * 0.22, "Tabla de Scores", {
       fontSize: "28px",
-      color: "#000"
+      color: "#000",
+      fontStyle: "bold"
     }).setOrigin(0.5);
 
-    const content = this.add.text(400, 300, "1. K0ST4N - 180\n2. Artureyy - 120\n3. JavierMV - 100\n4. BYCARLOSS - 90\n5. TrivM - 80", {
+    const content = this.add.text(centerX, centerY, "1. K0ST4N - 180\n2. Artureyy - 120\n3. JavierMV - 100\n4. BYCARLOSS - 90\n5. TrivM - 80", {
       fontSize: "21px",
-      color: "#000"
+      color: "#000",
+      align: "center"
     }).setOrigin(0.5);
 
-    // Botón cerrar
-    const closeBtn = this.add.text(400, 420, "Cerrar", {
-      fontSize: "20px",
+    // boton cerrar
+    const closeBtn = this.add.text(centerX, centerY + height * 0.22, "Cerrar", {
+      fontSize: "22px",
       color: "#f00"
     }).setOrigin(0.5).setInteractive();
 
-    closeBtn.on("pointerdown", () => {
-      this.closeModal();
-    });
+    closeBtn.on("pointerdown", () => this.closeModal());
+    closeBtn.on("pointerover", () => closeBtn.setStyle({ color: "#ff0" }));
+    closeBtn.on("pointerout", () => closeBtn.setStyle({ color: "#f00" }));
 
     // Agrupar en un container
-    this.modal = this.add.container(0, 0, [bg, box, title, content, closeBtn]);
+    this.modal = this.add.container(0, 0, [shadow, graphics, title, content, closeBtn]);
   }
 
   closeModal() {
