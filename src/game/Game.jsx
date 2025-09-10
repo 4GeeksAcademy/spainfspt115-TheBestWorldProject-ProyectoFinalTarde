@@ -4,6 +4,7 @@ import PreloadScene from "./scenes/PreloadScenes";
 import MenuScene from "./scenes/MenuScene";
 import GameScene from "./scenes/GameScene";
 import GameOverScene from "./scenes/GameOverScene";
+import SettingsScene from "./scenes/SettingsScene";
 
 export default function Game() {
   useEffect(() => {
@@ -13,8 +14,12 @@ export default function Game() {
       height: 600,
       backgroundColor: "#222",
       parent: "game-container",
-      scene: [PreloadScene, MenuScene, GameScene, GameOverScene],
-      dom: { createContainer: true }
+      scene: [PreloadScene, MenuScene, SettingsScene, GameScene, GameOverScene],
+      dom: { createContainer: true },
+      settings: {
+        bgMusicVolume: 1 ,
+        bgMusicLoop: true,
+      }
     });
 
     return () => game.destroy(true);

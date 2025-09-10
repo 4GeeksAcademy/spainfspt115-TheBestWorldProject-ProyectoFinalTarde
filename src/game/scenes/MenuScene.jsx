@@ -7,6 +7,12 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create() {
+    // Iniciar música global si no está ya activa
+    if (!this.sound.get("bgMusic")) {
+      this.music = this.sound.add("bgMusic", { loop: true });
+      this.music.play();
+    }
+
     // === BOTÓN: INICIAR PARTIDA ===
     const startButton = this.add.text(400, 200, "Iniciar Partida", {
       fontSize: "32px",
