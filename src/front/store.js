@@ -3,6 +3,7 @@ export const initialStore = () => {
     user: null,
     token: null,
     isRegistered: false,
+    mode: "light",
   };
 };
 
@@ -30,7 +31,13 @@ export default function storeReducer(store, action = {}) {
         isRegistered: false,
       };
 
+    case "SET_MODE": // 👈 ahora sí funciona
+      return {
+        ...store,
+        mode: action.payload,
+      };
+
     default:
-      throw Error("Unknown action");
+      throw new Error("Unknown action: " + action.type);
   }
 }
