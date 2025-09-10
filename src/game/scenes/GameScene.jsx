@@ -1,124 +1,136 @@
 import Phaser from "phaser";
+import { createWord, moveWord } from "../managers/WordManager";
+import { handleInput } from "../managers/InputManager";
+import { animateScaleText } from "../managers/Effects";
 
 export default class GameScene extends Phaser.Scene {
-  constructor() {
-    super("GameScene");
-    this.words = ["resident", "fortnite", "bycarloss", "onichan", "itadori", "gojo", "repo", "programar", "fokin", "hola"];
-  }
-
-  create() {
-    this.score = 0;
-    this.isPlaying = true;
-    this.locked = false;
-
-    this.bgMusic = this.sound.add("bgMusic");
-    this.bgMusic.play();
-
-    this.add.image(0, 0, "bg").setOrigin(0, 0);
-
-    this.textScore = this.add.text(this.sys.game.config.width - 120, 10, "Score:0", {
-      font: "25px Arial",
-      fill: "#000000",
-    });
-
-    this.textTime = this.add.text(10, 10, "Remaining Time:00", {
-      font: "25px Arial",
-      fill: "#ffffff",
-    });
-
-    this.timedEvent = this.time.delayedCall(10000, this.gameOver, [], this);
-
-    // input del jugador
-    const inputPlayer = document.createElement("input");
-    Object.assign(inputPlayer.style, {
-      padding: "8px 12px",
-      fontSize: "18px",
-      width: "360px",
-      borderRadius: "6px",
-      border: "2px solid rgba(255,255,255,0.15)",
-      background: "rgba(255,255,255,0.05)",
-      color: "#fff",
-      outline: "none",
-    });
-
-    this.domInput = this.add.dom(400, 520, inputPlayer).setOrigin(0.5);
-
-    inputPlayer.addEventListener("input", () => {
-      let typed = inputPlayer.value.trim().toLowerCase();
-
-      // si esta bloqueado, solo dejar borrar
-      if (this.locked && typed.length >= this.errorIndex + 1) {
-        inputPlayer.value = typed.slice(0, this.errorIndex + 1); 
-        return;
-      }
-
-      this.renderWord(inputPlayer.value);
-
-      // si hay error bloquear
-      if (!this.currentWord.startsWith(typed)) {
-        this.locked = true;
-        this.errorIndex = typed.length - 1; // posición donde ocurre el error
-      } else {
-        this.locked = false; // desbloquear al corregir
-      }
-
-      // si la palabra esta completa y correcta
-      if (typed === this.currentWord) {
-        this.score += 10;
-        
-        inputPlayer.value = "";
-        this.newWord();
-      }
-    });
-
-    this.newWord();
-    inputPlayer.focus();
-  }
-
-  update() {
-    if (this.timedEvent) {
-      this.remainingTime = this.timedEvent.getRemainingSeconds();
-      this.textTime.setText(`Remaining Time: ${Math.round(this.remainingTime)}`);
-      this.textScore.setText("Score: " + this.score);
-    }
-  }
-
-  newWord() {
-    this.currentWord = Phaser.Utils.Array.GetRandom(this.words);
-
-    if (this.wordGroup) {
-      this.wordGroup.clear(true, true);
+    constructor() {
+        super("GameScene");
+        this.words = ["resident", "fortnite", "bycarloss", "onichan", "itadori", "gojo", "repo", "programar", "fokin", "hola"];
     }
 
-    this.wordGroup = this.add.group();
+    create() {
+        const { width, height } = this.sys.game.config;
 
-    const startX = 400 - (this.currentWord.length * 15);
-    for (let i = 0; i < this.currentWord.length; i++) {
-      const letter = this.add.text(startX + i * 30, 300, this.currentWord[i], {
-        fontSize: "48px",
-        fill: "#aaa",
-      }).setOrigin(0.5);
+        this.score = 0;
+        this.isPlaying = false; // el juego inicia bloqueado
+        this.locked = false;
+        this.errorIndex = -1;
+        this.typed = "";
 
-      this.wordGroup.add(letter);
+        // musica
+        this.bgMusic = this.sound.add("bgMusic");
+        this.bgMusic.play();
+
+        // UI
+        this.textScore = this.add.text(width - 80, 10, "Score: 0", {
+            font: "28px Arial Black",
+            fill: "#0f0",
+            stroke: "#000",
+            strokeThickness: 4,
+        })
+        .setOrigin(1, 0)
+        .setShadow(2, 2, "#000", 2, true, true);
+
+        this.textTime = this.add.text(10, 10, "Remaining Time:00", {
+            font: "25px Arial",
+            fill: "#fff",
+        });
+
+        // input teclado
+        this.input.keyboard.on("keydown", (event) => handleInput(event, this));
+
+        // contador inicial
+        this.startCountdown();
+
+        // limpieza al cerrar la escena
+        this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
+            if (this.bgMusic) {
+                this.bgMusic.stop();
+                this.bgMusic.destroy();
+                this.bgMusic = null;
+            }
+            if (this.timedEvent) {
+                this.timedEvent.remove(false);
+                this.timedEvent = null;
+            }
+            if (this.wordGroup) {
+                this.wordGroup.clear(true, true);
+                this.wordGroup = null;
+            }
+        });
     }
-  }
 
-  renderWord(typed) {
-    const letters = this.wordGroup.getChildren();
-    for (let i = 0; i < this.currentWord.length; i++) {
-      let color = "#aaa"; // gris por defecto
+    startCountdown() {
+        const { width, height } = this.sys.game.config;
 
-      if (i < typed.length) {
-        color = typed[i] === this.currentWord[i] ? "#0f0" : "#f00"; // verde o rojo
-      }
+        let count = 3;
+        const countdownText = this.add.text(width / 2, height / 2, count, {
+            font: "80px Arial Black",
+            fill: "#ff0",
+            stroke: "#000",
+            strokeThickness: 6,
+        }).setOrigin(0.5);
 
-      letters[i].setStyle({ fill: color });
+        this.time.addEvent({
+            delay: 1000,
+            repeat: 3,
+            callback: () => {
+                count--;
+                if (count > 0) {
+                    countdownText.setText(count);
+                } else if (count === 0) {
+                    countdownText.setText("YA!");
+                } else {
+                    countdownText.destroy();
+
+                    // arrancar juego
+                    this.isPlaying = true;
+
+                    // timer de juego
+                    this.timedEvent = this.time.delayedCall(20000, this.gameOver, [], this);
+
+                    // crear primera palabra
+                    createWord(this, this.words);
+                }
+
+                animateScaleText(this, countdownText);
+            }
+        });
     }
-  }
 
-  gameOver() {
-    this.isPlaying = false;
-    this.bgMusic.stop();
-    this.scene.start("GameOverScene", { score: this.score });
-  }
+    update() {
+        if (!this.isPlaying) return;
+
+        if (this.timedEvent) {
+            const remaining = this.timedEvent.getRemainingSeconds();
+            this.textTime.setText(`Remaining Time: ${Math.round(remaining)}`);
+        }
+        this.textScore.setText("Score: " + this.score);
+
+        moveWord(this);
+    }
+
+    gameOver() {
+        if (!this.isPlaying) return;
+        this.isPlaying = false;
+
+        if (this.bgMusic) {
+            this.bgMusic.stop();
+            this.bgMusic.destroy();
+            this.bgMusic = null;
+        }
+
+        if (this.timedEvent) {
+            this.timedEvent.remove(false);
+            this.timedEvent = null;
+        }
+
+        if (this.wordGroup) {
+            this.wordGroup.clear(true, true);
+            this.wordGroup = null;
+        }
+
+        this.scene.start("GameOverScene", { score: this.score });
+    }
 }

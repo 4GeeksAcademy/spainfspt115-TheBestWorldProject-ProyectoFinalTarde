@@ -10,34 +10,44 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   create() {
-    this.add.text(400, 200, "GAME OVER", {
-      fontSize: "48px",
-      fill: "#ff0000",
+    const { width, height } = this.sys.game.config;
+    const centerX = width / 2;
+    const centerY = height / 2;
+
+    this.add.text(centerX, centerY - height * 0.2, "GAME OVER", {
+        fontSize: "48px",
+        fill: "#ff0000",
     }).setOrigin(0.5);
 
-    this.add.text(400, 280, `Puntaje: ${this.finalScore}`, {
-      fontSize: "32px",
-      fill: "#fff",
+    this.add.text(centerX, centerY - height * 0.1, `Puntaje: ${this.finalScore}`, {
+        fontSize: "32px",
+        fill: "#fff",
     }).setOrigin(0.5);
 
-    // Botón reiniciar
-    const restartBtn = this.add.text(400, 360, "Reintentar", {
-      fontSize: "28px",
-      fill: "#0f0",
+    // boton reiniciar
+    const restartButton = this.add.text(centerX, centerY + height * 0.1, "Reintentar", {
+        fontSize: "28px",
+        fill: "#fff",
     }).setOrigin(0.5).setInteractive();
 
-    restartBtn.on("pointerdown", () => {
-      this.scene.start("GameScene"); // reinicia partida
+    restartButton.on("pointerdown", () => {
+        this.scene.start("GameScene");
     });
 
-    // Botón volver al menú
-    const menuBtn = this.add.text(400, 420, "Volver al menú", {
+    // boton volver al menu
+    const menuButton = this.add.text(centerX, centerY + height * 0.2, "Volver al menú", {
       fontSize: "24px",
-      fill: "#ff0",
+      fill: "#fff",
     }).setOrigin(0.5).setInteractive();
 
-    menuBtn.on("pointerdown", () => {
-      this.scene.start("MenuScene");
+    menuButton.on("pointerdown", () => {
+        this.scene.start("MenuScene");
+    });
+
+    // === EFECTO HOVER para botones ===
+    [menuButton, restartButton].forEach(button => {
+      button.on("pointerover", () => button.setStyle({ fill: "#ff0" }));
+      button.on("pointerout", () => button.setStyle({ fill: "#fff" }));
     });
   }
 }
