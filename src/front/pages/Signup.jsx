@@ -3,7 +3,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useState } from "react";
 
 export const Signup = () => {
-  const { dispatch } = useGlobalReducer();
+
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -25,22 +25,17 @@ export const Signup = () => {
           body: JSON.stringify({ email, username, password }),
         }
       );
-      const data = await response.json();
-      if (response.ok) {
-        // Guardar el usuario recién creado en el estado global
-        dispatch({
-          type: "set_user",
-          payload: { user: data.user, token: null },
-        });
-        alert("Usuario creado correctamente. Ahora inicia sesión.");
-        navigate("/login");
-      } else {
-        alert(data.msg || "Error al registrar usuario");
-      }
-    } catch {
-      alert("Error de conexión con el servidor");
-    }
-  };
+            const data = await response.json();
+            if (response.ok) {
+                alert("Usuario creado correctamente. Ahora inicia sesión.");
+                navigate("/login");
+            } else {
+                alert(data.msg || "Error al registrar usuario");
+            }
+        } catch {
+            alert("Error de conexión con el servidor");
+        }
+    };
 
   return (
     <div className="container mt-5">

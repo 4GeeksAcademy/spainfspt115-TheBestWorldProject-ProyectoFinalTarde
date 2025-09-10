@@ -1,14 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+
 
 export const Profile = () => {
 
     const navigate = useNavigate();
     const { store, dispatch } = useGlobalReducer();
 
+    useEffect(() => {
+
+        const token = localStorage.getItem("token");
+        
+        if (!token) {
+            alert("Acceso denegado. Por favor, inicia sesión.");
+
+            if (store.isRegistered) {
+                dispatch({ type: "logout" });
+            }
+            navigate("/login");
+        }
+    }, [store.isRegistered, navigate]);
+
      const handleLogout = () => {
-        sessionStorage.removeItem("token"); 
+        localStorage.removeItem("token");
+        dispatch({ type: "logout" }); 
         alert("Has cerrado sesión.");
         navigate("/"); }
 
