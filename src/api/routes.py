@@ -69,6 +69,8 @@ def signup():
     new_user = User(
         email=data["email"],
         username=data["username"],
+        country=data.get("country"),
+        city=data.get("city"),
         created_at=datetime.now()
     )
     new_user.set_password(data["password"])
@@ -85,11 +87,11 @@ def login():
     data = request.get_json()
     if not data.get("username") or not data.get("password"):
         return jsonify({"msg": "Username and Password are required"}), 400
-    
+
     user = User.query.filter_by(username=data["username"]).first()
     if user is None or not user.check_password(data["password"]):
         return jsonify({"msg": "Invalid username or password"}), 401
-    
+
     access_token = create_access_token(identity=str(user.id_user))
     return jsonify({
         "msg": "Login successfully",
@@ -106,18 +108,23 @@ def update_user():
     user = User.query.get(current_user_id)
     if not user:
         return jsonify({"error": "Usuario not found"}), 404
+
     data = request.get_json()
-    if "username" in data:
-        user.username = data["username"]
+
+    for field in ["username", "country", "city"]:
+        if field in data:
+            setattr(user, field, data[field])
+
     if "email" in data:
         if User.query.filter(User.email == data["email"], User.id_user != current_user_id).first():
             return jsonify({"error": "Email used"}), 400
         user.email = data["email"]
+
     if "password" in data:
         user.set_password(data["password"])
+
     db.session.commit()
     return jsonify(user.serialize()), 200
-
 
 # GAME ROUTES
 # --- Obtener todas las partidas
