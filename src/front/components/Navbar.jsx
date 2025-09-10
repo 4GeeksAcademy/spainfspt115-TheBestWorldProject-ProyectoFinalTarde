@@ -73,12 +73,13 @@ export const Navbar = () => {
 
 					{/* Botones de login/signup/profile */}
 					<div className="d-flex gap-2">
-						<Link to="/login" className="btn btn-primary w-100">
+						{!store?.isRegistered && (<Link to="/login" className="btn btn-primary w-100">
 							LogIn
-						</Link>
-						<Link to="/signup" className="btn btn-outline-dark fw-bold">
-							SignUp
-						</Link>
+						</Link>)}
+						{!store?.isRegistered && (
+							<Link to="/signup" className="btn btn-outline-dark fw-bold">
+								SignUp
+							</Link>)}
 					</div>
 					{store?.isRegistered && (
 						<Link to="/profile" className="btn btn-primary mx-2">
