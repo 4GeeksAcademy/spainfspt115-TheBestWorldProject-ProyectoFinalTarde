@@ -7,11 +7,11 @@ export const Login = () => {
     <div className="container">
       <div className="row justify-content-center">
         <div className="col-12 col-sm-8 col-md-6 col-lg-4">
-          
+
           {/* Tarjeta de login */}
           <div className="card shadow-lg border-0">
             <div className="card-body p-4">
-              
+
               {/* Título */}
               <h2 className="mb-4 text-center">Iniciar Sesión</h2>
 
