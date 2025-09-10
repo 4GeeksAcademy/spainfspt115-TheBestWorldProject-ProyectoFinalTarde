@@ -10,7 +10,7 @@ export const Profile = () => {
      const handleLogout = () => {
         sessionStorage.removeItem("token"); 
         alert("Has cerrado sesión.");
-        navigate("/login"); }
+        navigate("/"); }
 
     return (
         <div className="container py-5">
@@ -107,7 +107,6 @@ export const Profile = () => {
                         </div>
                         <div className="d-flex justify-content-around gap-5 mt-3">
                             <button className="btn btn-primary" onClick={handleLogout}>LogOut</button>
-                            <button className="btn btn-danger ">Eliminar cuenta</button>
                         </div>
                     </div>
                 </div>
