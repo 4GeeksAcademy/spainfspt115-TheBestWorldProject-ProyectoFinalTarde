@@ -55,7 +55,7 @@ export const Navbar = () => {
 							{/* Dropdown modo */}
 							<li className="nav-item dropdown">
 								<a className="nav-link dropdown-toggle fw-bold"
-									style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
+									style={{ color: store?.mode === "dark" ? "#fff" : "#343131ff" }}
 									href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
 									Mode
 								</a>
@@ -81,7 +81,7 @@ export const Navbar = () => {
 							<Link to="/login" className="btn btn-primary w-100">LogIn</Link>
 						)}
 						{!store?.isRegistered && (
-							<Link to="/signup" className="btn btn-outline-dark fw-bold">SignUp</Link>
+							<Link to="/signup" className="btn btn-primary fw-bold">SignUp</Link>
 						)}
 						{store?.isRegistered && (
 							<Link to="/profile" className="btn btn-primary mx-2">Profile</Link>
