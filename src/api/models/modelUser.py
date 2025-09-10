@@ -15,7 +15,8 @@ class User(db.Model):
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
-
+    country: Mapped[str] = mapped_column(String(100), nullable=True)
+    city: Mapped[str] = mapped_column(String(100), nullable=True)
     games: Mapped[List["Game"]] = relationship(
         "Game",
         back_populates = "user",
@@ -34,5 +35,7 @@ class User(db.Model):
             "username" : self.username ,
             "email" : self.email ,
             "created_at" : self.created_at,
+            "country": self.country,
+            "city": self.city,
             "games" : [game.serialize() for game in self.games]
         }

@@ -4,7 +4,6 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 
 
 export const Profile = () => {
-
     const navigate = useNavigate();
     const { store, dispatch } = useGlobalReducer();
 
@@ -26,7 +25,8 @@ export const Profile = () => {
         localStorage.removeItem("token");
         dispatch({ type: "logout" }); 
         alert("Has cerrado sesión.");
-        navigate("/"); }
+        navigate("/");
+    };
 
     return (
         <div className="container py-5">
@@ -48,41 +48,53 @@ export const Profile = () => {
                         </div>
 
                         {/* Nombre */}
-                        <h1 className="mt-3 text-center">User Name</h1>
+                        <h1 className="mt-3 text-center">
+                            {store?.user?.username || "User Name"}
+                        </h1>
 
                         {/* Datos básicos */}
                         <h5 className="mt-4 text-primary">Datos de usuario</h5>
                         <div className="mt-0">
                             <ul className="list-group list-group-flush">
                                 <li className="list-group-item bg-dark text-light">
-                                    <strong>Email:</strong> usuario@ejemplo.com
+                                    <strong>Email:</strong>{" "}
+                                    {store?.user?.email || "notengo@email.net"}
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
                                     <strong>Ubicación:</strong> Ciudad, País
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
-                                    <strong>Miembro desde:</strong> Enero 2023
+                                    <strong>Miembro desde:</strong>{" "}
+                                    {store?.user?.created_at || "No he nacido aún"}
                                 </li>
                             </ul>
                         </div>
+
                         {/* Estadisticas */}
-                        <h5 className="mt-4 text-primary">Estadisticas</h5>
+                        <h5 className="mt-4 text-primary">Estadísticas</h5>
                         <div className="mt-0">
                             <ul className="list-group list-group-flush">
                                 <li className="list-group-item bg-dark text-light">
-                                    <strong>Partidas jugadas</strong> 37
+                                    <strong>Partidas jugadas:</strong>{" "}
+                                    {store?.user?.games?.length || "Todavía no has jugado, por qué no ?"}
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
-                                    <strong>Palabras correctas</strong> 84
+                                    <strong>Palabras correctas:</strong>{" "}
+                                    {store?.user?.correct_words || "Ni una todavía"}
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
-                                    <strong>Palabras erroneas</strong> 43
+                                    <strong>Palabras erróneas:</strong>{" "}
+                                    {store?.user?.failed_words ||
+                                        "Eres un máquina, ni una has fallado"}
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
-                                    <strong>GreatRate</strong> 53%
+                                    <strong>Ratio %:</strong>{" "}
+                                    {store?.user?.average_precision || "0%"}
                                 </li>
                             </ul>
                         </div>
+
+                        {/* Historial de partidas */}
                         <h5 className="mt-4 text-primary">Historial de partidas</h5>
                         <div className="mt-3">
                             <div className="card bg-dark border-light">
@@ -90,30 +102,49 @@ export const Profile = () => {
                                     className="card-body bg-dark text-light overflow-auto"
                                     style={{ maxHeight: "200px" }}
                                 >
-                                    <h5 className="card-title">Partida #1</h5>
-                                    <p className="card-text">Jugado el 01/01/2023</p>
-                                    <hr />
-
-                                    <h5 className="card-title">Partida #2</h5>
-                                    <p className="card-text">Jugado el 02/01/2023</p>
-                                    <hr />
-
-                                    <h5 className="card-title">Partida #3</h5>
-                                    <p className="card-text">Jugado el 03/01/2023</p>
-                                    <hr />
-
-                                    <h5 className="card-title">Partida #4</h5>
-                                    <p className="card-text">Jugado el 04/01/2023</p>
-                                    <hr />
-
-                                    <h5 className="card-title">Partida #5</h5>
-                                    <p className="card-text">Jugado el 05/01/2023</p>
+                                    {store?.user?.games && store.user.games.length > 0 ? (
+                                        [...store.user.games]
+                                            .sort(
+                                                (a, b) =>
+                                                    new Date(b.played_at) - new Date(a.played_at)
+                                            )
+                                            .map((game) => (
+                                                <div key={game.id_game}>
+                                                    <h5 className="card-title">
+                                                        Partida #{game.id_game}
+                                                    </h5>
+                                                    <p className="card-text">
+                                                        Jugado el{" "}
+                                                        {new Date(game.played_at).toLocaleDateString(
+                                                            "es-ES",
+                                                            {
+                                                                year: "numeric",
+                                                                month: "long",
+                                                                day: "numeric",
+                                                            }
+                                                        )}
+                                                    </p>
+                                                    <p className="card-text">
+                                                        <strong>Puntuación:</strong> {game.final_score}
+                                                    </p>
+                                                    <p className="card-text">
+                                                        <strong>Precisión:</strong>{" "}
+                                                        {game.average_precision}%
+                                                    </p>
+                                                    <hr />
+                                                </div>
+                                            ))
+                                    ) : (
+                                        <p className="text-muted">
+                                            Aún no tienes partidas registradas.
+                                        </p>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
-                        {/* Descripcion que quieras poner */}
-                        <h5 className="mt-4 text-primary">Descripcion personalizada</h5>
+                        {/* Descripción personalizada */}
+                        <h5 className="mt-4 text-primary">Descripción personalizada</h5>
                         <div className="UserInfo">
                             <textarea
                                 className="bg-dark text-light w-100 mt-2 border-light text-light"
@@ -121,8 +152,12 @@ export const Profile = () => {
                                 placeholder="Escribe aquí lo que quieras que los demás vean"
                             ></textarea>
                         </div>
+
+                        {/* Botón logout */}
                         <div className="d-flex justify-content-around gap-5 mt-3">
-                            <button className="btn btn-primary" onClick={handleLogout}>LogOut</button>
+                            <button className="btn btn-primary" onClick={handleLogout}>
+                                LogOut
+                            </button>
                         </div>
                     </div>
                 </div>
