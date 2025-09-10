@@ -1,6 +1,17 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Profile = () => {
+
+    const navigate = useNavigate();
+    const { store, dispatch } = useGlobalReducer();
+
+     const handleLogout = () => {
+        sessionStorage.removeItem("token"); 
+        alert("Has cerrado sesión.");
+        navigate("/login"); }
+
     return (
         <div className="container py-5">
             <div className="row justify-content-center">
@@ -95,7 +106,7 @@ export const Profile = () => {
                             ></textarea>
                         </div>
                         <div className="d-flex justify-content-around gap-5 mt-3">
-                            <button className="btn btn-primary">LogOut</button>
+                            <button className="btn btn-primary" onClick={handleLogout}>LogOut</button>
                             <button className="btn btn-danger ">Eliminar cuenta</button>
                         </div>
                     </div>
