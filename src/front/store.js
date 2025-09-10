@@ -2,7 +2,7 @@ export const initialStore = () => {
   return {
     user: null,
     token: null,
-    isRegistered: true,
+    isRegistered: false,
   };
 };
 

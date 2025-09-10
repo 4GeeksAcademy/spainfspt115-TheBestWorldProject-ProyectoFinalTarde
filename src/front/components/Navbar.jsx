@@ -1,12 +1,14 @@
 import { Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 // Barra de navegación principal
 export const Navbar = () => {
+	const { store, dispatch } = useGlobalReducer();
 	return (
 		<>
 			<nav className="navbar navbar-expand-lg bg-white border border-dark rounded px-3 fixed-top">
 				<div className="container-fluid">
-					
+
 					{/* Logo redondo con enlace al home */}
 					<div
 						className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
@@ -78,9 +80,11 @@ export const Navbar = () => {
 							SignUp
 						</Link>
 					</div>
-					<Link to="/profile" className="btn btn-primary mx-2">
-						Profile
-					</Link>
+					{store?.isRegistered && (
+						<Link to="/profile" className="btn btn-primary mx-2">
+							Profile
+						</Link>
+					)}
 				</div>
 			</nav>
 
