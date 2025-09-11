@@ -262,6 +262,6 @@ def get_word(word_id):
 
     return jsonify(response_body), 200
 
-    if not word:
-        return jsonify({"msg": f"La palabra con id {word_id} no existe"}), 404
-    return jsonify(word.serialize()), 200
+    # if not word:
+    #     return jsonify({"msg": f"La palabra con id {word_id} no existe"}), 404
+    # return jsonify(word.serialize()), 200

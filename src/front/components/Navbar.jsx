@@ -17,17 +17,14 @@ export const Navbar = () => {
 	return (
 		<>
 			<nav className="navbar navbar-expand-lg border border-dark rounded px-3 fixed-top border"
-				style={{
-					backgroundColor: store?.mode === "dark" ? "#212529" : "#ffffff",
-					border: store?.mode === "dark" ? "1px solid white" : "1px solid black"
-				}}>
+				style={{ backgroundColor: store?.mode === "dark" ? "#212529" : "#ffffff" }}>
 				<div className="container-fluid">
 
 					{/* Logo */}
 					<div className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
 						style={{ height: "50px", width: "50px" }}>
 						<Link to="/" className="text-decoration-none"
-							style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}>
+							style={{ color: store?.mode === "dark" ? "#fff" : "#000", }}>
 							LOGO
 						</Link>
 					</div>
@@ -57,19 +54,38 @@ export const Navbar = () => {
 
 							{/* Dropdown modo */}
 							<li className="nav-item dropdown">
-								<a className="nav-link dropdown-toggle fw-bold"
+								<a
+									className="nav-link dropdown-toggle fw-bold"
 									style={{ color: store?.mode === "dark" ? "#fff" : "#343131ff" }}
-									href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+									href="#"
+									role="button"
+									data-bs-toggle="dropdown"
+									aria-expanded="false"
+								>
 									Mode
 								</a>
-								<ul className="dropdown-menu">
+								<ul
+									className="dropdown-menu"
+									style={{
+										backgroundColor: store?.mode === "dark" ? "#343a40" : "#ffffff",
+										color: store?.mode === "dark" ? "#fff" : "#000",
+									}}
+								>
 									<li>
-										<button className="dropdown-item" onClick={() => dispatch({ type: "SET_MODE", payload: "light" })}>
+										<button
+											className="dropdown-item"
+											onClick={() => dispatch({ type: "SET_MODE", payload: "light" })}
+											style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
+										>
 											Light
 										</button>
 									</li>
 									<li>
-										<button className="dropdown-item" onClick={() => dispatch({ type: "SET_MODE", payload: "dark" })}>
+										<button
+											className="dropdown-item"
+											onClick={() => dispatch({ type: "SET_MODE", payload: "dark" })}
+											style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
+										>
 											Dark
 										</button>
 									</li>
