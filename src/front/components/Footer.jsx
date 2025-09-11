@@ -93,7 +93,7 @@ export const Footer = () => {
                     className="mb-0 fw-bold"
                     style={{ color: store?.mode === "dark" ? "#fff" : "#343131ff" }}
                 >
-                    © {new Date().getFullYear()} Mi Proyecto
+                    © 2025 Mi Proyecto
                 </p>
             </div>
 
