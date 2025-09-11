@@ -16,8 +16,11 @@ export const Navbar = () => {
 
 	return (
 		<>
-			<nav className="navbar navbar-expand-lg border border-dark rounded px-3 fixed-top"
-				style={{ backgroundColor: store?.mode === "dark" ? "#212529" : "#ffffff" }}>
+			<nav className="navbar navbar-expand-lg border border-dark rounded px-3 fixed-top border"
+				style={{
+					backgroundColor: store?.mode === "dark" ? "#212529" : "#ffffff",
+					border: store?.mode === "dark" ? "1px solid white" : "1px solid black"
+				}}>
 				<div className="container-fluid">
 
 					{/* Logo */}

@@ -72,7 +72,7 @@ export const Profile = () => {
                                         "Eres un máquina, ni una has fallado"}
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
-                                    <strong>Ratio %:</strong>{" "}
+                                    <strong>Ratio :</strong>{" "}
                                     {store?.user?.average_precision || "0%"}
                                 </li>
                             </ul>
@@ -119,7 +119,7 @@ export const Profile = () => {
                                                 </div>
                                             ))
                                     ) : (
-                                        <p className="text-muted">
+                                        <p className="text-danger mt-2">
                                             Aún no tienes partidas registradas.
                                         </p>
                                     )}
