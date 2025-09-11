@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import logo from "../assets/logo.jpg";
 
 export const Navbar = () => {
 	const { store, dispatch } = useGlobalReducer();
@@ -21,11 +22,16 @@ export const Navbar = () => {
 				<div className="container-fluid">
 
 					{/* Logo */}
-					<div className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
-						style={{ height: "50px", width: "50px" }}>
-						<Link to="/" className="text-decoration-none"
-							style={{ color: store?.mode === "dark" ? "#fff" : "#000", }}>
-							LOGO
+					<div
+						className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
+						style={{ height: "80px", width: "80px", overflow: "hidden" }}
+					>
+						<Link to="/" className="text-decoration-none">
+							<img
+								src={logo}
+								alt="Logo"
+								style={{ height: "100%", width: "100%", objectFit: "cover" }}
+							/>
 						</Link>
 					</div>
 
