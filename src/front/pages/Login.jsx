@@ -88,4 +88,3 @@ export const Login = () => {
     </div>
   );
 };
-console.log(import.meta.env.VITE_BACKEND_URL)

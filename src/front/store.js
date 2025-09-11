@@ -1,4 +1,14 @@
 export const initialStore = () => {
+  const token = localStorage.getItem("token");
+
+  if (token){
+  return {
+    user: null,
+    token: null,
+    isRegistered: true,
+    mode: "light",
+  };
+};
   return {
     user: null,
     token: null,
