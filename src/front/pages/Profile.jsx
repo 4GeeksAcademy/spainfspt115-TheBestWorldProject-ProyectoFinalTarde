@@ -10,7 +10,7 @@ export const Profile = () => {
     useEffect(() => {
 
         const token = localStorage.getItem("token");
-        
+
         if (!token) {
             alert("Acceso denegado. Por favor, inicia sesión.");
 
@@ -21,9 +21,9 @@ export const Profile = () => {
         }
     }, [store.isRegistered, navigate]);
 
-     const handleLogout = () => {
+    const handleLogout = () => {
         localStorage.removeItem("token");
-        dispatch({ type: "logout" }); 
+        dispatch({ type: "logout" });
         alert("Has cerrado sesión.");
         navigate("/");
     };
@@ -61,11 +61,19 @@ export const Profile = () => {
                                     {store?.user?.email || "notengo@email.net"}
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
-                                    <strong>Ubicación:</strong> Ciudad, País
+                                    <strong>Ubicación:</strong>{" "}
+                                    {store?.user?.city && store?.user?.country
+                                        ? `${store.user.city}, ${store.user.country}`
+                                        : "Ubicación no registrada"}
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
                                     <strong>Miembro desde:</strong>{" "}
-                                    {store?.user?.created_at || "No he nacido aún"}
+                                    {store?.user?.created_at
+                                        ? new Date(store.user.created_at).toLocaleDateString(
+                                            "es-ES",
+                                            { year: "numeric", month: "long", day: "numeric" }
+                                        )
+                                        : "No registrado"}
                                 </li>
                             </ul>
                         </div>
@@ -157,6 +165,12 @@ export const Profile = () => {
                         <div className="d-flex justify-content-around gap-5 mt-3">
                             <button className="btn btn-primary" onClick={handleLogout}>
                                 LogOut
+                            </button>
+                             <button
+                                className="btn btn-warning"
+                                onClick={() => navigate("/edit-profile")}
+                            >
+                                Editar Perfil
                             </button>
                         </div>
                     </div>
