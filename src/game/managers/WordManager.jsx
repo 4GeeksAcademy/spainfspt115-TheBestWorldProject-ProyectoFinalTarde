@@ -60,7 +60,7 @@ export function renderWord(scene, wordGroup, currentWord, typed) {
 }
 
 // --- mueve la palabra hacia abajo ---
-export function moveWord(scene, speed = 1.75) {
+export function moveWord(scene, speed = 1.00) {
   if (!scene.wordGroup) return;
   const { height } = scene.sys.game.config;
 

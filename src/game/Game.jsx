@@ -10,20 +10,46 @@ export default function Game() {
   useEffect(() => {
     const game = new Phaser.Game({
       type: Phaser.AUTO,
-      width: 600,
-      height: 800,
       backgroundColor: "#222",
       parent: "game-container",
       scene: [PreloadScene, MenuScene, SettingsScene, GameScene, GameOverScene],
       dom: { createContainer: true },
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      },
+      fps: {
+        target: 60,
+        forceSetTimeOut: true,
+      },
       settings: {
-        bgMusicVolume: 1 ,
+        bgMusicVolume: 1,
         bgMusicLoop: true,
       }
     });
 
-    return () => game.destroy(true);
+    const resize = () => {
+      game.scale.resize(window.innerWidth, window.innerHeight);
+    
+    }
+
+    window.addEventListener("resize", resize);
+
+    return () => {
+      window.removeEventListener("resize", resize);  
+      game.destroy(true);
+
+    }
   }, []);
 
-  return <div id="game-container" style={{ width: 600, height: 800, margin: "auto" }} />;
+  return (
+    <div
+      className="container-fluid p-0 m-0 d-flex justify-content-center align-items-center overflow-hidden"
+      style={{ height: "100vh", width: "100vw" }}
+    >
+      <div id="game-container" className="w-100 h-100" />
+    </div>
+  );
 }
