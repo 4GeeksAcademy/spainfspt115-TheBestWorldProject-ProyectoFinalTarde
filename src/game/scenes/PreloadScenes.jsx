@@ -3,6 +3,7 @@ import bgImg from "../assets/bg.png";
 import bitchesMusic from "../assets/Bitches.mp3";
 import startBtn from "../assets/StartBtn.png";
 import resetBtn from "../assets/ResetBtn.png";
+import { loadWordsFromAPI } from "../managers/WordManager";
 
 export default class PreloadScene extends Phaser.Scene {
   constructor() {
@@ -16,7 +17,9 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image("resetBtn", resetBtn);
   }
 
-  create() {
+  async create() {
+    await loadWordsFromAPI();
+    
     this.scene.start("MenuScene");
   }
 }

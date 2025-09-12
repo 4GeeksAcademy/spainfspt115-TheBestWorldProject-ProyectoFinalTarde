@@ -20,6 +20,12 @@ export default function Game() {
         width: window.innerWidth,
         height: window.innerHeight,
       },
+      physics: {
+        default: "arcade",
+        arcade: {
+          debug: true,
+        },
+      },
       fps: {
         target: 60,
         forceSetTimeOut: true,

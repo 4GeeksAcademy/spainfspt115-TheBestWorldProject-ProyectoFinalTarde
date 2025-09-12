@@ -3,12 +3,22 @@ import Phaser from "phaser";
 // --- temblor de letra para indicar error ---
 export function shakeLetter(scene, letter) {
   if (!letter) return;
+
+  // matar tween anterior sobre ese objeto para evitar solapamientos
+  scene.tweens.killTweensOf(letter);
+
+  // tweenear la propiedad 'shakeOffset' del objeto letter
   scene.tweens.add({
     targets: letter,
-    x: letter.x + 4,
+    shakeOffset: 8,    // desplazamiento horizontal
+    duration: 80,
     yoyo: true,
     repeat: 2,
-    duration: 50,
+    ease: "Sine.easeInOut",
+    onComplete: () => {
+      // reset seguro
+      letter.shakeOffset = 0;
+    }
   });
 }
 
@@ -64,6 +74,8 @@ export function explodeWord(scene, wordGroup) {
 
 // --- efecto para el score al sumar puntos ---
 export function animateScore(scene) {
+  if (!scene.textScore) return;
+
   scene.tweens.add({
     targets: scene.textScore,
     scale: 1.3,

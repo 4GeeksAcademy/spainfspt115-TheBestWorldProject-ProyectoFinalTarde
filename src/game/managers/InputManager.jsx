@@ -1,64 +1,127 @@
-import { renderWord, createWord } from "./WordManager";
-import { shakeLetter, explodeWord, animateScore, floatingScore } from "./Effects";
+import { Scene } from "phaser";
+import { shakeLetter, animateScore, floatingScore } from "./Effects";
+import { launchProjectiles } from "./ProjectileManager";
 
 export function handleInput(event, scene) {
     if (!scene.isPlaying) return;
 
     const key = event.key;
 
-    // --- backspace: borrar letra ---
+    // --- backspace ---
     if (key === "Backspace") {
-        if (scene.typed.length > 0) {
-            scene.typed = scene.typed.slice(0, -1);
-            if (scene.locked && scene.typed.length <= scene.errorIndex) {
-                scene.locked = false;
-                scene.errorIndex = -1;
+        if (scene.activeEnemy) {
+            let typed = scene.activeEnemy.getData("typed") || "";
+            typed = typed.slice(0, -1);
+            scene.activeEnemy.setData("typed", typed);
+            renderEnemyWord(scene.activeEnemy.getData("word"), typed, scene.activeEnemy.getData("wordLetters"));
+
+            // si ya no queda nada escrito, liberar enemigo activo
+            if (typed.length === 0) {
+                clearActiveEnemy(scene);
             }
-            renderWord(scene, scene.wordGroup, scene.currentWord, scene.typed);
         }
         return;
     }
-
-    // ignorar si ya completamos la palabra o estamos bloqueados
-    if (scene.typed.length >= scene.currentWord.length || scene.locked) return;
 
     // aceptar solo letras
     if (!/^[a-zñ]$/i.test(key)) return;
 
-    const nextChar = key.toLowerCase();
-    const newTyped = scene.typed + nextChar;
+    // si no hay enemigo activo, elegir uno cuyo word comience con esa letra
+    if (!scene.activeEnemy) {
+        const enemies = scene.enemies.getChildren()
+        .filter( enemy => enemy.active && enemy.getData("pendingProjectiles") === 0 )
+        .filter( enemy => isEnemyOnScreen(scene, enemy));
+
+        const candidate = enemies.find(enemy => enemy.getData("word").startsWith(key.toLowerCase()));
+        if (!candidate) return;
+
+        scene.activeEnemy = candidate;
+        highlightEnemy(scene.activeEnemy, true);
+    }
+
+    const enemy = scene.activeEnemy;
+    const word = enemy.getData("word");
+    let typed = enemy.getData("typed") || "";
+    const letters = enemy.getData("wordLetters") || [];
+
+    const newTyped = typed + key.toLowerCase();
 
     // letra incorrecta
-    if (!scene.currentWord.startsWith(newTyped)) {
-        scene.locked = true;
-        scene.errorIndex = newTyped.length - 1;
-        scene.typed = newTyped;
-        renderWord(scene, scene.wordGroup, scene.currentWord, scene.typed);
-        shakeLetter(scene, scene.wordGroup.getChildren()[scene.errorIndex]);
+    if (!word.startsWith(newTyped)) {
+        if (letters[typed.length]) {
+            shakeLetter(scene, letters[typed.length]);
+            letters[typed.length].setStyle({ fill: "#f00" });
+        } 
         return;
     }
 
     // letra correcta
-    scene.typed = newTyped;
-    renderWord(scene, scene.wordGroup, scene.currentWord, scene.typed);
+    typed = newTyped;
+    enemy.setData("typed", typed);
+    renderEnemyWord(word, typed, letters);
 
-    // palabra completa = animacion explosion palabra + animacion de puntuacion ---
-    // ------------------ + animacion de score
-    if (scene.typed === scene.currentWord) {
-        scene.score += 10;
+    // palabra completa
+    if (typed === word) {
+        letters.forEach(letter => letter.destroy());
+        enemy.setData("typed", "");
+        enemy.setData("wordLetters", []);
+
+        const midLetter = letters[Math.floor(letters.length / 2)];
+        if (midLetter) floatingScore(scene, midLetter.x, midLetter.y, 10);
+
+        let points = word.length * 10;
+        let currentScore = scene.player.getData("score") || 0;
+        scene.player.setData("score", currentScore + points);
+
         animateScore(scene);
 
-        const letters = scene.wordGroup.getChildren();
-        if (letters.length > 0) {
-            // posicion de los puntos
-            const midLetter = letters[Math.floor(letters.length / 2)];
-            floatingScore(scene, midLetter.x, midLetter.y, 10);
+        launchProjectiles(scene, enemy, word.length);
+
+        clearActiveEnemy(scene); // liberar enemigo despues de completarlo
+    }
+}
+
+// --- limpiar enemigo activo
+export function clearActiveEnemy (scene) {
+    if (scene.activeEnemy) {
+        highlightEnemy(scene.activeEnemy, false);
+        scene.activeEnemy = null;
+    }
+}
+
+// --- resaltar enemigo activo
+function highlightEnemy (enemy, active)
+{
+    if (!enemy) return;
+    if (active) {
+        enemy.setStrokeStyle(3, 0xffff00);
+    } else {
+        enemy.setStrokeStyle();
+    }
+}
+
+// --- renderizado de letras de las palabras en el enemigo
+function renderEnemyWord (word, typed, letters) {
+    if (!letters || letters.length === 0) return;
+
+    for (let i = 0; i < word.length; i++)
+    {
+        let color = "#fff";
+        if (i < typed.length) {
+            color = typed[i] === word[i] ? "#0f0" : "#f00";
         }
 
-        explodeWord(scene, scene.wordGroup);
-
-        scene.time.delayedCall(500, () => {
-            createWord(scene, scene.words);
-        });
+        if (letters[i]) letters[i].setStyle({ fill: color });
     }
+}
+
+function isEnemyOnScreen (scene, enemy) {
+    const padding = 20;
+
+    return (
+        enemy.x > -padding &&
+        enemy.x < scene.width + padding &&
+        enemy.y > -padding &&
+        enemy.y < scene.height + padding
+    );
 }
