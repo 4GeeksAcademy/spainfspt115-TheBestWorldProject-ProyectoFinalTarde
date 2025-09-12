@@ -1,6 +1,7 @@
 import { Scene } from "phaser";
 import { shakeLetter, animateScore, floatingScore } from "./Effects";
 import { launchProjectiles } from "./ProjectileManager";
+import { updateSpeedEnemy } from "./EnemyManager";
 
 export function handleInput(event, scene) {
     if (!scene.isPlaying) return;
@@ -32,10 +33,17 @@ export function handleInput(event, scene) {
         .filter( enemy => enemy.active && enemy.getData("pendingProjectiles") === 0 )
         .filter( enemy => isEnemyOnScreen(scene, enemy));
 
-        const candidate = enemies.find(enemy => enemy.getData("word").startsWith(key.toLowerCase()));
-        if (!candidate) return;
+        const candidates = enemies.filter(enemy => enemy.getData("word").startsWith(key.toLowerCase()));
+        if (candidates.length === 0) return;
 
-        scene.activeEnemy = candidate;
+        const player = scene.player;
+        const closest = candidates.reduce((prev, curr) => {
+            const distPrev = Phaser.Math.Distance.Between(player.x, player.y, prev.x, prev.y);
+            const distCurr = Phaser.Math.Distance.Between(player.x, player.y, curr.x, curr.y);
+            return distCurr < distPrev ? curr : prev;
+        });
+
+        scene.activeEnemy = closest;
         highlightEnemy(scene.activeEnemy, true);
     }
 
@@ -73,10 +81,10 @@ export function handleInput(event, scene) {
         let currentScore = scene.player.getData("score") || 0;
         scene.player.setData("score", currentScore + points);
 
-        animateScore(scene);
-
-        launchProjectiles(scene, enemy, word.length);
-
+        // ---PROCESOS DESPUES DEL COMPLETAR PALABRA ---
+        animateScore(scene); // animacion del score
+        updateSpeedEnemy(scene, enemy, 40); // reducir la velocidad al completar palabra
+        launchProjectiles(scene, enemy, word.length); // lanzar proyectiles
         clearActiveEnemy(scene); // liberar enemigo despues de completarlo
     }
 }
@@ -93,6 +101,7 @@ export function clearActiveEnemy (scene) {
 function highlightEnemy (enemy, active)
 {
     if (!enemy) return;
+    
     if (active) {
         enemy.setStrokeStyle(3, 0xffff00);
     } else {

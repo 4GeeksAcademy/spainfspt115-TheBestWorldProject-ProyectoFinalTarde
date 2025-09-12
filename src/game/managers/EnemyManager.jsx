@@ -2,7 +2,7 @@ import { getRandomWord } from "./WordManager";
 
 const letterSpacing = 24;
 
-export function spawnEnemy(scene, words) {
+export function spawnEnemy(scene, speed = 80) {
     const { width, height } = scene.sys.game.config;
     
     // spawn aleatorio:
@@ -51,7 +51,7 @@ export function spawnEnemy(scene, words) {
     }
 
     enemy.setData("wordLetters", lettersArray);
-    scene.physics.moveToObject(enemy, scene.player, 80);
+    scene.physics.moveToObject(enemy, scene.player, speed);
 
     return enemy;
 }
@@ -69,4 +69,8 @@ export function updateEnemyWordPosition (enemy) {
         letter.y = baseY;
     });
 
+}
+
+export function updateSpeedEnemy (scene, enemy, speed = 80) {
+    scene.physics.moveToObject(enemy, scene.player, speed);
 }
