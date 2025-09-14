@@ -1,10 +1,19 @@
 import React from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { useNavigate, Link } from "react-router-dom"; // 👈 si usas react-router
 import "../index.css";
 
 // Componente Footer
 export const Footer = () => {
-    const { store } = useGlobalReducer();
+    const { store, dispatch } = useGlobalReducer();
+    const navigate = useNavigate();
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        dispatch({ type: "logout" });
+        alert("Has cerrado sesión.");
+        navigate("/");
+    };
 
     return (
         <footer
@@ -27,8 +36,8 @@ export const Footer = () => {
                         style={{ color: store?.mode === "dark" ? "#fff" : "#343131ff" }}
                     >
                         <div className="d-flex flex-column">
-                            <span className="fw-bold">User Name</span>
-                            <span className="fw-bold">Email@example.com</span>
+                            <span className="fw-bold">{store?.user?.username || null}</span>
+                            <span className="fw-bold">{store?.user?.email || "notengo@email.net"}</span>
                         </div>
                     </a>
 
@@ -42,31 +51,15 @@ export const Footer = () => {
                         }}
                     >
                         <li>
-                            <a
-                                className="dropdown-item"
-                                href="#"
-                                style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
-                            >
-                                <i className="bi bi-star me-2"></i>Upgrade to Pro
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                className="dropdown-item"
-                                href="#"
-                                style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
-                            >
-                                <i className="bi bi-person-circle me-2"></i>Account
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                className="dropdown-item"
-                                href="#"
-                                style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
-                            >
-                                <i className="bi bi-credit-card me-2"></i>Billing
-                            </a>
+                            <li>
+                                <Link
+                                    to="/profile"
+                                    className="dropdown-item"
+                                    style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
+                                >
+                                    <i className="bi bi-person-circle me-2"></i>Profile
+                                </Link>
+                            </li>
                         </li>
                         <li>
                             <a
@@ -79,9 +72,12 @@ export const Footer = () => {
                         </li>
                         <li className="dropdown-divider"></li>
                         <li>
-                            <a className="dropdown-item text-danger" href="#">
-                                <i className="bi bi-box-arrow-right me-2"></i>Log out
-                            </a>
+                            <button
+                                className="dropdown-item text-danger"
+                                onClick={handleLogout}
+                            >
+                                LogOut
+                            </button>
                         </li>
                     </ul>
                 </div>
@@ -89,10 +85,7 @@ export const Footer = () => {
 
             {/* Texto de copyright */}
             <div>
-                <p
-                    className="mb-0 fw-bold"
-                    style={{ color: store?.mode === "dark" ? "#fff" : "#343131ff" }}
-                >
+                <p className="mb-0 fw-bold">
                     © 2025 Mi Proyecto
                 </p>
             </div>
