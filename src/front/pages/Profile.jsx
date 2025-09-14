@@ -166,7 +166,7 @@ export const Profile = () => {
                             <button className="btn btn-primary" onClick={handleLogout}>
                                 LogOut
                             </button>
-                             <button
+                            <button
                                 className="btn btn-warning"
                                 onClick={() => navigate("/edit-profile")}
                             >

@@ -38,7 +38,7 @@ export const Navbar = () => {
 
 					{/* Botón hamburguesa */}
 					<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-						<span className="navbar-toggler-icon"></span>
+						<span className="navbar-toggler-icon">asdasd</span>
 					</button>
 
 					{/* Menú principal */}
