@@ -2,13 +2,11 @@ import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 
-
 export const Profile = () => {
     const navigate = useNavigate();
     const { store, dispatch } = useGlobalReducer();
 
     useEffect(() => {
-
         const token = localStorage.getItem("token");
 
         if (!token) {
@@ -19,7 +17,7 @@ export const Profile = () => {
             }
             navigate("/login");
         }
-    }, [store.isRegistered, navigate]);
+    }, [store.isRegistered, navigate, dispatch]);
 
     const handleLogout = () => {
         localStorage.removeItem("token");
@@ -36,13 +34,17 @@ export const Profile = () => {
                         className="card bg-dark text-light p-4 rounded-4 shadow-lg"
                         style={{ boxShadow: "0 0 80px rgba(255, 7, 7, 0.6)" }}
                     >
-                        {/* Foto */}
+                        {/* Foto de perfil */}
                         <div className="d-flex align-items-start">
-                            <div className="ratio ratio-1x1" style={{ maxWidth: "120px" }}>
+                            <div style={{ width: "120px", height: "120px" }}>
                                 <img
-                                    src="https://image.api.playstation.com/cdn/EP2097/CUSA00106_00/IC42y704aHKbO0sWS0WEkG9jCh8fCRey.png?w=440&thumb=false"
-                                    alt="Perfil"
-                                    className="w-100 h-100 rounded-circle object-fit-cover"
+                                    src={
+                                        store?.user?.avatar_url ||
+                                        "/src/front/assets/avatars/avatar1.png"
+                                    }
+                                    alt="Avatar"
+                                    className="rounded-circle object-fit-cover"
+                                    style={{ width: "100%", height: "100%" }}
                                 />
                             </div>
                         </div>
@@ -78,13 +80,14 @@ export const Profile = () => {
                             </ul>
                         </div>
 
-                        {/* Estadisticas */}
+                        {/* Estadísticas */}
                         <h5 className="mt-4 text-primary">Estadísticas</h5>
                         <div className="mt-0">
                             <ul className="list-group list-group-flush">
                                 <li className="list-group-item bg-dark text-light">
                                     <strong>Partidas jugadas:</strong>{" "}
-                                    {store?.user?.games?.length || "Todavía no has jugado, por qué no ?"}
+                                    {store?.user?.games?.length ||
+                                        "Todavía no has jugado, ¿por qué no?"}
                                 </li>
                                 <li className="list-group-item bg-dark text-light">
                                     <strong>Palabras correctas:</strong>{" "}
@@ -113,14 +116,11 @@ export const Profile = () => {
                                     {store?.user?.games && store.user.games.length > 0 ? (
                                         [...store.user.games]
                                             .sort(
-                                                (a, b) =>
-                                                    new Date(b.played_at) - new Date(a.played_at)
+                                                (a, b) => new Date(b.played_at) - new Date(a.played_at)
                                             )
                                             .map((game) => (
                                                 <div key={game.id_game}>
-                                                    <h5 className="card-title">
-                                                        Partida #{game.id_game}
-                                                    </h5>
+                                                    <h5 className="card-title">Partida #{game.id_game}</h5>
                                                     <p className="card-text">
                                                         Jugado el{" "}
                                                         {new Date(game.played_at).toLocaleDateString(
@@ -155,18 +155,18 @@ export const Profile = () => {
                         <h5 className="mt-4 text-primary">Descripción personalizada</h5>
                         <div className="UserInfo">
                             <textarea
-                                className="bg-dark text-light w-100 mt-2 border-light text-light"
+                                className="bg-dark text-light w-100 mt-2 border-light"
                                 rows="3"
                                 placeholder="Escribe aquí lo que quieras que los demás vean"
                             ></textarea>
                         </div>
 
-                        {/* Botón logout */}
+                        {/* Botones */}
                         <div className="d-flex justify-content-around gap-5 mt-3">
                             <button className="btn btn-primary" onClick={handleLogout}>
                                 LogOut
                             </button>
-                             <button
+                            <button
                                 className="btn btn-warning"
                                 onClick={() => navigate("/edit-profile")}
                             >

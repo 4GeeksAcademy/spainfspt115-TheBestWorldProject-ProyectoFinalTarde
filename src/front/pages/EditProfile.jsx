@@ -2,19 +2,53 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 
+// Avatares
+import avatar1 from "../assets/avatars/avatar1.png";
+import avatar2 from "../assets/avatars/avatar2.png";
+import avatar3 from "../assets/avatars/avatar3.png";
+import avatar4 from "../assets/avatars/avatar4.png";
+import avatar5 from "../assets/avatars/avatar5.png";
+import avatar6 from "../assets/avatars/avatar6.png";
+import avatar7 from "../assets/avatars/avatar7.png";
+import avatar8 from "../assets/avatars/avatar8.png";
+import avatar9 from "../assets/avatars/avatar9.png";
+import avatar10 from "../assets/avatars/avatar10.png";
+import avatar11 from "../assets/avatars/avatar11.png";
+import avatar12 from "../assets/avatars/avatar12.png";
+import avatar13 from "../assets/avatars/avatar13.png";
+import avatar14 from "../assets/avatars/avatar14.png";
+
 export const EditProfile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
 
-  // Inicializar los estados con la info del usuario logueado
-  const [username, setUsername] = useState(store?.user?.username || "");
-  const [email, setEmail] = useState(store?.user?.email || "");
+  // Estados
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [country, setCountry] = useState(store?.user?.country || "");
-  const [city, setCity] = useState(store?.user?.city || "");
+  const [avatar, setAvatar] = useState("");
   const [error, setError] = useState("");
 
-  // Redirigir si no hay token
+  // Avatares disponibles
+  const avatarOptions = [
+    avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7,
+    avatar8, avatar9, avatar10, avatar11, avatar12, avatar13, avatar14,
+  ];
+
+  // Cargar datos del usuario actual
+  useEffect(() => {
+    if (store?.user) {
+      setUsername(store.user.username || "");
+      setEmail(store.user.email || "");
+      setCountry(store.user.country || "");
+      setCity(store.user.city || "");
+      setAvatar(store.user.avatar_url || "");
+    }
+  }, [store.user]);
+
+  // Proteger acceso si no hay token
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -33,32 +67,26 @@ export const EditProfile = () => {
     }
 
     try {
-      const resp = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}api/user`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: "Bearer " + token,
-          },
-          body: JSON.stringify({
-            username,
-            email,
-            password: password || undefined, // si no escribe nada, no se cambia
-            country,
-            city,
-          }),
-        }
-      );
+      const resp = await fetch(`${import.meta.env.VITE_BACKEND_URL}api/user`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password: password || undefined,
+          country,
+          city,
+          avatar_url: avatar,
+        }),
+      });
 
       const data = await resp.json();
 
       if (resp.ok) {
-        // Actualizamos el estado global con los nuevos datos
-        dispatch({
-          type: "set_user",
-          payload: { user: data, token },
-        });
+        dispatch({ type: "set_user", payload: { user: data, token } });
         alert("Perfil actualizado correctamente");
         navigate("/profile");
       } else {
@@ -77,6 +105,31 @@ export const EditProfile = () => {
             <h2 className="mb-4 text-center">Editar Perfil</h2>
 
             <form onSubmit={handleUpdate}>
+              {/* Avatar arriba */}
+              <div className="mb-3 text-center">
+                <label className="form-label">Selecciona tu Avatar</label>
+                <div className="d-flex gap-3 flex-wrap justify-content-center">
+                  {avatarOptions.map((img, i) => (
+                    <img
+                      key={i}
+                      src={img}
+                      alt={`avatar${i + 1}`}
+                      className={`rounded-circle border ${
+                        avatar === img ? "border-primary border-3" : "border-light"
+                      }`}
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        cursor: "pointer",
+                        objectFit: "cover",
+                      }}
+                      onClick={() => setAvatar(img)}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              {/* Username */}
               <div className="mb-3">
                 <label className="form-label">Username</label>
                 <input
@@ -88,6 +141,7 @@ export const EditProfile = () => {
                 />
               </div>
 
+              {/* Email */}
               <div className="mb-3">
                 <label className="form-label">Email</label>
                 <input
@@ -99,6 +153,7 @@ export const EditProfile = () => {
                 />
               </div>
 
+              {/* Password */}
               <div className="mb-3">
                 <label className="form-label">Nueva contraseña</label>
                 <input
@@ -110,6 +165,7 @@ export const EditProfile = () => {
                 />
               </div>
 
+              {/* País */}
               <div className="mb-3">
                 <label className="form-label">País</label>
                 <input
@@ -117,9 +173,11 @@ export const EditProfile = () => {
                   className="form-control"
                   value={country}
                   onChange={(e) => setCountry(e.target.value)}
+                  placeholder="Escribe tu país"
                 />
               </div>
 
+              {/* Ciudad */}
               <div className="mb-3">
                 <label className="form-label">Ciudad</label>
                 <input
@@ -127,6 +185,7 @@ export const EditProfile = () => {
                   className="form-control"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
+                  placeholder="Escribe tu ciudad"
                 />
               </div>
 
