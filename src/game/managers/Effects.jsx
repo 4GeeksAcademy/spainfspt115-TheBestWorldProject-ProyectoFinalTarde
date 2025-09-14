@@ -72,27 +72,6 @@ export function explodeWord(scene, wordGroup) {
   });
 }
 
-// --- efecto para el score al sumar puntos ---
-export function animateScore(scene) {
-  if (!scene.textScore) return;
-
-  scene.tweens.add({
-    targets: scene.textScore,
-    scale: 1.3,
-    duration: 150,
-    yoyo: true,
-    ease: "Back.easeOut",
-  });
-
-  scene.tweens.add({
-    targets: scene.textScore,
-    alpha: 0.5,
-    duration: 100,
-    yoyo: true,
-    repeat: 1,
-  });
-}
-
 // --- texto flotante de "+puntos" ---
 export function floatingScore(scene, x, y, points = 10) {
   const floatText = scene.add.text(x, y, `+${points}`, {

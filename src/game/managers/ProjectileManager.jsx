@@ -39,6 +39,8 @@ function destroyEnemy (scene, enemy) {
     if (letters) letters.forEach(letter => letter.destroy());
 
     enemy.destroy();
-    scene.score += 10;
+
+    const currentScore = scene.player.getData("score") || 0;
+    scene.player.setData("score", currentScore);
 
 }

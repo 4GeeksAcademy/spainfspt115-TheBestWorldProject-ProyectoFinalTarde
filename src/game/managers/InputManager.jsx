@@ -1,5 +1,5 @@
 import { Scene } from "phaser";
-import { shakeLetter, animateScore, floatingScore } from "./Effects";
+import { shakeLetter, floatingScore } from "./Effects";
 import { launchProjectiles } from "./ProjectileManager";
 import { updateSpeedEnemy } from "./EnemyManager";
 
@@ -74,15 +74,16 @@ export function handleInput(event, scene) {
         enemy.setData("typed", "");
         enemy.setData("wordLetters", []);
 
-        const midLetter = letters[Math.floor(letters.length / 2)];
-        if (midLetter) floatingScore(scene, midLetter.x, midLetter.y, 10);
-
         let points = word.length * 10;
+
+        const midLetter = letters[Math.floor(letters.length / 2)];
+        if (midLetter) floatingScore(scene, midLetter.x, midLetter.y, points);
+
         let currentScore = scene.player.getData("score") || 0;
         scene.player.setData("score", currentScore + points);
 
         // ---PROCESOS DESPUES DEL COMPLETAR PALABRA ---
-        animateScore(scene); // animacion del score
+        scene.hud.updateScore(currentScore + points, true);
         updateSpeedEnemy(scene, enemy, 40); // reducir la velocidad al completar palabra
         launchProjectiles(scene, enemy, word.length); // lanzar proyectiles
         clearActiveEnemy(scene); // liberar enemigo despues de completarlo

@@ -16,6 +16,13 @@ export function createPlayer (scene, x, y) {
         return lives;
     };
 
+    player.addScore = function (points) {
+        let score = this.getData("score");
+        score += points;
+        this.setData("score", score);
+        return score;
+    };
+
     return player;
 
 }

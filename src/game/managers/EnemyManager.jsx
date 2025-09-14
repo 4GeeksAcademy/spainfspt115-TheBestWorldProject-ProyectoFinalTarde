@@ -6,17 +6,16 @@ export function spawnEnemy(scene, speed = 80) {
     const { width, height } = scene.sys.game.config;
     
     // spawn aleatorio:
-    // TOPSIDE = 0
-    // RIGHTSIDE = 1
-    // BOTTOMSIDE = 2
-    // LEFTSIDE = 3
-    const side = Phaser.Math.Between(0, 3);
+    // RIGHTSIDE = 0
+    // BOTTOMSIDE = 1
+    // LEFTSIDE = 2
+    const side = Phaser.Math.Between(0, 2);
+    const hudHeight = 80;
 
     let x, y;
-    if (side === 0) { x = Phaser.Math.Between(0, width); y = -50; }
-    if (side === 1) { y = Phaser.Math.Between(0, height); x = width + 50; }
-    if (side === 2) { x = Phaser.Math.Between(0, width); y = height + 50; }
-    if (side === 3) { y = Phaser.Math.Between(0, width); x = -50; }
+    if (side === 0) { y = Phaser.Math.Between(0, height); x = width + 50; }
+    if (side === 1) { x = Phaser.Math.Between(0, width); y = height + 50; }
+    if (side === 2) { y = Phaser.Math.Between(0, width); x = -50; }
 
     // PLACEHOLDER de enemigo, cambiar por sprite
     // scene.add.sprite(.......)
