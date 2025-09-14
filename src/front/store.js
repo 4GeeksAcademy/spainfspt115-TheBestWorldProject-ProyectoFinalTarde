@@ -4,7 +4,7 @@ export const initialStore = () => {
   if (token){
   return {
     user: null,
-    token: null,
+    token: token,
     isRegistered: true,
     mode: "light",
   };

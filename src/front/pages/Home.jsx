@@ -5,6 +5,8 @@ import { Play } from "../components/BotonPlay.jsx";
 import Game from "../../game/Game.jsx";
 
 export const Home = () => {
+	
+	const { store } = useGlobalReducer()
 
 	return (
 		<>
@@ -15,11 +17,13 @@ export const Home = () => {
 					<div className="col-12 col-md-8 col-lg-6">
 						<div className="card shadow-sm">
 							<div className="card-body">
-								<h3 className="card-title">User Name</h3>
+								<h3 className="card-title">
+									{store.isRegistered ? store.user?.username : "Invitado"}
+								</h3>
 								<p className="card-text">
 									Si te registras podrás obtener varias bonificaciones y podrás acceder a tus estadísticas
 								</p>
-								<a href="#" className="btn btn-primary w-100">
+								<a>
 									<Play />
 								</a>
 

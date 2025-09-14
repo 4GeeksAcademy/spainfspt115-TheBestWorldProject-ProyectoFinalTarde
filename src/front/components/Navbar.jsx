@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import React from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import logo from "../assets/logo.jpg";
+import { Play } from "./BotonPlay";
 
 export const Navbar = () => {
 	const { store, dispatch } = useGlobalReducer();
@@ -44,7 +45,8 @@ export const Navbar = () => {
 					<div className="collapse navbar-collapse justify-content-center" id="navbarNav">
 						<ul className="navbar-nav gap-4">
 							<li className="nav-item">
-								<a className="nav-link fw-bold" style={{ color: store?.mode === "dark" ? "#fff" : "#000" }} href="#">Play</a>
+								<a className="nav-link fw-bold" style={{ color: store?.mode === "dark" ? "#fff" : "#000" }} href="#">
+									Play</a>
 							</li>
 							<li className="nav-item">
 								<Link to="/about" className="nav-link fw-bold" style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}>

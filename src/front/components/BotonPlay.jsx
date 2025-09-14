@@ -1,14 +1,21 @@
 import { useState } from "react";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+import { useNavigate } from "react-router-dom";
 
-export const Play = ({ store }) => {
+
+export const Play = () => {
+
+    const { store } = useGlobalReducer();
+    const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
 
     const handleClick = () => {
-        // solo abre el modal si NO está registrado
-        if (!store.isRegistered) {
-            setShowModal(true);
-        }
-    };
+        if (store.isRegistered) {
+            navigate("/game");
+    } else {
+        setShowModal(true);
+    }}
+
 
     return (
         <div>
