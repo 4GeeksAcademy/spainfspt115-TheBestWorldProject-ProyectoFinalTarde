@@ -12,9 +12,10 @@ export const Play = () => {
     const handleClick = () => {
         if (store.isRegistered) {
             navigate("/game");
-    } else {
-        setShowModal(true);
-    }}
+        } else {
+            setShowModal(true);
+        }
+    }
 
 
     return (
@@ -28,7 +29,7 @@ export const Play = () => {
                     <div className="modal-dialog">
                         <div className="modal-content">
                             <div className="modal-header">
-                                <h5 className="modal-title">Modal title</h5>
+                                <h5 className="modal-title">¡Juega Ahora!</h5>
                                 <button
                                     type="button"
                                     className="btn-close"
@@ -37,18 +38,27 @@ export const Play = () => {
                                 ></button>
                             </div>
                             <div className="modal-body">
-                                <p>Modal body text goes here.</p>
+                                <p>Elige como quieres continuar para empezar a jugar.</p>
                             </div>
                             <div className="modal-footer">
                                 <button
                                     type="button"
                                     className="btn btn-secondary"
-                                    onClick={() => setShowModal(false)}
+                                    onClick={() => {
+                                        setShowModal(false)
+                                        navigate("/game")
+                                    }}
                                 >
-                                    Close
+                                    Jugar Como Invitado
                                 </button>
-                                <button type="button" className="btn btn-primary">
-                                    Save changes
+                                <button
+                                    type="button"
+                                    className="btn btn-primary"
+                                    onClick={() => {
+                                        setShowModal(false);
+                                        navigate("/login");
+                                    }}>
+                                    Iniciar Sesión
                                 </button>
                             </div>
                         </div>
