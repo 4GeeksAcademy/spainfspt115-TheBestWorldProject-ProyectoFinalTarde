@@ -123,6 +123,10 @@ def update_user():
     if "password" in data:
         user.set_password(data["password"])
 
+    if "avatar_url" in data:
+        user.avatar_url = data["avatar_url"]
+
+
     db.session.commit()
     return jsonify(user.serialize()), 200
 
