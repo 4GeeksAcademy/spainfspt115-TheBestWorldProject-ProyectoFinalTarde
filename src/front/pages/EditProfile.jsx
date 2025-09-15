@@ -192,15 +192,15 @@ export const EditProfile = () => {
               {error && <div className="alert alert-danger">{error}</div>}
 
               <div className="d-flex justify-content-between">
-                <button type="submit" className="btn btn-success">
-                  Guardar cambios
-                </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
                   onClick={() => navigate("/profile")}
                 >
                   Cancelar
+                </button>
+                <button type="submit" className="btn btn-success">
+                  Guardar cambios
                 </button>
               </div>
             </form>

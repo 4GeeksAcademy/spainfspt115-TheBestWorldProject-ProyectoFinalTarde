@@ -1,6 +1,6 @@
 import React from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import { useNavigate, Link } from "react-router-dom"; // 👈 si usas react-router
+import { useNavigate, Link } from "react-router-dom";
 import "../index.css";
 
 // Componente Footer
