@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 import { clearActiveEnemy, handleInput } from "../managers/InputManager";
 import { animateScaleText } from "../managers/Effects";
-import { spawnEnemy, updateEnemyWordPosition } from "../managers/EnemyManager";
+import { spawnEnemy, updateEnemyWordPosition, enemyAttack } from "../managers/EnemyManager";
 import { createPlayer } from "../managers/PlayerManager";
 import { createHUD } from "../managers/HUDmanager";
 import { createAnimations } from "../managers/AnimationManager";
@@ -15,18 +15,18 @@ export default class GameScene extends Phaser.Scene {
     this.width = this.sys.game.config.width;
     this.height = this.sys.game.config.height;
 
-    // === LEER AJUSTES DEL REGISTRO ===
+    // === AJUSTES REGISTRO ===
     const showScore = this.registry.get("showScore") ?? true;
     const musicOn = this.registry.get("musicOn") ?? true;
     const musicVolume = this.registry.get("musicVolume") ?? 1;
 
-    this.isPlaying = false; // el juego inicia bloqueado
+    this.isPlaying = false;
 
     // === grupos ===
     this.enemies = this.physics.add.group();
     this.projectiles = this.physics.add.group();
 
-    // === MUSICA DE FONDO ===
+    // === MUSICA ===
     let bgMusic = this.sound.get("bgMusic");
     if (!bgMusic) {
       bgMusic = this.sound.add("bgMusic", {
@@ -48,7 +48,7 @@ export default class GameScene extends Phaser.Scene {
     this.hud = createHUD(this, 3);
     this.hud.textScore.setVisible(showScore);
 
-    // input teclado
+    // === INPUT ===
     this.keyListener = this.input.keyboard.on("keydown", (e) =>
       handleInput(e, this)
     );
@@ -70,36 +70,36 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-startCountdown() {
-  let count = 3;
-  const countdownText = this.add
-    .text(this.width / 2, this.height / 2, count, {
-      font: "80px Arial Black",
-      fill: "#ff0",
-      stroke: "#000",
-      strokeThickness: 6,
-    })
-    .setOrigin(0.5);
+  startCountdown() {
+    let count = 3;
+    const countdownText = this.add
+      .text(this.width / 2, this.height / 2, count, {
+        font: "80px Arial Black",
+        fill: "#ff0",
+        stroke: "#000",
+        strokeThickness: 6,
+      })
+      .setOrigin(0.5);
 
-  this.countdownEvent = this.time.addEvent({
-    delay: 1000,
-    loop: true,
-    callback: () => {
-      count--;
-      if (count > 0) {
-        countdownText.setText(count);
-      } else {
-        countdownText.setText("YA!");
-        this.time.delayedCall(800, () => {
-          countdownText.destroy();
-          this.startGame();
-        });
-        this.countdownEvent.remove();
-      }
-      animateScaleText(this, countdownText);
-    },
-  });
-}
+    this.countdownEvent = this.time.addEvent({
+      delay: 1000,
+      loop: true,
+      callback: () => {
+        count--;
+        if (count > 0) {
+          countdownText.setText(count);
+        } else {
+          countdownText.setText("YA!");
+          this.time.delayedCall(800, () => {
+            countdownText.destroy();
+            this.startGame();
+          });
+          this.countdownEvent.remove();
+        }
+        animateScaleText(this, countdownText);
+      },
+    });
+  }
 
   async startGame() {
     this.isPlaying = true;
@@ -110,7 +110,7 @@ startCountdown() {
       this.handlePlayerHit(enemy);
     });
 
-    // cargar vidas
+    // vidas
     await this.hud.fillHearts(this);
 
     // primer enemigo
@@ -127,31 +127,22 @@ startCountdown() {
   }
 
   handlePlayerHit(enemy) {
-    if (!enemy.active) return;
-
-    const letters = enemy.getData("wordLetters");
-    if (letters) letters.forEach((letter) => letter.destroy());
-    enemy.destroy();
+    if (!enemy || !enemy.active) return;
+    if (enemy.getData("attacking") || enemy.getData("dying")) return;
 
     if (this.activeEnemy === enemy) {
       clearActiveEnemy(this);
     }
 
-    const lives = this.player.loseLife();
-    this.hud.loseLife(lives);
-
-    this.hud.loseLife(lives, () => {
-      this.gameOver();
-    });
+    // animacion de ataque -> al completar resta vida y destruye
+    enemyAttack(enemy, this);
   }
 
   update() {
     if (!this.isPlaying) return;
 
-    // actualizar score en HUD
     this.hud.updateScore(this.player.getData("score"), false);
-    
-    // actualizar posiciones de letras
+
     this.enemies.getChildren().forEach((enemy) => {
       updateEnemyWordPosition(enemy);
     });

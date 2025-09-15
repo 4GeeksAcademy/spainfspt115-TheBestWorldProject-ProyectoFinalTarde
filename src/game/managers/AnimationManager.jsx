@@ -1,15 +1,13 @@
+// managers/AnimationManager.jsx
 export function createAnimations(scene) {
-  // animacion de destruccion del corazon
+  // ---- HEARTS ----
   scene.anims.create({
     key: "heart_break",
     frames: scene.anims.generateFrameNumbers("heart", { start: 85, end: 97 }),
     frameRate: 15,
     repeat: 0,
-    showOnStart: true,
-    hideOnComplete: false,
   });
 
-  // animacion rellenado, tiene un reverse porque en el spritesheet la animacion es de vaciado
   const fill = scene.anims
     .generateFrameNumbers("heart", { start: 102, end: 112 })
     .reverse();
@@ -19,9 +17,48 @@ export function createAnimations(scene) {
     frames: fill,
     frameRate: 15,
     repeat: 0,
-    showOnStart: true,
-    hideOnComplete: false,
   });
+
+  // ---- ENEMIGOS ----
+  const types = [
+    { key: "slime",   run: "slime_run",   attack: "slime_attack",   death: "slime_death" },
+    { key: "orc",     run: "orc_run",     attack: "orc_attack",     death: "orc_death" },
+    { key: "vampire", run: "vampire_run", attack: "vampire_attack", death: "vampire_death" },
+  ];
+
+  types.forEach(type => {
+    makeDirectionalAnims(scene, type.run,    `${type.key}_run`,    12, true);
+    makeDirectionalAnims(scene, type.attack, `${type.key}_attack`, 12, false);
+    makeDirectionalAnims(scene, type.death,  `${type.key}_death`,  12, false);
+  });
+}
+
+function makeDirectionalAnims(scene, sheetKey, baseKey, frameRate = 12, loop = false) {
+  const tex = scene.textures.get(sheetKey);
+  if (!tex) return;
+
+  const src = tex.getSourceImage();
+  const framew = 64;
+  const frameh = 64;
+  const cols = Math.floor(src.width / framew);
+  const rows = Math.floor(src.height / frameh);
+
+  const DIRS = ["down", "up", "left", "right"];
+
+  for (let row = 0; row < Math.min(rows, 4); row++) {
+    const start = row * cols;
+    const end = start + cols - 1;
+    const key = `${baseKey}_${DIRS[row]}`;
+
+    if (scene.anims.exists(key)) continue;
+
+    scene.anims.create({
+      key,
+      frames: scene.anims.generateFrameNumbers(sheetKey, { start, end }),
+      frameRate,
+      repeat: loop ? -1 : 0,
+    });
+  }
 }
 
 export const HEART_FRAMES = {
