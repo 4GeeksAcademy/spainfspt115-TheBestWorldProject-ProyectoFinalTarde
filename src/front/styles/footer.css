@@ -1,0 +1,35 @@
+/* ===== FOOTER ===== */
+.footer-custom {
+  height: 60px;
+  border-top: 2px solid #590ead;
+  box-shadow: 0 0 10px #590ead;
+  padding: 20px;
+  font-size: 13px;
+  font-weight: bold;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Modo oscuro */
+.footer-dark {
+  background: #212529;
+  color: #ffffff;
+}
+
+/* Modo claro */
+.footer-light {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+/* Avatar en el menú */
+.footer-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #590ead;
+  box-shadow: 0 0 8px #590ead;
+}

@@ -1,0 +1,27 @@
+/* navbar.css */
+.navbar-custom {
+  border-bottom: 2px solid #590ead;
+  backdrop-filter: blur(8px);
+  transition: background-color 0.4s ease;
+}
+
+/* modo oscuro */
+.navbar-dark {
+  background: rgba(18, 18, 18, 0.85);
+  color: #fff;
+}
+
+.navbar-dark .nav-link {
+  color: #fff !important;
+  text-shadow: 0 0 5px #590ead;
+}
+
+/* modo claro */
+.navbar-light {
+  background: rgba(255, 255, 255, 0.85);
+  color: #000;
+}
+
+.navbar-light .nav-link {
+  color: #000 !important;
+}
