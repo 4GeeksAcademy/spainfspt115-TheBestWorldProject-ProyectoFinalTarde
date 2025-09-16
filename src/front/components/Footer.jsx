@@ -15,14 +15,10 @@ export const Footer = () => {
   };
 
   return (
-    <footer
-      className={`footer-custom fixed-bottom ${
-        store?.mode === "dark" ? "footer-dark" : "footer-light"
-      }`}
-    >
-      {/* Menú desplegable de perfil */}
+    <footer className="footer-custom fixed-bottom">
+      {/* Avatar y dropdown */}
       {store?.isRegistered && (
-        <div className="dropup">
+        <div className="dropup d-flex align-items-center">
           <a
             className="d-flex align-items-center dropdown-toggle text-decoration-none"
             href="#"
@@ -31,48 +27,31 @@ export const Footer = () => {
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            <div className="d-flex align-items-start">
-              <img
-                src={
-                  store?.user?.avatar_url ||
-                  "/src/front/assets/avatars/avatar1.png"
-                }
-                alt="Avatar"
-                className="footer-avatar"
-              />
-              <div className="d-flex flex-column ms-2">
-                <span className="fw-bold">{store?.user?.username || null}</span>
-                <span className="fw-bold">
-                  {store?.user?.email || "notengo@email.net"}
-                </span>
-              </div>
+            <img
+              src={
+                store?.user?.avatar_url ||
+                "/src/front/assets/avatars/avatar1.png"
+              }
+              alt="Avatar"
+              className="footer-avatar me-2"
+            />
+            <div className="d-flex flex-column">
+              <span className="fw-bold">{store?.user?.username || null}</span>
+              <span className="fw-bold">
+                {store?.user?.email || "notengo@email.net"}
+              </span>
             </div>
           </a>
 
           {/* Opciones del menú de perfil */}
-          <ul
-            className="dropdown-menu"
-            aria-labelledby="profileDropdown"
-            style={{
-              backgroundColor: store?.mode === "dark" ? "#343a40" : "#ffffff",
-              color: store?.mode === "dark" ? "#fff" : "#000",
-            }}
-          >
+          <ul className="dropdown-menu" aria-labelledby="profileDropdown">
             <li>
-              <Link
-                to="/profile"
-                className="dropdown-item"
-                style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
-              >
+              <Link to="/profile" className="dropdown-item">
                 <i className="bi bi-person-circle me-2"></i>Profile
               </Link>
             </li>
             <li>
-              <a
-                className="dropdown-item"
-                href="#"
-                style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
-              >
+              <a className="dropdown-item" href="#">
                 <i className="bi bi-bell me-2"></i>Notifications
               </a>
             </li>
@@ -89,8 +68,8 @@ export const Footer = () => {
         </div>
       )}
 
-      {/* Texto de copyright */}
-      <div>
+      {/* Texto de copyright centrado */}
+      <div className="footer-center">
         <p className="mb-0">© 2025 Mi Proyecto</p>
       </div>
     </footer>

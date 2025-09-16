@@ -1,4 +1,3 @@
-/* ===== HOME PAGE ===== */
 .home-container {
   position: relative;
   height: 100vh;
@@ -7,7 +6,7 @@
   flex-direction: column;
 }
 
-/* Video de fondo fijo */
+/* Video de fondo */
 .bg-video {
   position: fixed;
   top: 0;
@@ -18,7 +17,7 @@
   z-index: -2;
 }
 
-/* Capa oscura fija */
+/* Capa oscura */
 .home-overlay {
   position: fixed;
   inset: 0;
@@ -37,6 +36,7 @@
   position: relative;
   z-index: 1;
   gap: 2rem;
+  animation: fadeInUp 1s ease-in-out; /* animación al entrar */
 }
 
 /* Card estilo neón */
@@ -50,6 +50,7 @@
   padding: 2rem;
   max-width: 500px;
   width: 100%;
+  animation: glowIn 1.5s ease-in-out; /* animación entrada */
 }
 
 /* Textos con efecto glow */
@@ -63,4 +64,33 @@
   color: #fff;
   text-shadow: 0 0 6px #590ead;
   font-size: 14px;
+  animation: fadeIn 2s ease-in-out;
+}
+
+/*  Animaciones */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowIn {
+  from {
+    box-shadow: none;
+    opacity: 0;
+  }
+  to {
+    box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

@@ -1,27 +1,50 @@
-/* navbar.css */
+/* ===== NAVBAR ===== */
 .navbar-custom {
+  background: rgba(18, 18, 18, 0.6);  /* más transparente, como pediste */
   border-bottom: 2px solid #590ead;
+  box-shadow: 0 0 10px #590ead;
   backdrop-filter: blur(8px);
-  transition: background-color 0.4s ease;
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
 }
 
-/* modo oscuro */
-.navbar-dark {
-  background: rgba(18, 18, 18, 0.85);
-  color: #fff;
-}
-
-.navbar-dark .nav-link {
+/* Links estilo neón */
+.navbar-custom .nav-link {
+  position: relative;
   color: #fff !important;
-  text-shadow: 0 0 5px #590ead;
+  font-weight: 700;
+  text-shadow: 0 0 6px #590ead;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+  padding-bottom: 6px;
 }
 
-/* modo claro */
-.navbar-light {
-  background: rgba(255, 255, 255, 0.85);
-  color: #000;
+/* Subrayado animado */
+.navbar-custom .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #590ead;
+  box-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
+  transition: width 0.25s ease, left 0.25s ease;
 }
 
-.navbar-light .nav-link {
-  color: #000 !important;
+/* Hover efecto glow */
+.navbar-custom .nav-link:hover {
+  color: #590ead !important;
+  text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
+}
+
+.navbar-custom .nav-link:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Centrado absoluto (desktop) */
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  align-items: center;
 }

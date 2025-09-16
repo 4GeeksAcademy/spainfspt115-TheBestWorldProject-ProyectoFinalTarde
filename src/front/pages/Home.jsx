@@ -9,16 +9,16 @@ export const Home = () => {
 
   return (
     <div className="home-container">
-      {/* 🔹 Video de fondo fijo */}
+      {/*  Video de fondo */}
       <video className="bg-video" autoPlay loop muted playsInline>
         <source src={videoFondo} type="video/mp4" />
         Tu navegador no soporta video.
       </video>
 
-      {/* 🔹 Capa oscura fija */}
+      {/* Capa oscura  */}
       <div className="home-overlay"></div>
 
-      {/* 🔹 Contenido encima */}
+      {/* Contenido de card */}
       <div className="home-content">
         <h1>Bienvenido a Nombrejuego</h1>
 
