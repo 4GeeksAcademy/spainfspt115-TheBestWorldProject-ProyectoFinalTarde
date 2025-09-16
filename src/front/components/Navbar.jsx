@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import React from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import logo from "../assets/LogoMago.png";
@@ -6,11 +6,11 @@ import "../styles/navbar.css";
 
 export const Navbar = () => {
   const { store } = useGlobalReducer();
+  const location = useLocation();
 
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
       <div className="container-fluid position-relative">
-        {/* Logo */}
         <div
           className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
           style={{ height: "80px", width: "80px", overflow: "hidden" }}
@@ -24,7 +24,6 @@ export const Navbar = () => {
           </Link>
         </div>
 
-        {/* Botón hamburguesa*/}
         <button
           className="navbar-toggler"
           type="button"
@@ -34,19 +33,22 @@ export const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* MENÚ CENTRADO */}
         <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
-          <li className="nav-item">
-            <a className="nav-link fw-bold" href="#">
-              Play
-            </a>
-          </li>
-          <li className="nav-item">
-            <Link to="/about" className="nav-link fw-bold">
-              About
-            </Link>
-          </li>
-          {store?.isRegistered && (
+          {location.pathname !== "/" && (
+            <li className="nav-item">
+              <a className="nav-link fw-bold" href="#">
+                Play
+              </a>
+            </li>
+          )}
+          {location.pathname !== "/about" && (
+            <li className="nav-item">
+              <Link to="/about" className="nav-link fw-bold">
+                About
+              </Link>
+            </li>
+          )}
+          {location.pathname !== "/profile" && (
             <li className="nav-item">
               <Link to="/profile" className="nav-link fw-bold">
                 Profile
@@ -54,7 +56,7 @@ export const Navbar = () => {
             </li>
           )}
         </ul>
-        {/* BOTONES LOGIN/SIGNUP DERECHA*/}
+
         {!store?.isRegistered ? (
           <ul className="navbar-nav ms-auto gap-3 d-none d-lg-flex">
             <li className="nav-item">
@@ -69,7 +71,6 @@ export const Navbar = () => {
             </li>
           </ul>
         ) : (
-          // Espaciador derecho para equilibrar el logo cuando está logueado
           <div className="d-none d-lg-block" style={{ width: "80px" }} />
         )}
       </div>
