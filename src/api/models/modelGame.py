@@ -53,6 +53,3 @@ class Game (db.Model):
             "game_words": [word.serialize() for word in self.game_words],
             "id_user": self.id_user
         }
-        
-
-
