@@ -9,7 +9,7 @@ export const Home = () => {
 
   return (
     <div className="home-container">
-      {/*  Video de fondo */}
+      {/* Video de fondo */}
       <video className="bg-video" autoPlay loop muted playsInline>
         <source src={videoFondo} type="video/mp4" />
         Tu navegador no soporta video.

@@ -52,10 +52,10 @@ export const Profile = () => {
             <strong>Miembro desde:</strong>{" "}
             {store?.user?.created_at
               ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })
               : "No registrado"}
           </p>
 

@@ -34,6 +34,7 @@ export const Navbar = () => {
         </button>
 
         <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
+          {/* Play solo se muestra si no estamos en "/" */}
           {location.pathname !== "/" && (
             <li className="nav-item">
               <a className="nav-link fw-bold" href="#">
@@ -41,6 +42,7 @@ export const Navbar = () => {
               </a>
             </li>
           )}
+          {/* About */}
           {location.pathname !== "/about" && (
             <li className="nav-item">
               <Link to="/about" className="nav-link fw-bold">
@@ -48,7 +50,8 @@ export const Navbar = () => {
               </Link>
             </li>
           )}
-          {location.pathname !== "/profile" && (
+          {/* Profile solo si el usuario está registrado */}
+          {store?.isRegistered && location.pathname !== "/profile" && (
             <li className="nav-item">
               <Link to="/profile" className="nav-link fw-bold">
                 Profile
@@ -57,6 +60,7 @@ export const Navbar = () => {
           )}
         </ul>
 
+        {/* LogIn / SignUp o espacio vacío si está logueado */}
         {!store?.isRegistered ? (
           <ul className="navbar-nav ms-auto gap-3 d-none d-lg-flex">
             <li className="nav-item">
