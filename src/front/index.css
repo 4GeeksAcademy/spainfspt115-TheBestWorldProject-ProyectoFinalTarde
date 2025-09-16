@@ -1,6 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
+
 .dropdown-menu .dropdown-item:hover,
 .dropdown-menu .dropdown-item:focus,
 .dropdown-menu .dropdown-item:active {
     background-color: #ffc107 !important;
     color: #000 !important;
+}
+body {
+  font-family: "Pixelify Sans", sans-serif;
+}
+* {
+  font-family: "Pixelify Sans", sans-serif !important;
 }

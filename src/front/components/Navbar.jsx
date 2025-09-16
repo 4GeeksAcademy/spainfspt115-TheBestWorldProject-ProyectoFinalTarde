@@ -1,150 +1,78 @@
 import { Link } from "react-router-dom";
 import React from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import logo from "../assets/logo.jpg";
-import { Play } from "./BotonPlay";
+import logo from "../assets/LogoMago.png";
+import "../styles/navbar.css";
 
 export const Navbar = () => {
-	const { store, dispatch } = useGlobalReducer();
+  const { store } = useGlobalReducer();
 
-	// Aplicar clases al body según el modo
-	React.useEffect(() => {
-		if (store?.mode === "dark") {
-			document.body.classList.add("bg-dark", "text-light");
-		} else {
-			document.body.classList.remove("bg-dark", "text-light");
-		}
-	}, [store?.mode]);
+  return (
+    <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
+      <div className="container-fluid position-relative">
+        {/* Logo */}
+        <div
+          className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
+          style={{ height: "80px", width: "80px", overflow: "hidden" }}
+        >
+          <Link to="/" className="text-decoration-none">
+            <img
+              src={logo}
+              alt="Logo"
+              style={{ height: "100%", width: "100%", objectFit: "cover" }}
+            />
+          </Link>
+        </div>
 
-	return (
-		<>
-			<nav className="navbar navbar-expand-lg border border-dark rounded px-3 fixed-top border"
-				style={{ backgroundColor: store?.mode === "dark" ? "#212529" : "#ffffff" }}>
-				<div className="container-fluid">
+        {/* Botón hamburguesa*/}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-					{/* Logo */}
-					<div
-						className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
-						style={{ height: "80px", width: "80px", overflow: "hidden" }}
-					>
-						<Link to="/" className="text-decoration-none">
-							<img
-								src={logo}
-								alt="Logo"
-								style={{ height: "100%", width: "100%", objectFit: "cover" }}
-							/>
-						</Link>
-					</div>
-
-					{/* Botón hamburguesa */}
-					<button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-						<span className="navbar-toggler-icon">asdasd</span>
-					</button>
-
-					{/* Menú principal */}
-					<div className="collapse navbar-collapse justify-content-center" id="navbarNav">
-						<ul className="navbar-nav gap-4">
-							<li className="nav-item">
-								<a className="nav-link fw-bold" style={{ color: store?.mode === "dark" ? "#fff" : "#000" }} href="#">
-									Play</a>
-							</li>
-							<li className="nav-item">
-								<Link to="/about" className="nav-link fw-bold" style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}>
-									About
-								</Link>
-							</li>
-							<li className="nav-item">
-								<a className="nav-link fw-bold" style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
-									href="#" data-bs-toggle="modal" data-bs-target="#supportModal">
-									Support
-								</a>
-							</li>
-
-							{/* Dropdown modo */}
-							<li className="nav-item dropdown">
-								<a
-									className="nav-link dropdown-toggle fw-bold"
-									style={{ color: store?.mode === "dark" ? "#fff" : "#343131ff" }}
-									href="#"
-									role="button"
-									data-bs-toggle="dropdown"
-									aria-expanded="false"
-								>
-									Mode
-								</a>
-								<ul
-									className="dropdown-menu"
-									style={{
-										backgroundColor: store?.mode === "dark" ? "#343a40" : "#ffffff",
-										color: store?.mode === "dark" ? "#fff" : "#000",
-									}}
-								>
-									<li>
-										<button
-											className="dropdown-item"
-											onClick={() => dispatch({ type: "SET_MODE", payload: "light" })}
-											style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
-										>
-											Light
-										</button>
-									</li>
-									<li>
-										<button
-											className="dropdown-item"
-											onClick={() => dispatch({ type: "SET_MODE", payload: "dark" })}
-											style={{ color: store?.mode === "dark" ? "#fff" : "#000" }}
-										>
-											Dark
-										</button>
-									</li>
-								</ul>
-							</li>
-						</ul>
-					</div>
-
-					{/* Botones login/signup/profile */}
-					<div className="d-flex gap-2">
-						{!store?.isRegistered && (
-							<Link to="/login" className="btn btn-primary w-100">LogIn</Link>
-						)}
-						{!store?.isRegistered && (
-							<Link to="/signup" className="btn btn-primary fw-bold">SignUp</Link>
-						)}
-						{store?.isRegistered && (
-							<Link to="/profile" className="btn btn-primary mx-2">Profile</Link>
-						)}
-					</div>
-				</div>
-			</nav>
-
-			{/* Modal soporte */}
-			<div className="modal fade" id="supportModal" tabIndex="-1" aria-hidden="true">
-				<div className="modal-dialog modal-dialog-centered">
-					<div className="modal-content">
-						<div className="modal-header">
-							<h5 className="modal-title fw-bold">Soporte Rápido</h5>
-							<button type="button" className="btn-close" data-bs-dismiss="modal"></button>
-						</div>
-						<div className="modal-body">
-							<p>¿Tienes un problema? Escríbenos rápido aquí e infórmanos de tu problema.</p>
-							<form>
-								<div className="mb-3">
-									<label htmlFor="email" className="form-label">Correo</label>
-									<input type="email" className="form-control" id="email" placeholder="tu@email.com" />
-								</div>
-								<div className="mb-3">
-									<label htmlFor="message" className="form-label">Mensaje</label>
-									<textarea className="form-control" id="message" rows="3" placeholder="Escribe tu duda..."></textarea>
-								</div>
-							</form>
-						</div>
-						<div className="modal-footer">
-							<button type="button" className="btn btn-danger">Cancelar</button>
-							<button type="button" className="btn btn-dark">Enviar</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</>
-	);
+        {/* MENÚ CENTRADO */}
+        <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
+          <li className="nav-item">
+            <a className="nav-link fw-bold" href="#">
+              Play
+            </a>
+          </li>
+          <li className="nav-item">
+            <Link to="/about" className="nav-link fw-bold">
+              About
+            </Link>
+          </li>
+          {store?.isRegistered && (
+            <li className="nav-item">
+              <Link to="/profile" className="nav-link fw-bold">
+                Profile
+              </Link>
+            </li>
+          )}
+        </ul>
+        {/* BOTONES LOGIN/SIGNUP DERECHA*/}
+        {!store?.isRegistered ? (
+          <ul className="navbar-nav ms-auto gap-3 d-none d-lg-flex">
+            <li className="nav-item">
+              <Link to="/login" className="nav-link fw-bold">
+                LogIn
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to="/signup" className="nav-link fw-bold">
+                SignUp
+              </Link>
+            </li>
+          </ul>
+        ) : (
+          // Espaciador derecho para equilibrar el logo cuando está logueado
+          <div className="d-none d-lg-block" style={{ width: "80px" }} />
+        )}
+      </div>
+    </nav>
+  );
 };

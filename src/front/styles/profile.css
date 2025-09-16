@@ -1,0 +1,142 @@
+/* Profile Layout */
+.profile-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 25px;
+  padding: 40px;
+}
+
+/* Cada columna en una card */
+.profile-card {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  border: 2px solid #590ead;
+  box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
+  color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  animation: glowIn 1.5s ease-in-out;
+}
+
+/* Avatar y Username */
+.profile-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.profile-avatar img {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.profile-username {
+  margin: 0;
+  font-size: 1.8rem;
+  text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
+}
+
+/* Columna central */
+.profile-center p {
+  margin: 8px 0;
+}
+
+/*  Historial  */
+.profile-right {
+  max-height: 350px;
+  overflow-y: auto;
+}
+
+.game-card {
+  margin-bottom: 15px;
+}
+
+/*  Descripción */
+.profile-left textarea {
+  width: 100%;
+  min-height: 80px;
+  resize: none;
+  border-radius: 8px;
+  border: 1px solid #590ead;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  text-shadow: 0 0 6px #590ead;
+}
+
+
+.profile-buttons {
+  grid-column: span 3;
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 30px;
+}
+
+
+.profile-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  padding: 0;
+  position: relative;
+  color: #fff;
+  font-weight: 700;
+  text-shadow: 0 0 6px #b40000;
+  padding-bottom: 6px;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+/* Subrayado animado */
+.profile-btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #b40000;
+  box-shadow: 0 0 8px #b40000, 0 0 16px #b40000;
+  transition: width 0.25s ease, left 0.25s ease;
+}
+
+/* Hover glow */
+.profile-btn:hover {
+  color: #b40000 !important;
+  text-shadow: 0 0 8px #b40000, 0 0 16px #b40000;
+}
+
+.profile-btn:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+.profile-btn.warning {
+  text-shadow: 0 0 6px #ffae00;
+}
+
+.profile-btn.warning::after {
+  background: #ffae00;
+  box-shadow: 0 0 8px #ffae00, 0 0 16px #ffae00;
+}
+
+.profile-btn.warning:hover {
+  color: #ffae00 !important;
+  text-shadow: 0 0 8px #ffae00, 0 0 16px #ffae00;
+}
+
+/* Animaciones*/
+@keyframes glowIn {
+  from { box-shadow: none; opacity: 0; }
+  to   { box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead; opacity: 1; }
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .profile-container { grid-template-columns: 1fr; }
+  .profile-buttons   { grid-column: 1; }
+}
