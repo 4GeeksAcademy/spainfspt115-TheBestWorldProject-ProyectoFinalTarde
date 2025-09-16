@@ -11,6 +11,8 @@ from flask_cors import CORS
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
+import requests
+import json
 
 api = Blueprint('api', __name__)
 
@@ -202,3 +204,61 @@ def get_word(word_id):
     if not word:
         return jsonify({"error": f"La palabra con id {word_id} no existe"}), 404
     return jsonify(word.serialize()), 200
+
+#Funcion para quitar los acentos de las palabras, para poder utilizarlas en el juego
+
+def delete_accents(text):
+    table = str.maketrans(
+        "áéíóúüÁÉÍÓÚÜ",
+        "aeiouuAEIOUU"
+    )
+    clearText = text.translate(table)
+    if clearText.isalpha() and clearText.isascii():
+
+        return clearText
+    
+    return None
+
+
+# PEDIR PALABRAS A LA API DE LA RAE (RANDOM WORDS)
+
+@api.route('/words/get-random', methods=['GET'])
+def get_random_word():
+
+    response = requests.get(
+        'https://rae-api.com/api/random/',
+        headers= {"Accept": "application/json"},
+    )
+
+    data = response.json()
+
+        # calcular datos derivados
+    word_ = data.get("data").get('word')
+    word = delete_accents(str(word_))
+    if word == None:
+        return jsonify({"msg": "cadena no válida", "word": str(word_)})
+
+    length = len(str(word))
+    if length < 4:
+        return jsonify({"msg": "la palabra tiene menos de 4 letras"})
+    points = length * 10
+    if length >= 4 and length < 6:
+        difficulty = 1 
+    elif length >= 6 and length < 9:
+        difficulty = 2
+    else:
+        difficulty = 3
+
+    if word and not Dictionary.query.filter_by(word=word).first():
+        new_word = Dictionary(
+            word=word,
+            length=length,
+            points_per_word=points,
+            difficulty=difficulty
+        )
+        db.session.add(new_word)
+        db.session.commit()
+    else:
+        return jsonify({"msg": "word already exist","palabra": word})
+
+    return jsonify(new_word.serialize()), 200
