@@ -211,6 +211,7 @@ def words_for_level():
 # === ADMIN ROUTES ===
 # Insertar una nueva palabra en el diccionario
 @api.route("/words", methods=["POST"])
+
 @jwt_required()
 def add_word():
     data = request.get_json()
@@ -249,7 +250,7 @@ def add_word():
 
 # Obtener todas las palabras
 @api.route("/words", methods=["GET"])
-@jwt_required()
+#@jwt_required()
 def get_words():
     words = Dictionary.query.all()
 
