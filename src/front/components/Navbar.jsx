@@ -11,19 +11,21 @@ export const Navbar = () => {
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
       <div className="container-fluid position-relative">
+
+        {/* Logo */}
         <div
-          className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
-          style={{ height: "80px", width: "80px", overflow: "hidden" }}
+          className="d-flex align-items-center justify-content-center logo-circle"
         >
           <Link to="/" className="text-decoration-none">
             <img
               src={logo}
               alt="Logo"
-              style={{ height: "100%", width: "100%", objectFit: "cover" }}
+              className="logo-img"
             />
           </Link>
         </div>
 
+        {/* Botón toggle responsive */}
         <button
           className="navbar-toggler"
           type="button"
@@ -33,8 +35,8 @@ export const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
+        {/* Links centrados */}
         <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
-          {/* Play solo se muestra si no estamos en "/" */}
           {location.pathname !== "/" && (
             <li className="nav-item">
               <a className="nav-link fw-bold" href="#">
@@ -42,7 +44,6 @@ export const Navbar = () => {
               </a>
             </li>
           )}
-          {/* About */}
           {location.pathname !== "/about" && (
             <li className="nav-item">
               <Link to="/about" className="nav-link fw-bold">
@@ -50,7 +51,6 @@ export const Navbar = () => {
               </Link>
             </li>
           )}
-          {/* Profile solo si el usuario está registrado */}
           {store?.isRegistered && location.pathname !== "/profile" && (
             <li className="nav-item">
               <Link to="/profile" className="nav-link fw-bold">
@@ -60,7 +60,7 @@ export const Navbar = () => {
           )}
         </ul>
 
-        {/* LogIn / SignUp o espacio vacío si está logueado */}
+        {/* LogIn / SignUp */}
         {!store?.isRegistered ? (
           <ul className="navbar-nav ms-auto gap-3 d-none d-lg-flex">
             <li className="nav-item">
@@ -77,6 +77,7 @@ export const Navbar = () => {
         ) : (
           <div className="d-none d-lg-block" style={{ width: "80px" }} />
         )}
+
       </div>
     </nav>
   );

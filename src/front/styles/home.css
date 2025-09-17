@@ -1,3 +1,4 @@
+/* Contenedor principal */
 .home-container {
   position: relative;
   height: 100vh;
@@ -36,7 +37,8 @@
   position: relative;
   z-index: 1;
   gap: 2rem;
-  animation: fadeInUp 1s ease-in-out; /* animación al entrar */
+  animation: fadeInUp 1s ease-in-out;
+  /* animación al entrar */
 }
 
 /* Card estilo neón */
@@ -50,7 +52,19 @@
   padding: 2rem;
   max-width: 500px;
   width: 100%;
-  animation: glowIn 1.5s ease-in-out; /* animación entrada */
+  animation: glowIn 1.5s ease-in-out;
+  /* animación entrada */
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover multicolor */
+.card-neon:hover {
+  box-shadow:
+    0 0 15px #590ead,
+    0 0 20px #ff0000,
+    0 0 25px #ffae00,
+    inset 0 0 10px #590ead;
+  transform: translateY(-3px);
 }
 
 /* Textos con efecto glow */
@@ -67,12 +81,13 @@
   animation: fadeIn 2s ease-in-out;
 }
 
-/*  Animaciones */
+/* Animaciones */
 @keyframes fadeInUp {
   from {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -84,6 +99,7 @@
     box-shadow: none;
     opacity: 0;
   }
+
   to {
     box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
     opacity: 1;
@@ -91,6 +107,11 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }

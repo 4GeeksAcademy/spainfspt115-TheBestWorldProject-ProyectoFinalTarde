@@ -1,10 +1,35 @@
-/* ===== NAVBAR ===== */
+/* Navbar principal */
 .navbar-custom {
-  background: rgba(18, 18, 18, 0.6);  /* más transparente, como pediste */
+  background: rgba(18, 18, 18, 0.6);
   border-bottom: 2px solid #590ead;
   box-shadow: 0 0 10px #590ead;
   backdrop-filter: blur(8px);
   transition: background-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* Logo */
+.logo-circle {
+  height: 80px;
+  width: 80px;
+  overflow: hidden;
+  border-radius: 50%;
+  border: 2px solid #590ead;
+  box-shadow: 0 0 8px #590ead;
+}
+
+.logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.logo-img:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 15px #590ead,
+    0 0 20px #ff0000,
+    0 0 25px #ffae00;
 }
 
 /* Links estilo neón */
@@ -30,18 +55,26 @@
   transition: width 0.25s ease, left 0.25s ease;
 }
 
-/* Hover efecto glow */
+/* Hover glow multicolor */
 .navbar-custom .nav-link:hover {
-  color: #590ead !important;
-  text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
+  color: #ffae00 !important;
+  text-shadow:
+    0 0 8px #590ead,
+    0 0 12px #ff0000,
+    0 0 16px #ffae00;
 }
 
 .navbar-custom .nav-link:hover::after {
   width: 100%;
   left: 0;
+  background: linear-gradient(90deg, #590ead, #ff0000, #ffae00);
+  box-shadow:
+    0 0 8px #590ead,
+    0 0 12px #ff0000,
+    0 0 16px #ffae00;
 }
 
-/* Centrado absoluto (desktop) */
+/* Navbar centrado (desktop) */
 .navbar-center {
   position: absolute;
   left: 50%;

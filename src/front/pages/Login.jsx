@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import "../styles/login.css";
 
 export const Login = () => {
   const { dispatch } = useGlobalReducer();
@@ -24,16 +25,11 @@ export const Login = () => {
       const data = await response.json();
 
       if (response.ok && data.token) {
-        // Guardar el token en localStorage
         localStorage.setItem("token", data.token);
-
-        // Guardar usuario y token en el estado global
         dispatch({
           type: "set_user",
           payload: { user: data.user, token: data.token },
         });
-
-        // Redirigir al perfil
         navigate("/profile");
       } else {
         setError(data.msg || "Credenciales inválidas");
@@ -44,46 +40,42 @@ export const Login = () => {
   };
 
   return (
-    <div
-      className="container d-flex justify-content-center align-items-center"
-      style={{ minHeight: "80vh" }}
-    >
-      <div className="card shadow p-4" style={{ maxWidth: 400, width: "100%" }}>
-        <h2 className="mb-4 text-center">Iniciar sesión</h2>
-        <form onSubmit={handleLogin}>
-          <div className="mb-3">
-            <label className="form-label">Usuario</label>
-            <input
-              type="text"
-              name="username"
-              className="form-control"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-          <div className="mb-3">
-            <label className="form-label">Contraseña</label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          {error && <div className="alert alert-danger">{error}</div>}
-          <button className="btn btn-primary w-100" type="submit">
-            Iniciar sesión
-          </button>
-        </form>
-        <p className="mt-3 text-center">
-          ¿No tienes cuenta?{" "}
-          <Link to="/signup" className="text-decoration-none">
-            Regístrate aquí
-          </Link>
-        </p>
+    <div className="home-container">
+      <video className="bg-video" autoPlay muted loop>
+        <source src="/videos/background.mp4" type="video/mp4" />
+      </video>
+      <div className="home-overlay"></div>
+
+      <div className="home-content">
+        <div className="card-neon">
+          <h2>Iniciar sesión</h2>
+          <form onSubmit={handleLogin}>
+            <div className="mb-3">
+              <label>Usuario</label>
+              <input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label>Contraseña</label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            {error && <div className="error">{error}</div>}
+            <button type="submit">Iniciar sesión</button>
+          </form>
+          <p>
+            ¿No tienes cuenta?{" "}
+            <Link to="/signup">Regístrate aquí</Link>
+          </p>
+        </div>
       </div>
     </div>
   );
