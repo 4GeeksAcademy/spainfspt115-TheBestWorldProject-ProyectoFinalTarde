@@ -1,4 +1,3 @@
-/* Contenedor principal */
 .home-container {
   position: relative;
   height: 100vh;
@@ -7,7 +6,6 @@
   flex-direction: column;
 }
 
-/* Video de fondo */
 .bg-video {
   position: fixed;
   top: 0;
@@ -18,7 +16,6 @@
   z-index: -2;
 }
 
-/* Capa oscura */
 .home-overlay {
   position: fixed;
   inset: 0;
@@ -26,7 +23,6 @@
   z-index: -1;
 }
 
-/* Contenido centrado en columna */
 .home-content {
   flex: 1;
   display: flex;
@@ -38,10 +34,32 @@
   z-index: 1;
   gap: 2rem;
   animation: fadeInUp 1s ease-in-out;
-  /* animación al entrar */
 }
 
-/* Card estilo neón */
+.home-content h1 {
+  font-size: 5rem;
+  letter-spacing: 1.5rem;
+  color: #fff;
+  text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
+  margin: 0;
+  line-height: 1.2;
+  animation: fadeInUp 1s ease-in-out;
+}
+
+@media (max-width: 768px) {
+  .home-content h1 {
+    font-size: 3rem;
+    letter-spacing: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home-content h1 {
+    font-size: 2rem;
+    letter-spacing: 0.5rem;
+  }
+}
+
 .card-neon {
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(6px);
@@ -53,11 +71,9 @@
   max-width: 500px;
   width: 100%;
   animation: glowIn 1.5s ease-in-out;
-  /* animación entrada */
   transition: all 0.3s ease-in-out;
 }
 
-/* Hover multicolor */
 .card-neon:hover {
   box-shadow:
     0 0 15px #590ead,
@@ -67,13 +83,11 @@
   transform: translateY(-3px);
 }
 
-/* Textos con efecto glow */
 .home-content h1,
 .card-neon h3 {
   text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
 }
 
-/* Créditos debajo */
 .created-by {
   color: #fff;
   text-shadow: 0 0 6px #590ead;
@@ -81,7 +95,6 @@
   animation: fadeIn 2s ease-in-out;
 }
 
-/* Animaciones */
 @keyframes fadeInUp {
   from {
     opacity: 0;

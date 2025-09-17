@@ -1,10 +1,10 @@
 import { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useNavigate } from "react-router-dom";
-
+import { createPortal } from "react-dom";
+import "../styles/botonplay.css";
 
 export const Play = () => {
-
     const { store } = useGlobalReducer();
     const navigate = useNavigate();
     const [showModal, setShowModal] = useState(false);
@@ -12,10 +12,10 @@ export const Play = () => {
     const handleClick = () => {
         if (store.isRegistered) {
             navigate("/game");
-    } else {
-        setShowModal(true);
-    }}
-
+        } else {
+            setShowModal(true);
+        }
+    };
 
     return (
         <div>
@@ -23,38 +23,31 @@ export const Play = () => {
                 Play
             </button>
 
-            {showModal && (
-                <div className="modal" tabIndex="-1" style={{ display: "block" }}>
-                    <div className="modal-dialog">
-                        <div className="modal-content">
-                            <div className="modal-header">
-                                <h5 className="modal-title">Modal title</h5>
+            {showModal &&
+                createPortal(
+                    <div className="modal-overlay">
+                        <div className="card-neon modal-card">
+                            <h5 className="modal-title">¿ Aún no estás registrado ?</h5>
+                            <p>¿ A qué esperas ?</p>
+
+                            <div className="modal-buttons">
                                 <button
-                                    type="button"
-                                    className="btn-close"
                                     onClick={() => setShowModal(false)}
-                                    aria-label="Close"
-                                ></button>
-                            </div>
-                            <div className="modal-body">
-                                <p>Modal body text goes here.</p>
-                            </div>
-                            <div className="modal-footer">
-                                <button
-                                    type="button"
-                                    className="btn btn-secondary"
-                                    onClick={() => setShowModal(false)}
+                                    className="close-btn"
                                 >
-                                    Close
+                                    Jugar
                                 </button>
-                                <button type="button" className="btn btn-primary">
-                                    Save changes
+                                <button
+                                    onClick={() => navigate("/signup")}
+                                    className="close-btn"
+                                >
+                                    Registrarse
                                 </button>
                             </div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </div>,
+                    document.getElementById("modal-root")
+                )}
         </div>
     );
 };

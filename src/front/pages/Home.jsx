@@ -20,7 +20,7 @@ export const Home = () => {
 
       {/* Contenido de card */}
       <div className="home-content">
-        <h1>Bienvenido a Nombrejuego</h1>
+        <h1>M  e  c  a  M  a  g  i  C</h1>
 
         <div className="card-neon">
           <div className="card-body">
@@ -28,7 +28,7 @@ export const Home = () => {
               {store.isRegistered ? store.user?.username : "Invitado"}
             </h3>
             <p className="card-text">
-              Si te registras podrás obtener varias bonificaciones y podrás acceder a tus estadísticas
+              Si te registras, podrás obtener varias bonificaciones y podrás acceder a tus estadísticas.
             </p>
             <Play />
           </div>
