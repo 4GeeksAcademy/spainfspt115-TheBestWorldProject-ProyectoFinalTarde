@@ -28,7 +28,11 @@ export const Home = () => {
               {store.isRegistered ? store.user?.username : "Invitado"}
             </h3>
             <p className="card-text">
+<<<<<<< HEAD
               Si te registras, podrás obtener varias bonificaciones y podrás acceder a tus estadísticas.
+=======
+              Si te registras podrás acceder a tus estadisticas a parte de obtener varias bonificaciones.
+>>>>>>> b11c5937f576fa53cc4bfa6454f634e4ab3c6082
             </p>
             <Play />
           </div>

@@ -20,7 +20,7 @@ export const Play = () => {
     return (
         <div>
             <button onClick={handleClick} className="btn btn-primary">
-                Play
+                Jugar
             </button>
 
             {showModal &&
