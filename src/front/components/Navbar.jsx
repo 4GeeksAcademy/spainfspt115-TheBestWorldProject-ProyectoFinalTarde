@@ -1,5 +1,5 @@
 import { Link, useLocation } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import logo from "../assets/LogoMago.png";
 import "../styles/navbar.css";
@@ -8,24 +8,45 @@ export const Navbar = () => {
   const { store } = useGlobalReducer();
   const location = useLocation();
 
+  // Renderizar botón PayPal
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://www.paypalobjects.com/donate/sdk/donate-sdk.js";
+    script.async = true;
+    script.onload = () => {
+      if (window.PayPal) {
+        const container = document.getElementById("donate-button");
+        container.innerHTML = "";
+        window.PayPal.Donation.Button({
+          env: "production",
+          hosted_button_id: "JZPMUB4B2P3RA",
+          image: {
+            src: "https://pics.paypal.com/00/s/MzY5ODI2MjItZThhMS00ODY4LTk4MGQtYTA4MzQ2ZGQ1YjBl/file.PNG",
+            alt: "Donate with PayPal button",
+            title: "PayPal - The safer, easier way to pay online!",
+            width: 80,
+            height: 80,
+          },
+        }).render("#donate-button");
+      }
+    };
+    document.body.appendChild(script);
+
+    return () => document.body.removeChild(script);
+  }, []);
+
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
       <div className="container-fluid position-relative">
 
         {/* Logo */}
-        <div
-          className="d-flex align-items-center justify-content-center logo-circle"
-        >
+        <div className="d-flex align-items-center justify-content-center logo-circle">
           <Link to="/" className="text-decoration-none">
-            <img
-              src={logo}
-              alt="Logo"
-              className="logo-img"
-            />
+            <img src={logo} alt="Logo" className="logo-img" />
           </Link>
         </div>
 
-        {/* Botón toggle responsive */}
+        {/* Toggle responsive */}
         <button
           className="navbar-toggler"
           type="button"
@@ -78,6 +99,23 @@ export const Navbar = () => {
           <div className="d-none d-lg-block" style={{ width: "80px" }} />
         )}
 
+        {/* Botón PayPal */}
+        <div
+          id="donate-button-container"
+          style={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+            width: "80px",
+            height: "80px",
+            zIndex: 999,
+          }}
+        >
+          <div
+            id="donate-button"
+            style={{ width: "100%", height: "100%" }}
+          ></div>
+        </div>
       </div>
     </nav>
   );

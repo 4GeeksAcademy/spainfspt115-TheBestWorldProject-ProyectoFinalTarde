@@ -1,13 +1,15 @@
-/* Navbar principal */
+/* ===== NAVBAR PRINCIPAL ===== */
 .navbar-custom {
   background: rgba(18, 18, 18, 0.6);
   border-bottom: 2px solid #590ead;
   box-shadow: 0 0 10px #590ead;
   backdrop-filter: blur(8px);
   transition: background-color 0.4s ease, box-shadow 0.4s ease;
+  position: relative;
+  padding: 0.5rem 1rem;
 }
 
-/* Logo */
+/* ===== LOGO ===== */
 .logo-circle {
   height: 80px;
   width: 80px;
@@ -32,7 +34,7 @@
     0 0 25px #ffae00;
 }
 
-/* Links estilo neón */
+/* ===== LINKS ESTILO NEÓN ===== */
 .navbar-custom .nav-link {
   position: relative;
   color: #fff !important;
@@ -80,4 +82,55 @@
   left: 50%;
   transform: translateX(-50%);
   align-items: center;
+  display: flex;
+  gap: 1.5rem;
+}
+
+/* ===== BOTÓN PAYPAL ===== */
+#donate-button-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+#donate-button {
+  width: 100%;
+  height: 100%;
+}
+
+#donate-button img {
+  width: 80px !important;
+  height: 80px !important;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+#donate-button img:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 15px #590ead,
+    0 0 20px #ff0000,
+    0 0 25px #ffae00;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+  .navbar-center {
+    position: static;
+    transform: none;
+    justify-content: center;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  #donate-button-container {
+    position: static;
+    margin-top: 0.5rem;
+  }
 }
