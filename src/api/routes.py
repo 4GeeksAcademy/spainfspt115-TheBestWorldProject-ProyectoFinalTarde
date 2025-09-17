@@ -193,7 +193,6 @@ def random_words_by_difficulty(difficulty):
     
     return jsonify([w.serialize() for w in words]), 200
 
-
 # Obtener palabras de un nivel
 @api.route("/words/level", methods=["GET"])
 def words_for_level():
@@ -207,45 +206,57 @@ def words_for_level():
         "words": [w.serialize() for w in words]
     }), 200
 
-
 # === ADMIN ROUTES ===
+#Funcion para quitar los acentos de las palabras, para poder utilizarlas en el juego
+def delete_accents(text):
+    table = str.maketrans(
+        "áéíóúüÁÉÍÓÚÜ",
+        "aeiouuAEIOUU"
+    )
+    clearText = text.translate(table)
+    if clearText.isalpha() and clearText.isascii():
+
+        return clearText
+    
+    return None
+
 # Insertar una nueva palabra en el diccionario
 @api.route("/words", methods=["POST"])
-
-@jwt_required()
 def add_word():
     data = request.get_json()
 
-    if not data or "word" not in data:
-        return jsonify({"msg": "Se necesita al menos 'word'"}), 400
+    word_ = data.get('word')
+    word = delete_accents(str(word_))
+    
+    if not word:
+        return jsonify({"msg": "no hay palabra"}), 400
 
-    word = data["word"].strip().lower()
     length = len(word)
-    points = data.get("points_per_word", length)   # default = longitud
 
-    # Calcular dificultad en base a la longitud
-    if length < 6:
-        difficulty = 1   # Fácil
-    elif 6 <= length <= 8:
-        difficulty = 2   # Media
+    if length < 4:
+        return jsonify({"msg": "la palabra tiene menos de 4 letras"}), 400
+
+    if length >= 4 and length < 6:
+        difficulty = 1 
+    elif length >= 6 and length < 9:
+        difficulty = 2
     else:
-        difficulty = 3   # Difícil
+        difficulty = 3
 
-    # Evitar duplicados
-    if Dictionary.query.filter_by(word=word).first():
-        return jsonify({"msg": "The Word already exists"}), 400
+    points = length * 10
 
-    new_word = Dictionary(
-        word=word,
-        length=length,
-        points_per_word=points,
-        difficulty=difficulty
-    )
-
-    db.session.add(new_word)
-    db.session.commit()
-
-    return jsonify(new_word.serialize()), 201
+    if not Dictionary.query.filter_by(word=word).first():
+        new_word = Dictionary(
+            word=word,
+            length=length,
+            points_per_word=points,
+            difficulty=difficulty
+        )
+        db.session.add(new_word)
+        db.session.commit()
+        return jsonify(new_word.serialize()), 201
+    else:
+        return jsonify({"msg": "word already exist","palabra": word}), 200
 
 
 # Obtener todas las palabras
@@ -267,23 +278,8 @@ def get_word(word_id):
     
     return jsonify(word.serialize()), 200
 
-#Funcion para quitar los acentos de las palabras, para poder utilizarlas en el juego
-
-def delete_accents(text):
-    table = str.maketrans(
-        "áéíóúüÁÉÍÓÚÜ",
-        "aeiouuAEIOUU"
-    )
-    clearText = text.translate(table)
-    if clearText.isalpha() and clearText.isascii():
-
-        return clearText
-    
-    return None
-
 
 # PEDIR PALABRAS A LA API DE LA RAE (RANDOM WORDS)
-
 @api.route('/words/get-random', methods=['GET'])
 def get_random_word():
 
@@ -294,12 +290,11 @@ def get_random_word():
 
     data = response.json()
 
-        # calcular datos derivados
+    # calcular datos derivados
     word_ = data.get("data").get('word')
     word = delete_accents(str(word_))
     if word == None:
         return jsonify({"msg": "cadena no válida", "word": str(word_)})
-
     length = len(str(word))
     if length < 4:
         return jsonify({"msg": "la palabra tiene menos de 4 letras"})
@@ -322,5 +317,5 @@ def get_random_word():
         db.session.commit()
     else:
         return jsonify({"msg": "word already exist","palabra": word})
-
+    
     return jsonify(new_word.serialize()), 200
