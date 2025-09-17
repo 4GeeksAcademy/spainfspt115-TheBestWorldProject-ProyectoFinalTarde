@@ -1,30 +1,52 @@
-import { Link } from "react-router-dom";
-import React from "react";
+import { Link, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import logo from "../assets/LogoMago.png";
 import "../styles/navbar.css";
 
 export const Navbar = () => {
   const { store } = useGlobalReducer();
+  const location = useLocation();
+
+  // Renderizar botón PayPal
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://www.paypalobjects.com/donate/sdk/donate-sdk.js";
+    script.async = true;
+    script.onload = () => {
+      if (window.PayPal) {
+        const container = document.getElementById("donate-button");
+        container.innerHTML = "";
+        window.PayPal.Donation.Button({
+          env: "production",
+          hosted_button_id: "JZPMUB4B2P3RA",
+          image: {
+            src: "https://pics.paypal.com/00/s/MzY5ODI2MjItZThhMS00ODY4LTk4MGQtYTA4MzQ2ZGQ1YjBl/file.PNG",
+            alt: "Donate with PayPal button",
+            title: "PayPal - The safer, easier way to pay online!",
+            width: 80,
+            height: 80,
+          },
+        }).render("#donate-button");
+      }
+    };
+    document.body.appendChild(script);
+
+    return () => document.body.removeChild(script);
+  }, []);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
       <div className="container-fluid position-relative">
+
         {/* Logo */}
-        <div
-          className="d-flex align-items-center justify-content-center border border-dark rounded-circle"
-          style={{ height: "80px", width: "80px", overflow: "hidden" }}
-        >
+        <div className="d-flex align-items-center justify-content-center logo-circle">
           <Link to="/" className="text-decoration-none">
-            <img
-              src={logo}
-              alt="Logo"
-              style={{ height: "100%", width: "100%", objectFit: "cover" }}
-            />
+            <img src={logo} alt="Logo" className="logo-img" />
           </Link>
         </div>
 
-        {/* Botón hamburguesa*/}
+        {/* Toggle responsive */}
         <button
           className="navbar-toggler"
           type="button"
@@ -34,19 +56,23 @@ export const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* MENÚ CENTRADO */}
+        {/* Links centrados */}
         <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
-          <li className="nav-item">
-            <a className="nav-link fw-bold" href="#">
-              Play
-            </a>
-          </li>
-          <li className="nav-item">
-            <Link to="/about" className="nav-link fw-bold">
-              About
-            </Link>
-          </li>
-          {store?.isRegistered && (
+          {location.pathname !== "/" && (
+            <li className="nav-item">
+              <a className="nav-link fw-bold" href="#">
+                Play
+              </a>
+            </li>
+          )}
+          {location.pathname !== "/about" && (
+            <li className="nav-item">
+              <Link to="/about" className="nav-link fw-bold">
+                About
+              </Link>
+            </li>
+          )}
+          {store?.isRegistered && location.pathname !== "/profile" && (
             <li className="nav-item">
               <Link to="/profile" className="nav-link fw-bold">
                 Profile
@@ -54,7 +80,8 @@ export const Navbar = () => {
             </li>
           )}
         </ul>
-        {/* BOTONES LOGIN/SIGNUP DERECHA*/}
+
+        {/* LogIn / SignUp */}
         {!store?.isRegistered ? (
           <ul className="navbar-nav ms-auto gap-3 d-none d-lg-flex">
             <li className="nav-item">
@@ -69,9 +96,26 @@ export const Navbar = () => {
             </li>
           </ul>
         ) : (
-          // Espaciador derecho para equilibrar el logo cuando está logueado
           <div className="d-none d-lg-block" style={{ width: "80px" }} />
         )}
+
+        {/* Botón PayPal */}
+        <div
+          id="donate-button-container"
+          style={{
+            position: "absolute",
+            top: "0",
+            right: "0",
+            width: "80px",
+            height: "80px",
+            zIndex: 999,
+          }}
+        >
+          <div
+            id="donate-button"
+            style={{ width: "100%", height: "100%" }}
+          ></div>
+        </div>
       </div>
     </nav>
   );

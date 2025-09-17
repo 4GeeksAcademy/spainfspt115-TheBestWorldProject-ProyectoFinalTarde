@@ -3,12 +3,16 @@
 .dropdown-menu .dropdown-item:hover,
 .dropdown-menu .dropdown-item:focus,
 .dropdown-menu .dropdown-item:active {
-    background-color: #ffc107 !important;
-    color: #000 !important;
+  background-color: #ffc107 !important;
+  color: #ffffff !important;
 }
+
 body {
   font-family: "Pixelify Sans", sans-serif;
+  color: #ffffff;
 }
+
 * {
   font-family: "Pixelify Sans", sans-serif !important;
+  color: #ffffff !important;
 }

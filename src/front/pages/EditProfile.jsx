@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import "../styles/editProfile.css";
 
 // Avatares
 import avatar1 from "../assets/avatars/avatar1.png";
@@ -22,7 +23,6 @@ export const EditProfile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
 
-  // Estados
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [username, setUsername] = useState("");
@@ -31,13 +31,14 @@ export const EditProfile = () => {
   const [avatar, setAvatar] = useState("");
   const [error, setError] = useState("");
 
-  // Avatares disponibles
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
+
   const avatarOptions = [
     avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7,
     avatar8, avatar9, avatar10, avatar11, avatar12, avatar13, avatar14,
   ];
 
-  // Cargar datos del usuario actual
   useEffect(() => {
     if (store?.user) {
       setUsername(store.user.username || "");
@@ -48,18 +49,30 @@ export const EditProfile = () => {
     }
   }, [store.user]);
 
-  // Proteger acceso si no hay token
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-    }
+    if (!token) navigate("/login");
   }, [navigate]);
+
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}api/countries`)
+      .then(res => res.json())
+      .then(data => setCountries(data))
+      .catch(err => console.error(err));
+  }, []);
+
+  useEffect(() => {
+    if (country) {
+      fetch(`${import.meta.env.VITE_BACKEND_URL}api/cities/${country}`)
+        .then(res => res.json())
+        .then(data => setCities(data))
+        .catch(err => console.error(err));
+    } else setCities([]);
+  }, [country]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
     setError("");
-
     const token = localStorage.getItem("token");
     if (!token) {
       setError("No tienes sesión activa.");
@@ -92,120 +105,90 @@ export const EditProfile = () => {
       } else {
         setError(data.error || data.msg || "Error al actualizar el perfil");
       }
-    } catch (err) {
+    } catch {
       setError("Error de conexión con el servidor");
     }
   };
 
   return (
-    <div className="container py-5">
-      <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
-          <div className="card shadow p-4">
-            <h2 className="mb-4 text-center">Editar Perfil</h2>
+    <div className="edit-container">
+      <div className="edit-card">
+        <h2>Editar Perfil</h2>
 
-            <form onSubmit={handleUpdate}>
-              {/* Avatar arriba */}
-              <div className="mb-3 text-center">
-                <label className="form-label">Selecciona tu Avatar</label>
-                <div className="d-flex gap-3 flex-wrap justify-content-center">
-                  {avatarOptions.map((img, i) => (
-                    <img
-                      key={i}
-                      src={img}
-                      alt={`avatar${i + 1}`}
-                      className={`rounded-circle border ${
-                        avatar === img ? "border-primary border-3" : "border-light"
-                      }`}
-                      style={{
-                        width: "70px",
-                        height: "70px",
-                        cursor: "pointer",
-                        objectFit: "cover",
-                      }}
-                      onClick={() => setAvatar(img)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Username */}
-              <div className="mb-3">
-                <label className="form-label">Username</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Email */}
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-
-              {/* Password */}
-              <div className="mb-3">
-                <label className="form-label">Nueva contraseña</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Deja en blanco para no cambiarla"
-                />
-              </div>
-
-              {/* País */}
-              <div className="mb-3">
-                <label className="form-label">País</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  placeholder="Escribe tu país"
-                />
-              </div>
-
-              {/* Ciudad */}
-              <div className="mb-3">
-                <label className="form-label">Ciudad</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                  placeholder="Escribe tu ciudad"
-                />
-              </div>
-
-              {error && <div className="alert alert-danger">{error}</div>}
-
-              <div className="d-flex justify-content-between">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => navigate("/profile")}
-                >
-                  Cancelar
-                </button>
-                <button type="submit" className="btn btn-success">
-                  Guardar cambios
-                </button>
-              </div>
-            </form>
+        <form onSubmit={handleUpdate}>
+          {/* Avatares */}
+          <div className="avatar-selection">
+            {avatarOptions.map((img, i) => (
+              <img
+                key={i}
+                src={img}
+                alt={`avatar${i + 1}`}
+                className={avatar === img ? "selected" : ""}
+                onClick={() => setAvatar(img)}
+              />
+            ))}
           </div>
-        </div>
+
+          {/* Username */}
+          <label className="form-label">Username</label>
+          <input
+            type="text"
+            className="form-control"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+
+          {/* Email */}
+          <label className="form-label">Email</label>
+          <input
+            type="email"
+            className="form-control"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          {/* Password */}
+          <label className="form-label">Nueva contraseña</label>
+          <input
+            type="password"
+            className="form-control"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="Deja en blanco para no cambiarla"
+          />
+
+          {/* País */}
+          <label className="form-label">País</label>
+          <select
+            className="form-select"
+            value={country}
+            onChange={(e) => { setCountry(e.target.value); setCity(""); }}
+          >
+            <option value="">Selecciona un país</option>
+            {countries.map((c, i) => <option key={i} value={c}>{c}</option>)}
+          </select>
+
+          {/* Ciudad */}
+          <label className="form-label">Ciudad</label>
+          <select
+            className="form-select"
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            disabled={!country}
+          >
+            <option value="">Selecciona una ciudad</option>
+            {cities.map((cityName, i) => <option key={i} value={cityName}>{cityName}</option>)}
+          </select>
+
+          {error && <div className="alert alert-danger">{error}</div>}
+
+          <div className="d-flex justify-content-between mt-3">
+            <button type="button" className="btn btn-secondary" onClick={() => navigate("/profile")}>Cancelar</button>
+            <button type="submit" className="btn btn-success">Guardar cambios</button>
+          </div>
+        </form>
       </div>
     </div>
   );

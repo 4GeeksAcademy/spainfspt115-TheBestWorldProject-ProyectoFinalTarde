@@ -1,7 +1,3 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
-
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models.modelGame import Game
 from api.models.modelDictionary import Dictionary
@@ -14,15 +10,20 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from datetime import datetime
 from sqlalchemy import func
+import os, json
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
 
+# === CARGAR DATA DE PAISES Y CIUDADES ===
+base_path = os.path.join(os.path.dirname(__file__), "data")
+with open(os.path.join(base_path, "countries+cities.json"), "r", encoding="utf-8") as f:
+    countries_cities_data = json.load(f)
+
 # USER ROUTES
 # ---obtener todos los usuarios
-
 @api.route('/user', methods=['GET'])
 def get_users():
     users = User.query.all()
@@ -30,7 +31,6 @@ def get_users():
     return jsonify(result)
 
 # ---obtener usuario por id
-
 @api.route('/user/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_user(user_id):
@@ -43,7 +43,6 @@ def get_user(user_id):
     return jsonify(user.serialize()), 200
 
 # ---para la pagina de profile
-
 @api.route("/profile", methods=["GET"])
 @jwt_required()
 def profile():
@@ -54,7 +53,6 @@ def profile():
     return jsonify(user.serialize()), 200
 
 # ---creacion usuario
-
 @api.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
@@ -100,7 +98,6 @@ def login():
     }), 200
 
 # ---Actualizar info del usuario
-
 @api.route('/user', methods=['PUT'])
 @jwt_required()
 def update_user():
@@ -126,7 +123,6 @@ def update_user():
     if "avatar_url" in data:
         user.avatar_url = data["avatar_url"]
 
-
     db.session.commit()
     return jsonify(user.serialize()), 200
 
@@ -139,7 +135,6 @@ def get_games():
     return jsonify(result), 200
 
 # --- Obtener partida por id
-
 @api.route('/game/<int:id_game>', methods=['GET'])
 def get_game(id_game):
     game = Game.query.get(id_game)
@@ -148,7 +143,6 @@ def get_game(id_game):
     return jsonify(game.serialize()), 200
 
 # --- Crear juego
-
 @api.route('/game', methods=['POST'])
 @jwt_required()
 def create_game():
@@ -168,16 +162,14 @@ def create_game():
     return jsonify(game.serialize()), 201
 
 # LeaderBoard Rout --> query exclusiva para generar la tabla de score
-
 @api.route("/leaderboard", methods=["GET"])
 def leaderboard():
     top = Game.query.order_by(Game.final_score.desc()).limit(10).all()
     return jsonify([g.serialize() for g in top]), 200
 
 # DICTIONARY ROUTES
-# --- GAME WODS ROUTES ---
+# --- GAME WORDS ROUTES ---
 # Obtener X palabras aleatorias
-
 @api.route("/words/random", methods=["GET"])
 def random_words():
     amount = request.args.get("amount", default=1, type=int)
@@ -185,7 +177,6 @@ def random_words():
     return jsonify([w.serialize() for w in words]), 200
 
 # Obtener X palabras aleatorias por dificultad
-
 @api.route("/words/random/<int:difficulty>", methods=["GET"])
 def random_words_by_difficulty(difficulty):
     amount = request.args.get("amount", default=1, type=int)
@@ -208,7 +199,6 @@ def words_for_level():
         "difficulty": difficulty,
         "words": [w.serialize() for w in words]
     }), 200
-
 
 # === ADMIN ROUTES ===
 # Insertar una nueva palabra en el diccionario
@@ -247,25 +237,33 @@ def add_word():
 
     return jsonify(new_word.serialize()), 201
 
-
 # Obtener todas las palabras
 @api.route("/words", methods=["GET"])
 @jwt_required()
 def get_words():
     words = Dictionary.query.all()
-
     return jsonify([w.serialize() for w in words]), 200
 
 # Obtener palabra concreta por ID
-
-
 @api.route("/words/<int:word_id>", methods=["GET"])
 @jwt_required()
 def get_word(word_id):
     word = Dictionary.query.get(word_id)
+    if not word:
+        return jsonify({"msg": f"La palabra con id {word_id} no existe"}), 404
+    return jsonify(word.serialize()), 200
 
-    return jsonify(response_body), 200
+# === COUNTRY & CITY ROUTES ===
+@api.route("/countries", methods=["GET"])
+def get_countries():
+    """Devuelve la lista de países"""
+    countries = [c["name"] for c in countries_cities_data]
+    return jsonify(countries), 200
 
-    # if not word:
-    #     return jsonify({"msg": f"La palabra con id {word_id} no existe"}), 404
-    # return jsonify(word.serialize()), 200
+@api.route("/cities/<string:country_name>", methods=["GET"])
+def get_cities(country_name):
+    """Devuelve las ciudades de un país dado"""
+    country = next((c for c in countries_cities_data if c["name"].lower() == country_name.lower()), None)
+    if not country:
+        return jsonify({"error": "Country not found"}), 404
+    return jsonify(country["cities"]), 200

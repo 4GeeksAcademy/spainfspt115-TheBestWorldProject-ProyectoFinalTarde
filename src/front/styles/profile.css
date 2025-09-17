@@ -1,13 +1,15 @@
-/* Profile Layout */
+/* Contenedor principal */
 .profile-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  display: flex;
   gap: 25px;
   padding: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 /* Cada columna en una card */
 .profile-card {
+  flex: 1 1 300px;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(6px);
   border: 2px solid #590ead;
@@ -16,6 +18,18 @@
   border-radius: 12px;
   padding: 20px;
   animation: glowIn 1.5s ease-in-out;
+  min-width: 250px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Hover multicolor para cards */
+.profile-card:hover {
+  box-shadow:
+    0 0 15px #590ead,
+    0 0 20px #ff0000,
+    0 0 25px #ffae00,
+    inset 0 0 10px #590ead;
+  transform: translateY(-5px);
 }
 
 /* Avatar y Username */
@@ -44,7 +58,7 @@
   margin: 8px 0;
 }
 
-/*  Historial  */
+/* Historial */
 .profile-right {
   max-height: 350px;
   overflow-y: auto;
@@ -54,7 +68,7 @@
   margin-bottom: 15px;
 }
 
-/*  Descripción */
+/* Descripción */
 .profile-left textarea {
   width: 100%;
   min-height: 80px;
@@ -65,33 +79,41 @@
   background: rgba(0, 0, 0, 0.6);
   color: #fff;
   text-shadow: 0 0 6px #590ead;
+  transition: all 0.3s ease-in-out;
 }
 
+/* Glow al hover sobre textarea */
+.profile-left textarea:hover {
+  box-shadow:
+    0 0 10px #590ead,
+    0 0 15px #ff0000,
+    0 0 20px #ffae00;
+}
 
+/* Botones abajo */
 .profile-buttons {
-  grid-column: span 3;
+  width: 100%;
   display: flex;
   justify-content: center;
   gap: 40px;
   margin-top: 30px;
+  flex-wrap: wrap;
 }
 
-
+/* Botones estilo glow multicolor */
 .profile-btn {
   background: none;
   border: none;
   cursor: pointer;
   display: inline-block;
-  padding: 0;
   position: relative;
   color: #fff;
   font-weight: 700;
-  text-shadow: 0 0 6px #b40000;
   padding-bottom: 6px;
-  transition: color 0.25s ease, text-shadow 0.25s ease;
+  text-shadow: 0 0 6px #b40000;
+  transition: all 0.25s ease;
 }
 
-/* Subrayado animado */
 .profile-btn::after {
   content: "";
   position: absolute;
@@ -104,10 +126,12 @@
   transition: width 0.25s ease, left 0.25s ease;
 }
 
-/* Hover glow */
 .profile-btn:hover {
-  color: #b40000 !important;
-  text-shadow: 0 0 8px #b40000, 0 0 16px #b40000;
+  color: #ffae00 !important;
+  text-shadow:
+    0 0 8px #590ead,
+    0 0 12px #ff0000,
+    0 0 16px #ffae00;
 }
 
 .profile-btn:hover::after {
@@ -115,6 +139,7 @@
   left: 0;
 }
 
+/* Botones warning */
 .profile-btn.warning {
   text-shadow: 0 0 6px #ffae00;
 }
@@ -125,18 +150,35 @@
 }
 
 .profile-btn.warning:hover {
-  color: #ffae00 !important;
-  text-shadow: 0 0 8px #ffae00, 0 0 16px #ffae00;
+  color: #ff0000 !important;
+  text-shadow:
+    0 0 8px #590ead,
+    0 0 12px #ff0000,
+    0 0 16px #ffae00;
 }
 
-/* Animaciones*/
+/* Animaciones */
 @keyframes glowIn {
-  from { box-shadow: none; opacity: 0; }
-  to   { box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead; opacity: 1; }
+  from {
+    box-shadow: none;
+    opacity: 0;
+  }
+
+  to {
+    box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
+    opacity: 1;
+  }
 }
 
 /* Responsive */
 @media (max-width: 992px) {
-  .profile-container { grid-template-columns: 1fr; }
-  .profile-buttons   { grid-column: 1; }
+  .profile-container {
+    flex-direction: column;
+    padding: 20px;
+  }
+
+  .profile-buttons {
+    flex-direction: column;
+    gap: 20px;
+  }
 }

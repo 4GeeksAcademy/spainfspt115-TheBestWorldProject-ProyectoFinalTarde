@@ -1,19 +1,22 @@
-import { Link, useNavigate } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
+import "../styles/signup.css"; // Importa tu CSS separado
 
 export const Signup = () => {
-
+  const { dispatch } = useGlobalReducer();
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     if (password !== confirmPassword) {
-      alert("Las contraseñas no coinciden");
+      setError("Las contraseñas no coinciden");
       return;
     }
     try {
@@ -25,78 +28,69 @@ export const Signup = () => {
           body: JSON.stringify({ email, username, password }),
         }
       );
-            const data = await response.json();
-            if (response.ok) {
-                alert("Usuario creado correctamente. Ahora inicia sesión.");
-                navigate("/login");
-            } else {
-                alert(data.msg || "Error al registrar usuario");
-            }
-        } catch {
-            alert("Error de conexión con el servidor");
-        }
-    };
+      const data = await response.json();
+      if (response.ok) {
+        alert("Usuario creado correctamente. Ahora inicia sesión.");
+        navigate("/login");
+      } else {
+        setError(data.msg || "Error al registrar usuario");
+      }
+    } catch {
+      setError("Error de conexión con el servidor");
+    }
+  };
 
   return (
-    <div className="container mt-5">
-      <div
-        className="card row shadow d-flex justify-content-center"
-        style={{ width: "25rem" }}
-      >
-        <div className="card-body">
-          <div className="card-title justify-content-center d-flex fs-1 border-bottom border-dark">
-            Regístrate
-          </div>
-          <div className="card-body mt-4">
-            <form onSubmit={handleSubmit}>
-              <label className="form-label">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+    <div className="home-container">
+      <video className="bg-video" autoPlay muted loop>
+        <source src="/videos/background.mp4" type="video/mp4" />
+      </video>
+      <div className="home-overlay"></div>
 
-              <label className="form-label mt-2">Username</label>
-              <input
-                type="text"
-                className="form-control"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                required
-              />
+      <div className="home-content">
+        <div className="card-neon">
+          <h2>Regístrate</h2>
+          <form onSubmit={handleSubmit}>
+            <label>Email</label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
 
-              <label className="form-label mt-2">Password</label>
-              <input
-                type="password"
-                className="form-control"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+            <label>Username</label>
+            <input
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
 
-              <label className="form-label mt-2">Confirm Password</label>
-              <input
-                type="password"
-                className="form-control"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
+            <label>Password</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
 
-              <div className="d-flex gap-2">
-                <button className="btn btn-success mt-3" type="submit">
-                  Registrar
-                </button>
-                <Link to="/login">
-                  <button type="button" className="btn btn-primary mt-3">
-                    Login
-                  </button>
-                </Link>
-              </div>
-            </form>
-          </div>
+            <label>Confirm Password</label>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+
+            {error && <div className="error">{error}</div>}
+
+            <button type="submit">Registrar</button>
+          </form>
+
+          <p>
+            ¿Ya tienes cuenta? <Link to="/login">Login</Link>
+          </p>
         </div>
       </div>
     </div>
