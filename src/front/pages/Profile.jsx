@@ -26,41 +26,42 @@ export const Profile = () => {
   return (
     <div className="profile-container">
       {/* Columna izquierda */}
-      <div className="card-neon profile-card">
-        <div className="profile-left">
-          <div className="profile-header">
-            <div className="profile-avatar">
-              <img
-                src={store?.user?.avatar_url || "/src/front/assets/avatars/avatar1.png"}
-                alt="Avatar"
-              />
-            </div>
-            <h2 className="profile-username">
+      <div className="card-neon profile-card d-flex">
+        <div className="profile-left d-flex align-items-start">
+          {/* Avatar y ubicación */}
+          <div className="avatar-section text-center me-3">
+            <h3 className="profile-username mb-2">
               {store?.user?.username || "User Name"}
-            </h2>
+            </h3>
+            <img
+              src={store?.user?.avatar_url || "/src/front/assets/avatars/avatar1.png"}
+              alt="Avatar"
+              style={{ width: "120px", height: "120px", borderRadius: "50%" }}
+            />
+            <div className="profile-location mt-2">
+              <p className="mb-1"><strong>País:</strong> {store?.user?.country || "No registrado"}</p>
+              <p className="mb-0"><strong>Ciudad:</strong> {store?.user?.city || "No registrada"}</p>
+            </div>
           </div>
 
-          <h4>Datos de usuario</h4>
-          <p><strong>Email:</strong> {store?.user?.email || "notengo@email.net"}</p>
-          <p>
-            <strong>Ubicación:</strong>{" "}
-            {store?.user?.city && store?.user?.country
-              ? `${store.user.city}, ${store.user.country}`
-              : "Ubicación no registrada"}
-          </p>
-          <p>
-            <strong>Miembro desde:</strong>{" "}
-            {store?.user?.created_at
-              ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })
-              : "No registrado"}
-          </p>
+          {/* Datos de usuario */}
+          <div className="user-data flex-grow-1">
+            <h4>Datos de usuario</h4>
+            <p><strong>Email:</strong> {store?.user?.email || "notengo@email.net"}</p>
+            <p>
+              <strong>Miembro desde:</strong>{" "}
+              {store?.user?.created_at
+                ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })
+                : "No registrado"}
+            </p>
 
-          <h4>Descripción personalizada</h4>
-          <textarea placeholder="Escribe aquí lo que quieras que los demás vean"></textarea>
+            <h4>Descripción personalizada</h4>
+            <textarea placeholder="Escribe aquí lo que quieras que los demás vean"></textarea>
+          </div>
         </div>
       </div>
 

@@ -22,7 +22,7 @@ export const EditProfile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
 
-  // Estados
+  // Estados de usuario
   const [country, setCountry] = useState("");
   const [city, setCity] = useState("");
   const [username, setUsername] = useState("");
@@ -30,6 +30,10 @@ export const EditProfile = () => {
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState("");
   const [error, setError] = useState("");
+
+  // Estados para países y ciudades
+  const [countries, setCountries] = useState([]);
+  const [cities, setCities] = useState([]);
 
   // Avatares disponibles
   const avatarOptions = [
@@ -55,6 +59,26 @@ export const EditProfile = () => {
       navigate("/login");
     }
   }, [navigate]);
+
+  // Cargar países
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}api/countries`)
+      .then((res) => res.json())
+      .then((data) => setCountries(data))
+      .catch((err) => console.error("Error cargando países:", err));
+  }, []);
+
+  // Cargar ciudades según el país
+  useEffect(() => {
+    if (country) {
+      fetch(`${import.meta.env.VITE_BACKEND_URL}api/cities/${country}`)
+        .then((res) => res.json())
+        .then((data) => setCities(data))
+        .catch((err) => console.error("Error cargando ciudades:", err));
+    } else {
+      setCities([]);
+    }
+  }, [country]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -105,7 +129,7 @@ export const EditProfile = () => {
             <h2 className="mb-4 text-center">Editar Perfil</h2>
 
             <form onSubmit={handleUpdate}>
-              {/* Avatar arriba */}
+              {/* Avatar */}
               <div className="mb-3 text-center">
                 <label className="form-label">Selecciona tu Avatar</label>
                 <div className="d-flex gap-3 flex-wrap justify-content-center">
@@ -114,9 +138,8 @@ export const EditProfile = () => {
                       key={i}
                       src={img}
                       alt={`avatar${i + 1}`}
-                      className={`rounded-circle border ${
-                        avatar === img ? "border-primary border-3" : "border-light"
-                      }`}
+                      className={`rounded-circle border ${avatar === img ? "border-primary border-3" : "border-light"
+                        }`}
                       style={{
                         width: "70px",
                         height: "70px",
@@ -168,25 +191,39 @@ export const EditProfile = () => {
               {/* País */}
               <div className="mb-3">
                 <label className="form-label">País</label>
-                <input
-                  type="text"
-                  className="form-control"
+                <select
+                  className="form-select"
                   value={country}
-                  onChange={(e) => setCountry(e.target.value)}
-                  placeholder="Escribe tu país"
-                />
+                  onChange={(e) => {
+                    setCountry(e.target.value);
+                    setCity("");
+                  }}
+                >
+                  <option value="">Selecciona un país</option>
+                  {countries.map((c, i) => (
+                    <option key={i} value={c}>
+                      {c}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {/* Ciudad */}
               <div className="mb-3">
                 <label className="form-label">Ciudad</label>
-                <input
-                  type="text"
-                  className="form-control"
+                <select
+                  className="form-select"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  placeholder="Escribe tu ciudad"
-                />
+                  disabled={!country}
+                >
+                  <option value="">Selecciona una ciudad</option>
+                  {cities.map((cityName, i) => (
+                    <option key={i} value={cityName}>
+                      {cityName}
+                    </option>
+                  ))}
+                </select>
               </div>
 
               {error && <div className="alert alert-danger">{error}</div>}
