@@ -81,40 +81,23 @@ export const Navbar = () => {
           )}
         </ul>
 
-        {/* LogIn / SignUp */}
-        {!store?.isRegistered ? (
-          <ul className="navbar-nav ms-auto gap-3 d-none d-lg-flex">
-            <li className="nav-item">
+        {/* LogIn / SignUp y PayPal */}
+        <div className="d-none d-lg-flex ms-auto align-items-center gap-3">
+          {!store?.isRegistered ? (
+            <>
               <Link to="/login" className="nav-link fw-bold">
                 LogIn
               </Link>
-            </li>
-            <li className="nav-item">
               <Link to="/signup" className="nav-link fw-bold">
                 SignUp
               </Link>
-            </li>
-          </ul>
-        ) : (
-          <div className="d-none d-lg-block" style={{ width: "80px" }} />
-        )}
+            </>
+          ) : (
+            <div style={{ width: "160px" }} /> // espacio cuando está registrado
+          )}
 
-        {/* Botón PayPal */}
-        <div
-          id="donate-button-container"
-          style={{
-            position: "absolute",
-            top: "0",
-            right: "0",
-            width: "80px",
-            height: "80px",
-            zIndex: 999,
-          }}
-        >
-          <div
-            id="donate-button"
-            style={{ width: "100%", height: "100%" }}
-          ></div>
+          {/* Botón PayPal */}
+          <div id="donate-button" style={{ width: "80px", height: "80px" }}></div>
         </div>
       </div>
     </nav>

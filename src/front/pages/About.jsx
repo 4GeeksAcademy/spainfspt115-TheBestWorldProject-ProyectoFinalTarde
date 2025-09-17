@@ -18,7 +18,7 @@ export const About = () => {
       <div className="about-card">
         <h1>Sobre el Juego</h1>
         <p className="lead">
-          DESCRIPCIÓN DE NUESTRO FLAMANTE Y ESPECTACULAR JUEGO. PD: SALE SILKSONG Y QUIERO VICIAR.
+          Trabajo,trabajo.
         </p>
 
         <h3>Desarrolladores</h3>
