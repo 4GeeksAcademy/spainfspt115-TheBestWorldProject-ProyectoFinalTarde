@@ -102,10 +102,16 @@ export function enemyAttack(enemy, scene) {
 
   enemy.play(key);
   enemy.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + key, () => {
-    // quitar vida
-    const lives = scene.player.loseLife();
-    // animacion de HUD y gameover despues del ultimo corazon
-    scene.hud.loseLife(lives, () => scene.gameOver?.());
+    scene.player.playHitAndThen(enemy.x, () => {
+      // quitar vida
+      const lives = scene.player.loseLife();
+      // animacion de HUD y gameover despues del ultimo corazon
+      scene.hud.loseLife(lives, () => {
+        scene.player.playDeath(() => {
+          scene.gameOver?.();
+        });
+      });
+    });
 
     // limpieza
     enemy.getData("wordLetters")?.forEach((letter) => letter.destroy());

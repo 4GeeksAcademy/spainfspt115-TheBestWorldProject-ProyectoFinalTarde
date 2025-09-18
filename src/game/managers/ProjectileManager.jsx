@@ -7,14 +7,21 @@ export function launchProjectiles (scene, enemy, count) {
   enemy.setData("pendingProjectiles", count);
 
   for (let i = 0; i < count; i++) {
-    scene.time.delayedCall(i * 75, () => {
+    scene.time.delayedCall(i * 500, () => {
       if (!enemy.active) return;
 
-      const projectile = scene.add.circle(px, py, 5, 0x00ffff);
+      // const projectile = scene.add.circle(px, py, 5, 0x00ffff);
+      const projectile = scene.physics.add
+        .sprite(px, py, "projectile_move", 0)
+        .setScale(1.0);
+
       scene.physics.add.existing(projectile);
       scene.projectiles.add(projectile);
+      projectile.play("projectile_move", true);
 
-      scene.physics.moveToObject(projectile, enemy, 1500);
+      projectile.flipX = enemy.x < px;
+
+      scene.physics.moveToObject(projectile, enemy, 200);
 
       scene.physics.add.overlap(projectile, enemy, () => {
         if (!enemy.active) {
@@ -22,13 +29,29 @@ export function launchProjectiles (scene, enemy, count) {
           return;
         }
 
-        projectile.destroy();
-        let pending = enemy.getData("pendingProjectiles") - 1;
-        enemy.setData("pendingProjectiles", pending);
+        if (projectile.getData("exploding")) return;
 
-        if (pending <= 0) {
-          killEnemy(enemy, scene);
-        }
+        projectile.setData("exploding", true);
+
+        projectile.body.stop();
+        projectile.play("projectile_explode", true);
+
+        projectile.once(
+          Phaser.Animations.Events.ANIMATION_COMPLETE,
+          (animation) => {
+            if (animation.key === "projectile_explode")
+            {
+              projectile.destroy();
+
+              let pending = enemy.getData("pendingProjectiles") - 1;
+              enemy.setData("pendingProjectiles", pending);
+
+              if (pending === 0) {
+                killEnemy(enemy, scene);
+              }
+            }
+          }
+        );
       });
     });
   }

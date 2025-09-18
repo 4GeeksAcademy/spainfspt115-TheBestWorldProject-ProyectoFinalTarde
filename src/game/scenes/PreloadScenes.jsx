@@ -20,6 +20,39 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image("ice", "src/game/assets/sprites/ice.png");
     this.load.image("spark", "src/game/assets/sprites/spark.png");
 
+    // Player
+    this.load.spritesheet("player_idle", "src/game/assets/sprites/player/Idle.png", {
+      frameWidth: 140,
+      frameHeight: 140,
+    });
+
+    this.load.spritesheet("player_attack", "src/game/assets/sprites/player/Attack.png", {
+      frameWidth: 140,
+      frameHeight: 140,
+    });
+
+    this.load.spritesheet("player_hit", "src/game/assets/sprites/player/Get hit.png", {
+      frameWidth: 140,
+      frameHeight: 140,
+    });
+
+    this.load.spritesheet("player_death", "src/game/assets/sprites/player/Death.png", {
+      frameWidth: 140,
+      frameHeight: 140,
+    });
+
+    // Projectile
+    this.load.spritesheet("projectile_move", "src/game/assets/sprites/player/projectile/Moving.png", {
+      frameWidth: 50,
+      frameHeight: 50,
+    });
+
+    this.load.spritesheet("projectile_explode", "src/game/assets/sprites/player/projectile/Explode.png", {
+      frameWidth: 50,
+      frameHeight: 50,
+    });
+
+
     // Slime
     this.load.spritesheet("slime_run", "src/game/assets/sprites/enemies/enemy_slime/Run/Slime_Run_full.png", {
       frameWidth: 64,

@@ -147,7 +147,10 @@ export function handleInput(event, scene) {
       killEnemy(enemy, scene);
     } else {
       updateSpeedEnemy(scene, enemy, 0);
-      launchProjectiles(scene, enemy, word.length);
+
+      scene.player.playAttackAndThen(enemy.x, () => {
+        launchProjectiles(scene, enemy, word.length);
+      });
     }
 
     clearActiveEnemy(scene);

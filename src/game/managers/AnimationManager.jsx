@@ -1,4 +1,3 @@
-// managers/AnimationManager.jsx
 export function createAnimations(scene) {
   // ---- HEARTS ----
   scene.anims.create({
@@ -30,6 +29,52 @@ export function createAnimations(scene) {
     makeDirectionalAnims(scene, type.run,    `${type.key}_run`,    12, true);
     makeDirectionalAnims(scene, type.attack, `${type.key}_attack`, 12, false);
     makeDirectionalAnims(scene, type.death,  `${type.key}_death`,  12, false);
+  });
+
+  // ---- PLAYER ----
+  scene.anims.create({
+    key: "player_idle",
+    frames: scene.anims.generateFrameNumbers("player_idle"),
+    framreRate:8,
+    repeat: -1,
+  });
+
+  scene.anims.create({
+    key: "player_attack",
+    frames: scene.anims.generateFrameNumbers("player_attack"),
+    framreRate:12,
+    repeat: 0,
+  });
+
+  scene.anims.create({
+    key: "player_hit",
+    frames: scene.anims.generateFrameNumbers("player_hit"),
+    framreRate:6,
+    repeat: 0,
+    duration: 400
+  });
+
+  scene.anims.create({
+    key: "player_death",
+    frames: scene.anims.generateFrameNumbers("player_death"),
+    framreRate:12,
+    repeat: 0,
+  });
+
+  // ---- PROJECTILE ----
+  scene.anims.create({
+    key: "projectile_move",
+    frames: scene.anims.generateFrameNumbers("projectile_move"),
+    framreRate:18,
+    repeat: -1,
+  });
+
+  scene.anims.create({
+    key: "projectile_explode",
+    frames: scene.anims.generateFrameNumbers("projectile_explode"),
+    framreRate:20,
+    repeat: 0,
+    hideOnComplete: true
   });
 }
 

@@ -1,5 +1,3 @@
-
-
 export const GameSettings = {
     // animations:{},
     audio: {
