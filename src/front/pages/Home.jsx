@@ -19,29 +19,30 @@ export const Home = () => {
       <div className="home-overlay"></div>
 
       {/* Contenido de card */}
-      <div className="home-content">
-        <h1>M  e  c  a  M  a  g  i  C</h1>
+      <h1 className="mecamagic-title">
+        {"M e c a M a g i C".split("").map((letter, index) => (
+          <span key={index} style={{ animationDelay: `${index * 0.1}s` }}>
+            {letter === " " ? "\u00A0" : letter}
+          </span>
+        ))}
+      </h1>
 
-        <div className="card-neon">
-          <div className="card-body">
-            <h3 className="card-title">
-              {store.isRegistered ? store.user?.username : "Invitado"}
-            </h3>
-            <p className="card-text">
-<<<<<<< HEAD
-              Si te registras, podrás obtener varias bonificaciones y podrás acceder a tus estadísticas.
-=======
-              Si te registras podrás acceder a tus estadisticas a parte de obtener varias bonificaciones.
->>>>>>> b11c5937f576fa53cc4bfa6454f634e4ab3c6082
-            </p>
-            <Play />
-          </div>
-        </div>
-
-        <div className="created-by">
-          <h5>Created By: Carlos, Arturo, Constantin, Javier y Kostantin</h5>
+      <div className="card-neon">
+        <div className="card-body">
+          <h3 className="card-title">
+            {store.isRegistered ? store.user?.username : "Invitado"}
+          </h3>
+          <p className="card-text">
+            Si te registras podrás acceder a tus estadisticas a parte de obtener varias bonificaciones.
+          </p>
+          <Play />
         </div>
       </div>
+
+      <div className="created-by">
+        <h5>Created By: Carlos, Arturo, Constantin, Javier y Kostantin</h5>
+      </div>
     </div>
+
   );
 };

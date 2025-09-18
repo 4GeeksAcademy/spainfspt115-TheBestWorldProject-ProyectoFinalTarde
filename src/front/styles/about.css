@@ -1,7 +1,6 @@
-/* Contenedor principal */
 .about-container {
     position: relative;
-    min-height: 100vh;
+    min-height: 70vh;
     padding: 2rem;
     color: #fff;
     display: flex;
@@ -10,9 +9,10 @@
     justify-content: center;
     text-align: center;
     gap: 2rem;
+    box-sizing: border-box;
+    overflow: hidden;
 }
 
-/* Imagen de fondo */
 .about-bg {
     position: fixed;
     top: 0;
@@ -23,7 +23,6 @@
     z-index: -2;
 }
 
-/* Overlay oscuro */
 .about-overlay {
     position: fixed;
     inset: 0;
@@ -31,7 +30,6 @@
     z-index: -1;
 }
 
-/* Card estilo neón para secciones */
 .about-card {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(6px);
@@ -54,14 +52,12 @@
     transform: translateY(-2px);
 }
 
-/* Titulos con efecto glow */
 .about-card h1,
 .about-card h3 {
     text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
     margin-bottom: 1rem;
 }
 
-/* Listado de desarrolladores */
 .about-card ul {
     list-style: none;
     padding: 0;
@@ -71,7 +67,6 @@
     margin-bottom: 0.5rem;
 }
 
-/* Enlaces */
 .about-card a {
     color: #ff9fff;
     text-decoration: underline;
@@ -83,7 +78,6 @@
     text-shadow: 0 0 8px #590ead, 0 0 12px #ff0000, 0 0 15px #ffae00;
 }
 
-/* Botón estilo neón */
 .about-card .btn {
     border: 2px solid #590ead;
     background: transparent;
@@ -105,7 +99,6 @@
     transform: translateY(-2px);
 }
 
-/* Animaciones */
 @keyframes glowIn {
     from {
         box-shadow: none;
@@ -118,7 +111,6 @@
     }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .about-card {
         padding: 1.5rem;

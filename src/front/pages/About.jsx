@@ -5,11 +5,11 @@ export const About = () => {
   return (
     <div className="about-container">
       {/* Imagen de fondo */}
-      <img
+      {/* <img
         src="src/front/assets/img/rigo-baby.jpg"
         alt="Gameplay background"
         className="about-bg"
-      />
+      /> */}
 
       {/* Overlay oscuro */}
       <div className="about-overlay"></div>

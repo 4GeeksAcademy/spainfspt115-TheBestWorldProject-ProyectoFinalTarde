@@ -26,17 +26,20 @@
     z-index: -1;
 }
 
-/* Contenido centrado */
+/* Contenido centrado, pero más arriba */
 .home-content {
     flex: 1;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    /* empuja hacia arriba */
     text-align: center;
     position: relative;
     z-index: 1;
     gap: 2rem;
+    padding-top: 5rem;
+    /* ajusta la altura desde arriba */
     animation: fadeInUp 1s ease-in-out;
 }
 

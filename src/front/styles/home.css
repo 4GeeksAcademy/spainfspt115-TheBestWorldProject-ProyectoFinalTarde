@@ -1,11 +1,24 @@
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* Contenedor principal centrado */
 .home-container {
   position: relative;
   height: 100vh;
-  overflow: hidden;
+  width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
+/* Video de fondo */
 .bg-video {
   position: fixed;
   top: 0;
@@ -16,6 +29,7 @@
   z-index: -2;
 }
 
+/* Capa oscura */
 .home-overlay {
   position: fixed;
   inset: 0;
@@ -23,44 +37,41 @@
   z-index: -1;
 }
 
+/* Contenido centrado en columna */
 .home-content {
-  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
-  position: relative;
-  z-index: 1;
   gap: 2rem;
-  animation: fadeInUp 1s ease-in-out;
+  z-index: 1;
 }
 
-.home-content h1 {
-  font-size: 5rem;
-  letter-spacing: 1.5rem;
+/* Título M e c a M a g i C animado */
+.mecamagic-title {
+  font-size: 4rem;
+  letter-spacing: 1rem;
+  margin: 0 0 2rem 0;
+  transform: translateY(-80px);
   color: #fff;
-  text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
-  margin: 0;
-  line-height: 1.2;
-  animation: fadeInUp 1s ease-in-out;
+  text-shadow: 0 0 12px #590ead, 0 0 24px #ff0000;
 }
 
-@media (max-width: 768px) {
-  .home-content h1 {
-    font-size: 3rem;
-    letter-spacing: 1rem;
-  }
+.mecamagic-title span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(-30px) rotateY(90deg) scale(0);
+  animation: letterMagic 0.6s forwards;
 }
 
-@media (max-width: 480px) {
-  .home-content h1 {
-    font-size: 2rem;
-    letter-spacing: 0.5rem;
-  }
-}
-
+/* Card estilo neón */
 .card-neon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(6px);
   border: 2px solid #590ead;
@@ -68,12 +79,12 @@
   color: #fff;
   border-radius: 12px;
   padding: 2rem;
-  max-width: 500px;
   width: 100%;
-  animation: glowIn 1.5s ease-in-out;
+  max-width: 500px;
   transition: all 0.3s ease-in-out;
 }
 
+/* Hover multicolor */
 .card-neon:hover {
   box-shadow:
     0 0 15px #590ead,
@@ -83,48 +94,46 @@
   transform: translateY(-3px);
 }
 
-.home-content h1,
-.card-neon h3 {
-  text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
-}
-
+/* Créditos debajo */
 .created-by {
   color: #fff;
   text-shadow: 0 0 6px #590ead;
   font-size: 14px;
-  animation: fadeIn 2s ease-in-out;
+  margin-top: 3rem;
 }
 
-@keyframes fadeInUp {
-  from {
+/* Animación de letras */
+@keyframes letterMagic {
+  0% {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(-30px) rotateY(90deg) scale(0);
   }
 
-  to {
+  50% {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(10px) rotateY(-10deg) scale(1.2);
+  }
+
+  70% {
+    transform: translateY(-3px) rotateY(5deg) scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotateY(0deg) scale(1);
   }
 }
 
-@keyframes glowIn {
-  from {
-    box-shadow: none;
-    opacity: 0;
+/* Responsive */
+@media (max-width: 768px) {
+  .card-neon {
+    padding: 1rem;
+    max-width: 90%;
   }
 
-  to {
-    box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
-    opacity: 1;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
+  .mecamagic-title {
+    font-size: 2.5rem;
+    letter-spacing: 0.5rem;
+    transform: translateY(-50px);
   }
 }
