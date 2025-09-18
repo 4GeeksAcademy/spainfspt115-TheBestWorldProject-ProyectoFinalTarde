@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import "../styles/editProfile.css";
+import "../styles/editprofile.css";
 
 // Avatares
 import avatar1 from "../assets/avatars/avatar1.png";

@@ -1,0 +1,69 @@
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1050;
+}
+
+.modal-card {
+    width: 80%;
+    max-width: 1200px;
+    min-width: 600px;
+    min-height: 200px;
+    padding: 4rem;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(6px);
+    border: 2px solid #590ead;
+    box-shadow: 0 0 25px #590ead, inset 0 0 15px #590ead;
+    color: #fff;
+    border-radius: 12px;
+    animation: glowIn 1.5s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 2.5rem;
+}
+
+.modal-card .close-btn {
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    border: 2px solid #590ead;
+    background: transparent;
+    color: #fff;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 0 15px #590ead;
+    transition: all 0.3s ease, transform 0.2s ease;
+    flex: 1;
+    text-transform: uppercase;
+    font-size: 1.1rem;
+}
+
+.modal-card .close-btn:hover {
+    box-shadow:
+        0 0 20px #590ead,
+        0 0 25px #ff0000,
+        0 0 30px #ffae00,
+        inset 0 0 15px #590ead;
+    transform: translateY(-3px);
+}
+
+@keyframes glowIn {
+    from {
+        box-shadow: none;
+        opacity: 0;
+    }
+
+    to {
+        box-shadow: 0 0 25px #590ead, inset 0 0 15px #590ead;
+        opacity: 1;
+    }
+}

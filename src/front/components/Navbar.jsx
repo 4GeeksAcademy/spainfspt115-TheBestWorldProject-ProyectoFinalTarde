@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import logo from "../assets/LogoMago.png";
+import moneda from "../assets/img/Moneda.png"
 import "../styles/navbar.css";
 
 export const Navbar = () => {
@@ -21,11 +22,13 @@ export const Navbar = () => {
           env: "production",
           hosted_button_id: "JZPMUB4B2P3RA",
           image: {
-            src: "https://pics.paypal.com/00/s/MzY5ODI2MjItZThhMS00ODY4LTk4MGQtYTA4MzQ2ZGQ1YjBl/file.PNG",
+            src: moneda,
             alt: "Donate with PayPal button",
             title: "PayPal - The safer, easier way to pay online!",
-            width: 80,
-            height: 80,
+            width: 100,
+            height: 100,
+            border: 1,
+            radius: 50
           },
         }).render("#donate-button");
       }
@@ -35,6 +38,7 @@ export const Navbar = () => {
     return () => document.body.removeChild(script);
   }, []);
 
+    
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
       <div className="container-fluid position-relative">
@@ -58,63 +62,46 @@ export const Navbar = () => {
 
         {/* Links centrados */}
         <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
-          {location.pathname !== "/" && (
-            <li className="nav-item">
-              <a className="nav-link fw-bold" href="#">
-                Play
-              </a>
+          
+            <li className="nav-item ">
+              <Link to="/" className="nav-link fw-bold active">
+                Inicio
+              </Link>
             </li>
-          )}
-          {location.pathname !== "/about" && (
+          
+          
             <li className="nav-item">
               <Link to="/about" className="nav-link fw-bold">
                 About
               </Link>
             </li>
-          )}
-          {store?.isRegistered && location.pathname !== "/profile" && (
+          
+          
             <li className="nav-item">
               <Link to="/profile" className="nav-link fw-bold">
-                Profile
+                Perfil
               </Link>
             </li>
-          )}
+          
         </ul>
 
-        {/* LogIn / SignUp */}
-        {!store?.isRegistered ? (
-          <ul className="navbar-nav ms-auto gap-3 d-none d-lg-flex">
-            <li className="nav-item">
+        {/* LogIn / SignUp y PayPal */}
+        <div className="d-none d-lg-flex ms-auto align-items-center gap-3">
+          {!store?.isRegistered ? (
+            <>
               <Link to="/login" className="nav-link fw-bold">
                 LogIn
               </Link>
-            </li>
-            <li className="nav-item">
               <Link to="/signup" className="nav-link fw-bold">
                 SignUp
               </Link>
-            </li>
-          </ul>
-        ) : (
-          <div className="d-none d-lg-block" style={{ width: "80px" }} />
-        )}
+            </>
+          ) : (
+            <div style={{ width: "160px" }} /> // espacio cuando está registrado
+          )}
 
-        {/* Botón PayPal */}
-        <div
-          id="donate-button-container"
-          style={{
-            position: "absolute",
-            top: "0",
-            right: "0",
-            width: "80px",
-            height: "80px",
-            zIndex: 999,
-          }}
-        >
-          <div
-            id="donate-button"
-            style={{ width: "100%", height: "100%" }}
-          ></div>
+          {/* Botón PayPal */}
+          <div id="donate-button" style={{ width: "80px", height: "80px" }}></div>
         </div>
       </div>
     </nav>
