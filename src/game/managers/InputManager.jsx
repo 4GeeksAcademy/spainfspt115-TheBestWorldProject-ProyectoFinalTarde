@@ -69,9 +69,14 @@ export function handleInput(event, scene) {
       const hudPower = scene.hud.powers[clean];
       if (hudPower?.ready) {
         activatePower(scene, clean);
+      } else {
+        scene.powerBuffer = "";
+        renderPowerWord(scene);
+        return;
       }
       scene.powerBuffer = "";
       renderPowerWord(scene);
+      return;
     }
     return;
   }
@@ -146,6 +151,8 @@ export function handleInput(event, scene) {
     {
       killEnemy(enemy, scene);
     } else {
+      enemy.setData("__doomed", true);
+
       updateSpeedEnemy(scene, enemy, 0);
 
       scene.player.playAttackAndThen(enemy.x, () => {
@@ -183,20 +190,22 @@ function renderPowerWord(scene) {
 
   Object.keys(powers).forEach((name) => {
     const power = powers[name];
-    const baseHex = power.ready ? power.color.rgba : "#000000";
+    const baseHex = power.color.rgba;
     const label = `-${name.toUpperCase()}`;
 
-    // si esta en cooldown, mostrar label en negro y no overlay
+    // --- caso: está en cooldown ---
     if (!power.ready) {
+      // si tiene overlay de escritura, limpiarlo
       destroyPowerOverlay(scene, power);
       if (power.text) {
         power.text.setText(label);
-        power.text.setColor("#000000");
         power.text.setAlpha(1);
+        // 👇 NO tocamos el color porque HUDmanager lo va actualizando con el cooldown
       }
       return;
     }
 
+    // --- caso: listo pero no activo ---
     if (activePower !== name) {
       destroyPowerOverlay(scene, power);
       if (power.text) {
@@ -207,13 +216,14 @@ function renderPowerWord(scene) {
       return;
     }
 
+    // --- caso: activo (se está escribiendo) ---
     ensurePowerOverlay(scene, power, label);
     if (power.text) power.text.setAlpha(0);
 
     const typedLen = Math.min(clean.length + 1, power.letters.length);
     power.letters.forEach((letter, i) => {
       if (i < typedLen) {
-        letter.setColor("#00ff00"); // escribiendo -> verde
+        letter.setColor("#00ff00"); // verde al escribir
       } else {
         letter.setColor(baseHex);
       }

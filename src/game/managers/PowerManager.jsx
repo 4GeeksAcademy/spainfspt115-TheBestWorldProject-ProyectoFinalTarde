@@ -20,8 +20,15 @@ export function activatePower(scene, power) {
   switch (power) {
     case "fuego": {
       fireEffect(scene);
+
       const victims = scene.enemies.getChildren().filter(enemy => enemy.active);
       victims.forEach(enemy => {
+
+        if (enemy.getData("__doomed")) {
+          killEnemy(enemy, scene);
+          return;
+        }
+
         const word = enemy.getData("word");
         const letters = enemy.getData("wordLetters") || [];
 
@@ -55,6 +62,12 @@ export function activatePower(scene, power) {
       // congelar
       const frozen = scene.enemies.getChildren().filter(enemy => enemy.active);
       frozen.forEach(enemy => {
+
+        if (enemy.getData("__doomed")) {
+          killEnemy(enemy, scene);
+          return;
+        }
+        
         enemy.setTint?.(0x00bfff);
         enemy.setData("__frozen", true);
 
@@ -100,7 +113,14 @@ export function activatePower(scene, power) {
 
       if (targets.length > 0) {
         chainLightningEffect(scene, targets);
+
         targets.forEach((enemy, i) => {
+
+          if (enemy.getData("__doomed")) {
+            killEnemy(enemy, scene);
+            return;
+          }
+
           scene.time.delayedCall(i * 150, () => {
             if (!enemy.active) return;
 
