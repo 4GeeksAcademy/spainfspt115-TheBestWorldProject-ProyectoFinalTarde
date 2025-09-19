@@ -13,7 +13,7 @@ export const Profile = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       if (store.isRegistered) dispatch({ type: "logout" });
-      setShowModal(true); // 👉 mostramos el modal en lugar de alert
+      setShowModal(true);
     }
   }, [store.isRegistered, dispatch]);
 
