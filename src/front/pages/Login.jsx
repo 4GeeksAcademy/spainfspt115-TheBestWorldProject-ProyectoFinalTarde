@@ -72,7 +72,7 @@ export const Login = () => {
             <button type="submit">Iniciar sesión</button>
           </form>
           <p>
-            ¿No tienes cuenta?{" "}
+            ¿No tienes cuenta aún?{" "}
             <Link to="/signup">Regístrate aquí</Link>
           </p>
         </div>

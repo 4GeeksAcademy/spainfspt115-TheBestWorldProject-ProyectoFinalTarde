@@ -12,7 +12,7 @@ export const Home = () => {
       {/* Video de fondo */}
       <video className="bg-video" autoPlay loop muted playsInline>
         <source src={videoFondo} type="video/mp4" />
-        Tu navegador no soporta video.
+        Tu navegador no soporta el vídeo.
       </video>
 
       {/* Capa oscura  */}
@@ -33,14 +33,14 @@ export const Home = () => {
             {store.isRegistered ? store.user?.username : "Invitado"}
           </h3>
           <p className="card-text">
-            Si te registras podrás acceder a tus estadisticas a parte de obtener varias bonificaciones.
+            Si te registras podrás acceder a tus estadísticas a parte de obtener varias bonificaciones.
           </p>
           <Play />
         </div>
       </div>
 
       <div className="created-by">
-        <h5>Created By: Carlos, Arturo, Constantin, Javier y Kostantin</h5>
+        <h5>Creado por: Carlos, Arturo, Constantin, Javier y Kostantin</h5>
       </div>
     </div>
 

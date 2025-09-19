@@ -130,7 +130,7 @@ export const EditProfile = () => {
           </div>
 
           {/* Username */}
-          <label className="form-label">Username</label>
+          <label className="form-label">Usuario</label>
           <input
             type="text"
             className="form-control"

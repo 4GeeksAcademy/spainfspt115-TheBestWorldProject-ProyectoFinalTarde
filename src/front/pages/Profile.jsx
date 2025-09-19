@@ -42,13 +42,13 @@ export const Profile = () => {
                 className="close-btn"
                 onClick={() => navigate("/login")}
               >
-                Login
+                Entrar
               </button>
               <button
                 className="close-btn"
                 onClick={() => navigate("/register")}
               >
-                Register
+                Registro
               </button>
             </div>
           </div>
@@ -132,7 +132,7 @@ export const Profile = () => {
           {/* Botones abajo */}
           <div className="profile-buttons">
             <button className="profile-btn" onClick={handleLogout}>
-              LogOut
+              Salir
             </button>
             <button
               className="profile-btn warning"

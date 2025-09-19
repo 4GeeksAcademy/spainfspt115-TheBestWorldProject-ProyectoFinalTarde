@@ -59,7 +59,7 @@ export const Signup = () => {
               required
             />
 
-            <label>Username</label>
+            <label>Usuario</label>
             <input
               type="text"
               value={username}
@@ -67,7 +67,7 @@ export const Signup = () => {
               required
             />
 
-            <label>Password</label>
+            <label>Contraseña</label>
             <input
               type="password"
               value={password}
@@ -75,7 +75,7 @@ export const Signup = () => {
               required
             />
 
-            <label>Confirm Password</label>
+            <label>Confirmar contraseña</label>
             <input
               type="password"
               value={confirmPassword}
@@ -89,7 +89,7 @@ export const Signup = () => {
           </form>
 
           <p>
-            ¿Ya tienes cuenta? <Link to="/login">Login</Link>
+            ¿Ya tienes cuenta? <Link to="/login">Entrar</Link>
           </p>
         </div>
       </div>

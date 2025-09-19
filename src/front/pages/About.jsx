@@ -30,7 +30,14 @@ export const About = () => {
           <li>Constantin – <a href="#">red1</a> | <a href="#">red2</a></li>
         </ul>
 
-        <a href="#" className="btn mt-4">Ver Repositorio en GitHub</a>
+        <a
+          href="https://github.com/4GeeksAcademy/spainfspt115-TheBestWorldProject-ProyectoFinalTarde"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="btn mt-4"
+        >
+          Ver Repositorio en GitHub
+        </a>
       </div>
     </div>
   );

@@ -27,7 +27,8 @@ export const Play = () => {
                 createPortal(
                     <div className="modal-overlay">
                         <div className="card-neon modal-card">
-                            <h5 className="modal-title">¿ Aún no estás registrado ?</h5>
+                            <h3 className="modal-title">¿ Quieres competir?  </h3>
+                            <h4>Loguéate</h4>
                             <p>¿ A qué esperas ?</p>
 
                             <div className="modal-buttons">
@@ -38,10 +39,10 @@ export const Play = () => {
                                     Jugar
                                 </button>
                                 <button
-                                    onClick={() => navigate("/signup")}
+                                    onClick={() => navigate("/login")}
                                     className="close-btn"
                                 >
-                                    Registrarse
+                                    Login
                                 </button>
                             </div>
                         </div>
