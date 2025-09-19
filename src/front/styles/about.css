@@ -1,3 +1,6 @@
+/* =========================
+   Estilos generales About
+   ========================= */
 .about-container {
     position: relative;
     min-height: 70vh;
@@ -115,4 +118,101 @@
     .about-card {
         padding: 1.5rem;
     }
+}
+
+/* =========================
+   Efectos individuales por desarrollador
+   ========================= */
+
+/* Carlos - efecto neón + zoom */
+.dev-carlos {
+    color: #00ffe5;
+    text-shadow: 0 0 5px #00ffe5, 0 0 10px #00a6a0;
+    transition: transform 0.3s ease;
+}
+
+.dev-carlos:hover {
+    transform: scale(1.1);
+}
+
+/* Javier - efecto máquina de escribir */
+.dev-javier {
+    font-family: "Courier New", monospace;
+    overflow: hidden;
+    border-right: 2px solid #ffcc00;
+    white-space: nowrap;
+    display: inline-block;
+    animation: typing 3s steps(20, end) infinite alternate;
+}
+
+@keyframes typing {
+    from {
+        width: 0;
+    }
+
+    to {
+        width: 100%;
+    }
+}
+
+/* Konstantin - efecto gradiente */
+.dev-konstantin {
+    background: linear-gradient(90deg, #ff0080, #7928ca);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+
+/* Arturo - efecto bounce */
+.dev-arturo {
+    color: #ff4500;
+    display: inline-block;
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Constantin - efecto glow */
+.dev-constantin {
+    color: #00ff7f;
+    text-shadow: 0 0 5px #00ff7f, 0 0 15px #00ff7f;
+    transition: color 0.3s ease;
+}
+
+.dev-constantin:hover {
+    color: #ffffff;
+}
+
+/* =========================
+   Tamaño de fuente y iconos
+   ========================= */
+
+/* Aumentar tamaño de los nombres de desarrolladores */
+.about-card li {
+    font-size: 1.3rem;
+    font-weight: 600;
+}
+
+/* Aumentar tamaño de los iconos de LinkedIn y GitHub */
+.about-card li a .svg-inline--fa {
+    font-size: 1.2rem;
+    margin-right: 0.3rem;
+    vertical-align: middle;
+}
+
+/* Ajuste para el botón del repositorio */
+.about-card .btn .svg-inline--fa {
+    font-size: 1.2rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
 }

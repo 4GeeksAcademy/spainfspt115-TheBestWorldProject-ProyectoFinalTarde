@@ -47,12 +47,12 @@ export const Footer = () => {
           <ul className="dropdown-menu" aria-labelledby="profileDropdown">
             <li>
               <Link to="/profile" className="dropdown-item">
-                <i className="bi bi-person-circle me-2"></i>Profile
+                <i className="bi bi-person-circle me-2"></i>Perfil
               </Link>
             </li>
             <li>
               <a className="dropdown-item" href="#">
-                <i className="bi bi-bell me-2"></i>Notifications
+                <i className="bi bi-bell me-2"></i>Notificaciones
               </a>
             </li>
             <li className="dropdown-divider"></li>
