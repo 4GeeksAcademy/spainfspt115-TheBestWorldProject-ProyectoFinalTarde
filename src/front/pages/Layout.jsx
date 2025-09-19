@@ -46,7 +46,7 @@ export const Layout = () => {
       <div className="d-flex flex-column min-vh-100">
         <Navbar />
 
-        {/* Contenido principal */}
+        {/* Contenido principal QUITAR PARA QUE EL SCROLL NO APAREZCA */}
         <main
           className="flex-grow-1 d-flex flex-column justify-content-center"
           style={{
