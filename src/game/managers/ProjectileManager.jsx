@@ -4,16 +4,18 @@ export function launchProjectiles (scene, enemy, count) {
   const {x: px, y:py} = scene.player;
   if (!enemy || !enemy.active) return;
 
-  enemy.setData("pendingProjectiles", count);
+  // count desabilitado --- 
 
-  for (let i = 0; i < count; i++) {
-    scene.time.delayedCall(i * 500, () => {
+  enemy.setData("pendingProjectiles", 1);
+
+  for (let i = 0; i < 1; i++) {
+    scene.time.delayedCall(i * 250, () => {
       if (!enemy.active) return;
 
       // const projectile = scene.add.circle(px, py, 5, 0x00ffff);
       const projectile = scene.physics.add
         .sprite(px, py, "projectile_move", 0)
-        .setScale(1.0);
+        .setScale(2.5);
 
       scene.physics.add.existing(projectile);
       scene.projectiles.add(projectile);
@@ -21,7 +23,7 @@ export function launchProjectiles (scene, enemy, count) {
 
       projectile.flipX = enemy.x < px;
 
-      scene.physics.moveToObject(projectile, enemy, 200);
+      scene.physics.moveToObject(projectile, enemy, 1000);
 
       scene.physics.add.overlap(projectile, enemy, () => {
         if (!enemy.active) {

@@ -74,7 +74,7 @@ export default class GameScene extends Phaser.Scene {
     let count = 3;
     const countdownText = this.add
       .text(this.width / 2, this.height / 2, count, {
-        font: "80px Arial Black",
+        font: "80px",
         fill: "#ff0",
         stroke: "#000",
         strokeThickness: 6,

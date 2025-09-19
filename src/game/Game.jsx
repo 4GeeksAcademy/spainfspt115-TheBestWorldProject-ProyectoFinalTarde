@@ -6,6 +6,19 @@ import GameScene from "./scenes/GameScene";
 import GameOverScene from "./scenes/GameOverScene";
 import SettingsScene from "./scenes/SettingsScene";
 
+const defaultFont = '"Pixelify Sans", sans-serif';
+
+const origTextFactory = Phaser.GameObjects.GameObjectFactory.prototype.text;
+
+Phaser.GameObjects.GameObjectFactory.prototype.text = function(x, y, text, style = {}) {
+  if (!style.fontFamily && !style.font) {
+    style.fontFamily = defaultFont;
+    style.fontSize = style.fontSize || "24px";
+    style.color = style.color || "#ffffff";
+  }
+  return origTextFactory.call(this, x, y, text, style);
+};
+
 export default function Game() {
   useEffect(() => {
     const game = new Phaser.Game({

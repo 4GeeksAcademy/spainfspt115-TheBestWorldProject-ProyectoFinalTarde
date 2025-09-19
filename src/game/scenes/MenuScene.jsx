@@ -17,7 +17,7 @@ export default class MenuScene extends Phaser.Scene {
     const centerX = width / 2;
 
     // --- titulo ---
-    const title = this.add.text(centerX, height * 0.15, "- NOMBRE DEL JUEGO -", {
+    const title = this.add.text(centerX, height * 0.15, "- M E C A M A G I C -", {
       fontSize: "40px",
       color: "#fff",
       fontStyle: "bold"

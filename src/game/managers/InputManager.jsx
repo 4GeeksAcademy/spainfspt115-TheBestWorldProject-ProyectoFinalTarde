@@ -153,7 +153,7 @@ export function handleInput(event, scene) {
     } else {
       enemy.setData("__doomed", true);
 
-      updateSpeedEnemy(scene, enemy, 0);
+      updateSpeedEnemy(scene, enemy, 10);
 
       scene.player.playAttackAndThen(enemy.x, () => {
         launchProjectiles(scene, enemy, word.length);

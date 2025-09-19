@@ -3,7 +3,7 @@ export function createPlayer (scene, x, y) {
 
     const player = scene.add.sprite(x, y, "player_idle", 0);
     player.setDepth(10);
-    player.setScale(1.0);
+    player.setScale(1.5);
 
     scene.physics.add.existing(player);
     player.setOrigin(0.5, 0.5);
