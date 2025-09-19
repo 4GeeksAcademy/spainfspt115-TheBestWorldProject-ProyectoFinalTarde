@@ -5,9 +5,8 @@ import Game from "../../game/Game.jsx";
 
 export const Home = () => {
 
-
-
 	return (
 		<Game />
+
 	);
 }; 
