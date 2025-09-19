@@ -38,7 +38,7 @@ export const Navbar = () => {
     return () => document.body.removeChild(script);
   }, []);
 
-    
+
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
       <div className="container-fluid position-relative">
@@ -62,27 +62,27 @@ export const Navbar = () => {
 
         {/* Links centrados */}
         <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
-          
-            <li className="nav-item ">
-              <Link to="/" className="nav-link fw-bold active">
-                Inicio
-              </Link>
-            </li>
-          
-          
-            <li className="nav-item">
-              <Link to="/about" className="nav-link fw-bold">
-                About
-              </Link>
-            </li>
-          
-          
-            <li className="nav-item">
-              <Link to="/profile" className="nav-link fw-bold">
-                Perfil
-              </Link>
-            </li>
-          
+
+          <li className="nav-item ">
+            <Link to="/" className="nav-link fw-bold active">
+              Inicio
+            </Link>
+          </li>
+
+
+          <li className="nav-item">
+            <Link to="/about" className="nav-link fw-bold">
+              Info
+            </Link>
+          </li>
+
+
+          <li className="nav-item">
+            <Link to="/profile" className="nav-link fw-bold">
+              Perfil
+            </Link>
+          </li>
+
         </ul>
 
         {/* LogIn / SignUp y PayPal */}
@@ -90,10 +90,10 @@ export const Navbar = () => {
           {!store?.isRegistered ? (
             <>
               <Link to="/login" className="nav-link fw-bold">
-                LogIn
+                Entrar
               </Link>
               <Link to="/signup" className="nav-link fw-bold">
-                SignUp
+                Registro
               </Link>
             </>
           ) : (

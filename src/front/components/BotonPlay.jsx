@@ -42,7 +42,7 @@ export const Play = () => {
                                     onClick={() => navigate("/login")}
                                     className="close-btn"
                                 >
-                                    Login
+                                    Entrar
                                 </button>
                             </div>
                         </div>

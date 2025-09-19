@@ -61,7 +61,7 @@ export const Footer = () => {
                 className="dropdown-item text-danger"
                 onClick={handleLogout}
               >
-                LogOut
+                Salir
               </button>
             </li>
           </ul>

@@ -2,14 +2,10 @@
 .edit-container {
     position: relative;
     height: 10vh;
-    /* compacto */
     display: flex;
     justify-content: center;
-    /* centra horizontalmente */
     align-items: center;
-    /* centra verticalmente */
     padding-top: 0.3rem;
-    /* mínimo espacio superior */
 }
 
 /* Card estilo neón */
