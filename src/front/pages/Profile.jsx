@@ -8,12 +8,16 @@ export const Profile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
   const [showModal, setShowModal] = useState(false);
+  const [description, setDescription] = useState("");
+  const [isEditing, setIsEditing] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       if (store.isRegistered) dispatch({ type: "logout" });
       setShowModal(true);
+    } else {
+      setDescription(store.user?.description || "");
     }
   }, [store.isRegistered, dispatch]);
 
@@ -22,6 +26,36 @@ export const Profile = () => {
     dispatch({ type: "logout" });
     navigate("/");
   };
+
+  const handleSaveDescription = async () => {
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ description: description })
+      })
+
+      const updateUser = await response.json();
+
+      if (response.ok) {
+        alert("descripción guardada con éxito");
+        dispatch({
+          type: 'set_user',
+          payload: { user: updateUser, token: token }
+        });
+        setIsEditing(false);
+      } else {
+        alert(updateUser.error || "No se pudo guardar la descripción.");
+      }
+    } catch (error) {
+      console.error("Error al guardar:", error);
+      alert("Error de conexión al guardar la descripción.")
+    }
+  }
 
   return (
     <div className="profile-container">
@@ -89,8 +123,31 @@ export const Profile = () => {
                 : "No registrado"}
             </p>
 
-            <h4>Descripción personalizada</h4>
-            <textarea placeholder="Escribe aquí lo que quieras que los demás vean"></textarea>
+            <h4>----------------</h4>
+            {isEditing ? (
+              // MODO EDICIÓN
+              <>
+                <textarea
+                  placeholder="Escribe aquí lo que quieras que los demás vean"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                ></textarea>
+                <button className="profile-btn save-btn mt-2" onClick={handleSaveDescription}>
+                  Guardar
+                </button>
+              </>
+            ) : (
+              // MODO VISTA
+              <>
+                <p className="profile-description">
+                  {description || <i>Añade una descripción...</i>}
+                </p>
+                <button className="profile-btn edit-btn mt-2" onClick={() => setIsEditing(true)}>
+                  Editar Descripción
+                </button>
+              </>
+            )}
+
           </div>
 
           {/* Columna central */}

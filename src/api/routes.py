@@ -123,6 +123,9 @@ def update_user():
     if "avatar_url" in data:
         user.avatar_url = data["avatar_url"]
 
+    if "description" in data:
+        user.description = data["description"]
+
     db.session.commit()
     return jsonify(user.serialize()), 200
 
