@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import String, Boolean, DateTime, func
+from sqlalchemy import String, Boolean, DateTime, func, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from typing import List
@@ -15,6 +15,10 @@ class User(db.Model):
     email: Mapped[str] = mapped_column(String(120), unique=True, nullable=False)
     password_hash: Mapped[str] = mapped_column(nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    country: Mapped[str] = mapped_column(String(100), nullable=True)
+    city: Mapped[str] = mapped_column(String(100), nullable=True)
+    avatar_url: Mapped[str] = mapped_column(String(255), nullable=True)
+    description: Mapped[str] = mapped_column(Text, nullable=True)
 
     games: Mapped[List["Game"]] = relationship(
         "Game",
@@ -34,5 +38,9 @@ class User(db.Model):
             "username" : self.username ,
             "email" : self.email ,
             "created_at" : self.created_at,
-            "games" : [game.serialize() for game in self.games]
+            "country": self.country,
+            "city": self.city,
+            "avatar_url": self.avatar_url,
+            "games" : [game.serialize() for game in self.games],
+            "description": self.description
         }

@@ -29,7 +29,7 @@ def setup_commands(app):
             db.session.add(user)
             db.session.commit()
             print("User: ", user.email, " created.")
-
+            insert_test_data
         print("All test users created")
 
     @app.cli.command("insert-test-data")

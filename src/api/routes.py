@@ -1,7 +1,3 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
-
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models.modelGame import Game
 from api.models.modelDictionary import Dictionary
@@ -14,139 +10,149 @@ from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from datetime import datetime
 from sqlalchemy import func
+import os, json
 import requests
-import json
+
 
 api = Blueprint('api', __name__)
 
 # Allow CORS requests to this API
 CORS(api)
 
-#USER ROUTES
-#---obtener todos los usuarios
-@api.route('/user', methods =['GET'])
+# === CARGAR DATA DE PAISES Y CIUDADES ===
+base_path = os.path.join(os.path.dirname(__file__), "data")
+with open(os.path.join(base_path, "countries+cities.json"), "r", encoding="utf-8") as f:
+    countries_cities_data = json.load(f)
+
+# USER ROUTES
+# ---obtener todos los usuarios
+@api.route('/user', methods=['GET'])
 def get_users():
     users = User.query.all()
     result = [user.serialize() for user in users]
     return jsonify(result)
 
-#---obtener usuario por id
+# ---obtener usuario por id
 @api.route('/user/<int:user_id>', methods=['GET'])
 @jwt_required()
 def get_user(user_id):
     current_user_id = int(get_jwt_identity())
     if current_user_id != user_id:
-        return jsonify({"error": "Not Authorized"}), 403
-
+        return jsonify({"error": "No Authorizado"}), 403
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error":"User not found"}),404
+        return jsonify({"error": "Usario no encontrado"}), 404
     return jsonify(user.serialize()), 200
 
-#---para la pagina de profile
+# ---para la pagina de profile
 @api.route("/profile", methods=["GET"])
 @jwt_required()
 def profile():
     current_user_id = int(get_jwt_identity())
     user = User.query.get(current_user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": "Usario no encontrado"}), 404
     return jsonify(user.serialize()), 200
 
-#---creacion usuario
+# ---creacion usuario
 @api.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
-    
-    if not data["email"] or not data["password"] or not data["username"]:
-        return jsonify({"msg" : "Email, username and password required"}), 400
-    
-    existing_user = db.session.execute(
-        db.select(User).where(
-            User.email == data["email"],
-            User.username == data["username"]
-        )
-    ).scalar_one_or_none()
-
+    if not data.get("email") or not data.get("password") or not data.get("username"):
+        return jsonify({"msg": "Email, nombre de usuario y contraseña son requeridos"}), 400
+    # verificar duplicados por email o username
+    existing_user = User.query.filter(
+        (User.email == data["email"]) | (User.username == data["username"])
+    ).first()
     if existing_user:
-        return jsonify({"msg": "user already exist"}), 400
-    
+        return jsonify({"msg": "Usuario o email ya registrados"}), 400
     new_user = User(
-        email = data["email"],
-        username = data["username"],
-        created_at = datetime.now()
+        email=data["email"],
+        username=data["username"],
+        country=data.get("country"),
+        city=data.get("city"),
+        created_at=datetime.now()
     )
     new_user.set_password(data["password"])
     db.session.add(new_user)
     db.session.commit()
+    return jsonify({
+        "msg": "Usuario creado satisfactoriamente",
+        "user": new_user.serialize()
+    }), 201
 
-    return jsonify({"msg": "user created succesfully"}), 201
-
-#---login usuario
+# ---login usuario
 @api.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
+    if not data.get("username") or not data.get("password"):
+        return jsonify({"msg": "Usuario y contraseña son obligatorios"}), 400
 
-    if not data["username"] or not data["password"]:
-        return jsonify({"msg" : "Username and Password are required"}), 400
-    
-    user = db.session.execute(db.select(User).where(
-        User.username == data["username"],
-    )).scalar_one_or_none()
+    user = User.query.filter_by(username=data["username"]).first()
+    if user is None or not user.check_password(data["password"]):
+        return jsonify({"msg": "Usuario o contraseña inválidos"}), 401
 
-    if user is None:
-        return jsonify({"msg": "Invalid username or password"}), 401
-    
-    if user.check_password(data["password"]):
-        access_token = create_access_token(identity=str(user.id_user))
-        return jsonify({"msg": "login Succesfully", "token": access_token})
-    else:
-        return jsonify({"msg": "Invalid username or password"}), 401
-    
-#---Actualizar info del usuario
+    access_token = create_access_token(identity=str(user.id_user))
+    return jsonify({
+        "msg": "Estás dentro",
+        "token": access_token,
+        "user": user.serialize()
+    }), 200
+
+# ---Actualizar info del usuario
 @api.route('/user', methods=['PUT'])
 @jwt_required()
 def update_user():
     current_user_id = int(get_jwt_identity())
     user = User.query.get(current_user_id)
-
     if not user:
-        return jsonify({"error": "Usuario not found"}), 404
+        return jsonify({"error": "Usuario no encontrado"}), 404
 
     data = request.get_json()
-    if "username" in data:
-        user.username = data["username"]
+
+    for field in ["username", "country", "city"]:
+        if field in data:
+            setattr(user, field, data[field])
+
     if "email" in data:
         if User.query.filter(User.email == data["email"], User.id_user != current_user_id).first():
-            return jsonify({"error": "Email used"}), 400
+            return jsonify({"error": "Email ya en uso"}), 400
         user.email = data["email"]
+
     if "password" in data:
         user.set_password(data["password"])
+
+    if "avatar_url" in data:
+        user.avatar_url = data["avatar_url"]
+
+    if "description" in data:
+        user.description = data["description"]
 
     db.session.commit()
     return jsonify(user.serialize()), 200
 
 # GAME ROUTES
-#--- Obtener todas las partidas
-@api.route('/game', methods = ['GET'])
+# --- Obtener todas las partidas
+@api.route('/game', methods=['GET'])
 def get_games():
     games = Game.query.all()
     result = [game.serialize() for game in games]
     return jsonify(result), 200
 
-#--- Obtener partida por id
-@api.route('/game/<int:id_game>', methods = ['GET'])
+# --- Obtener partida por id
+@api.route('/game/<int:id_game>', methods=['GET'])
 def get_game(id_game):
     game = Game.query.get(id_game)
     if game is None:
-        return jsonify({"msg":"User doesn't exists"}),400
+        return jsonify({"msg": "Usuario no existe"}), 400
     return jsonify(game.serialize()), 200
+
 
 #--- Crear juego
 @api.route('/game', methods = ['POST'])
 def create_game():
     body = request.get_json()
-
+    
     game = Game(
         id_user=body.get("id_user"),
         final_score=body.get("final_score", 0),
@@ -157,38 +163,33 @@ def create_game():
         difficulty=body.get("difficulty", 1),
         played_at=body.get("played_at")
     )
-
     db.session.add(game)
     db.session.commit()
-
     return jsonify(game.serialize()), 201
 
 # LeaderBoard Rout --> query exclusiva para generar la tabla de score
 @api.route("/leaderboard", methods=["GET"])
 def leaderboard():
     top = Game.query.order_by(Game.final_score.desc()).limit(10).all()
-
     return jsonify([g.serialize() for g in top]), 200
 
 # DICTIONARY ROUTES
-# --- GAME WODS ROUTES ---
+# --- GAME WORDS ROUTES ---
 # Obtener X palabras aleatorias
 @api.route("/words/random", methods=["GET"])
 def random_words():
     amount = request.args.get("amount", default=1, type=int)
     words = Dictionary.query.order_by(func.random()).limit(amount).all()
-    
     return jsonify([w.serialize() for w in words]), 200
 
 # Obtener X palabras aleatorias por dificultad
 @api.route("/words/random/<int:difficulty>", methods=["GET"])
 def random_words_by_difficulty(difficulty):
     amount = request.args.get("amount", default=1, type=int)
-    words = Dictionary.query.filter_by(difficulty=difficulty).order_by(func.random()).limit(amount).all()
-   
+    words = Dictionary.query.filter_by(difficulty=difficulty).order_by(
+        func.random()).limit(amount).all()
     if not words:
-        return jsonify({"error": "No words for this difficulty"}), 404
-    
+        return jsonify({"error": "No hay palabras para esta dificultad"}), 404
     return jsonify([w.serialize() for w in words]), 200
 
 # Obtener palabras de un nivel
@@ -197,8 +198,9 @@ def words_for_level():
     difficulty = request.args.get("difficulty", default=1, type=int)
     amount = request.args.get("amount", default=10, type=int)
 
-    words = Dictionary.query.filter_by(difficulty=difficulty).order_by(func.random()).limit(amount).all()
-    
+    words = Dictionary.query.filter_by(difficulty=difficulty).order_by(
+        func.random()).limit(amount).all()
+
     return jsonify({
         "difficulty": difficulty,
         "words": [w.serialize() for w in words]
@@ -256,12 +258,10 @@ def add_word():
     else:
         return jsonify({"msg": "word already exist","palabra": word}), 200
 
-
 # Obtener todas las palabras
 @api.route("/words", methods=["GET"])
 def get_words():
     words = Dictionary.query.all()
-
     return jsonify([w.serialize() for w in words]), 200
 
 # Obtener palabra concreta por ID
@@ -269,12 +269,28 @@ def get_words():
 @jwt_required()
 def get_word(word_id):
     word = Dictionary.query.get(word_id)
-
     if not word:
         return jsonify({"msg": f"La palabra con id {word_id} no existe"}), 404
-    
+
     return jsonify(word.serialize()), 200
 
+# === COUNTRY & CITY ROUTES ===
+@api.route("/countries", methods=["GET"])
+def get_countries():
+    """Devuelve la lista de países"""
+    countries = [c["name"] for c in countries_cities_data]
+    return jsonify(countries), 200
+
+@api.route("/cities/<string:country_name>", methods=["GET"])
+def get_cities(country_name):
+    """Devuelve las ciudades de un país dado"""
+    country = next((c for c in countries_cities_data if c["name"].lower() == country_name.lower()), None)
+    if not country:
+        return jsonify({"error": "País no encontrado"}), 404
+    return jsonify(country["cities"]), 200
+
+    
+    return jsonify(word.serialize()), 200
 
 # PEDIR PALABRAS A LA API DE LA RAE (RANDOM WORDS)
 @api.route('/words/get-random', methods=['GET'])
