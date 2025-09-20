@@ -2,15 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/profile.css";
-import { LogoutModal } from "./LogoutModal"; // Importamos el nuevo modal
 
 export const Profile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
+
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -21,6 +21,8 @@ export const Profile = () => {
       setDescription(store.user?.description || "");
     }
   }, [store.isRegistered, dispatch]);
+
+  const addMessage = (msg) => setMessages((prev) => [...prev, msg]);
 
   const handleSaveDescription = async () => {
     const token = localStorage.getItem("token");
@@ -37,13 +39,13 @@ export const Profile = () => {
       if (response.ok) {
         dispatch({ type: "set_user", payload: { user: updateUser, token } });
         setIsEditing(false);
-        setShowDescriptionModal(true);
+        addMessage("Tu descripción ha sido actualizada correctamente");
       } else {
-        alert(updateUser.error || "No se pudo guardar la descripción.");
+        addMessage(updateUser.error || "No se pudo guardar la descripción.");
       }
     } catch (error) {
       console.error("Error al guardar:", error);
-      alert("Error de conexión al guardar la descripción.");
+      addMessage("Error de conexión al guardar la descripción.");
     }
   };
 
@@ -57,16 +59,12 @@ export const Profile = () => {
       {/* Modal de acceso denegado */}
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal-card card-neon">
-            <h2>Acceso denegado</h2>
-            <p>Debes iniciar sesión o registrarte para acceder al perfil.</p>
+          <div className="modal-card">
+            <h2 className="modal-title">Acceso denegado</h2>
+            <p className="modal-message">Debes iniciar sesión o registrarte para acceder al perfil.</p>
             <div className="modal-buttons">
-              <button className="close-btn" onClick={() => navigate("/login")}>
-                Entrar
-              </button>
-              <button className="close-btn" onClick={() => navigate("/register")}>
-                Registro
-              </button>
+              <button className="profile-btn" onClick={() => navigate("/login")}>Entrar</button>
+              <button className="profile-btn" onClick={() => navigate("/register")}>Registro</button>
             </div>
           </div>
         </div>
@@ -75,7 +73,6 @@ export const Profile = () => {
       {/* Perfil */}
       {!showModal && (
         <>
-          {/* Columna izquierda */}
           <div className="profile-card profile-left">
             <div className="profile-header">
               <div className="profile-avatar">
@@ -104,7 +101,6 @@ export const Profile = () => {
 
               <h4>----------------</h4>
 
-              {/* Descripción */}
               {isEditing ? (
                 <textarea
                   placeholder="Escribe aquí lo que quieras que los demás vean"
@@ -119,25 +115,15 @@ export const Profile = () => {
 
               <div className="profile-buttons">
                 {isEditing ? (
-                  <button className="profile-btn save-btn" onClick={handleSaveDescription}>
-                    Guardar
-                  </button>
+                  <button className="profile-btn" onClick={handleSaveDescription}>Guardar</button>
                 ) : (
-                  <button className="profile-btn edit-btn" onClick={() => setIsEditing(true)}>
-                    Editar Descripción
-                  </button>
+                  <button className="profile-btn" onClick={() => setIsEditing(true)}>Editar Descripción</button>
                 )}
-                <button
-                  className="profile-btn warning"
-                  onClick={() => navigate("/edit-profile")}
-                >
-                  Editar Perfil
-                </button>
+                <button className="profile-btn" onClick={() => navigate("/edit-profile")}>Editar Perfil</button>
               </div>
             </div>
           </div>
 
-          {/* Columna central */}
           <div className="center-column-wrapper">
             <div className="profile-card profile-center">
               <h4>Estadísticas</h4>
@@ -147,13 +133,9 @@ export const Profile = () => {
               <p><strong>Ratio:</strong> {store?.user?.average_precision || "0%"}</p>
             </div>
 
-            {/* Columna vacía debajo de estadísticas */}
-            <div className="profile-card profile-center-below">
-              {/* Vacía por ahora */}
-            </div>
+            <div className="profile-card profile-center-below"></div>
           </div>
 
-          {/* Columna derecha */}
           <div className="profile-card profile-right">
             <h4>Historial de partidas</h4>
             {store?.user?.games && store.user.games.length > 0 ? (
@@ -182,13 +164,18 @@ export const Profile = () => {
         </>
       )}
 
-      {/* Modal de confirmación de descripción */}
-      {showDescriptionModal && (
-        <LogoutModal
-          message="Tu descripción ha sido actualizada correctamente"
-          onClose={() => setShowDescriptionModal(false)}
-        />
-      )}
+      {/* Renderizar todos los mensajes como modales */}
+      {messages.map((msg, i) => (
+        <div key={i} className="modal-overlay">
+          <div className="modal-card">
+            <h2 className="modal-title">Aviso</h2>
+            <p className="modal-message">{msg}</p>
+            <div className="modal-buttons">
+              <button className="profile-btn" onClick={() => setMessages((prev) => prev.filter((_, idx) => idx !== i))}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

@@ -2,28 +2,26 @@
 .edit-container {
     position: relative;
     height: 80vh;
-    /* mucho menos alto */
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 0;
+    /* eliminado padding sobrante */
 }
 
-/* Card estilo neón más compacto verticalmente */
+/* Card estilo neón */
 .edit-card {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(6px);
     border: 2px solid #590ead;
-    box-shadow: 0 0 10px #590ead, inset 0 0 6px #590ead;
+    box-shadow: 0 0 12px #590ead, inset 0 0 8px #590ead;
     color: #fff;
     border-radius: 10px;
-    padding: 0.5rem 1rem;
-    /* menos padding vertical */
-    width: 85%;
-    max-width: 1000px;
-    /* más estrecho */
+    padding: 1rem;
+    width: 90%;
+    max-width: 600px;
     animation: glowIn 1s ease-in-out, slideDown 0.4s ease-out;
-    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+    transition: box-shadow 0.3s ease-in-out;
 }
 
 .edit-card:hover {
@@ -31,25 +29,24 @@
         0 0 12px #590ead,
         0 0 16px #ff0000,
         0 0 20px #ffae00,
-        inset 0 0 6px #590ead;
-    transform: translateY(-2px);
+        inset 0 0 8px #590ead;
 }
 
 /* Títulos */
 .edit-card h2 {
     text-align: center;
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-size: 1.3rem;
     text-shadow: 0 0 6px #590ead, 0 0 12px #590ead;
 }
 
-/* Avatares - restaurados al tamaño original */
+/* Avatares */
 .avatar-selection {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 6px;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.8rem;
 }
 
 .avatar-selection img {
@@ -74,31 +71,70 @@
 
 /* Form inputs */
 .edit-card .form-label {
-    font-size: 0.75rem;
-    margin-bottom: 0.15rem;
+    margin-bottom: 0.2rem;
+    font-size: 0.8rem;
 }
 
 .edit-card .form-control,
 .edit-card .form-select {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.4rem;
-    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    border: 1px solid #590ead;
+    margin-bottom: 0.5rem;
+    border-radius: 5px;
+    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
 }
 
-/* Botones */
+.edit-card .form-control::placeholder {
+    color: #ccc;
+}
+
+/* Botones unificados estilo neón */
 .btn,
 .profile-btn {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-    border-radius: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    color: #fff;
+    font-weight: bold;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    text-shadow: 0 0 6px #590ead;
+    box-shadow: 0 0 6px #590ead;
+    transition: all 0.3s ease-in-out;
+    border-radius: 6px;
+}
+
+/* Efecto ::after para línea glow */
+.btn::after,
+.profile-btn::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    background: #590ead;
+    box-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
+    transition: width 0.25s ease, left 0.25s ease;
 }
 
 /* Hover glow multicolor */
 .btn:hover,
 .profile-btn:hover {
     color: #ffae00 !important;
-    text-shadow: 0 0 8px #590ead, 0 0 12px #ff0000, 0 0 16px #ffae00;
-    box-shadow: 0 0 10px #590ead, 0 0 14px #ff0000, 0 0 18px #ffae00, inset 0 0 6px #590ead;
+    text-shadow:
+        0 0 8px #590ead,
+        0 0 12px #ff0000,
+        0 0 16px #ffae00;
+    box-shadow:
+        0 0 10px #590ead,
+        0 0 14px #ff0000,
+        0 0 18px #ffae00,
+        inset 0 0 6px #590ead;
     transform: translateY(-1px);
 }
 
@@ -106,6 +142,33 @@
 .profile-btn:hover::after {
     width: 100%;
     left: 0;
+}
+
+/* Variante warning */
+.btn.warning,
+.profile-btn.warning {
+    text-shadow: 0 0 6px #ffae00;
+}
+
+.btn.warning::after,
+.profile-btn.warning::after {
+    background: #ffae00;
+    box-shadow: 0 0 8px #ffae00, 0 0 16px #ffae00;
+}
+
+.btn.warning:hover,
+.profile-btn.warning:hover {
+    color: #ff0000 !important;
+    text-shadow:
+        0 0 8px #590ead,
+        0 0 12px #ff0000,
+        0 0 16px #ffae00;
+}
+
+/* Alertas */
+.alert {
+    margin-bottom: 0.5rem;
+    font-size: 0.75rem;
 }
 
 /* Animaciones */
@@ -116,7 +179,7 @@
     }
 
     to {
-        box-shadow: 0 0 10px #590ead, inset 0 0 6px #590ead;
+        box-shadow: 0 0 12px #590ead, inset 0 0 8px #590ead;
         opacity: 1;
     }
 }
@@ -135,13 +198,19 @@
 
 /* Responsive */
 @media (max-width: 768px) {
+    .edit-container {
+        height: auto;
+        padding: 0;
+        /* eliminado padding sobrante */
+    }
+
     .edit-card {
-        padding: 0.5rem 0.8rem;
-        width: 90%;
+        padding: 0.8rem;
+        width: 95%;
     }
 
     .avatar-selection img {
-        width: 50px;
-        height: 50px;
+        width: 40px;
+        height: 40px;
     }
 }

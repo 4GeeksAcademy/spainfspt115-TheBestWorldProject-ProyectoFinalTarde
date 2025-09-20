@@ -77,7 +77,7 @@ export const Footer = () => {
 
       {showLogoutModal && (
         <LogoutModal
-          message="Has cerrado sesión correctamente ✅"
+          message="Has cerrado sesión correctamente "
           onClose={handleCloseModal}
         />
       )}

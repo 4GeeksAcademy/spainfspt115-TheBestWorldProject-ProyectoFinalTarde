@@ -1,14 +1,14 @@
 export const initialStore = () => {
   const token = localStorage.getItem("token");
 
-  if (token){
-  return {
-    user: null,
-    token: token,
-    isRegistered: true,
-    mode: "light",
-  };
-};
+  if (token) {
+    return {
+      user: null,
+      token: token,
+      isRegistered: true,
+      mode: "light",
+    };
+  }
   return {
     user: null,
     token: null,
@@ -41,7 +41,7 @@ export default function storeReducer(store, action = {}) {
         isRegistered: false,
       };
 
-    case "SET_MODE": // 👈 ahora sí funciona
+    case "SET_MODE":
       return {
         ...store,
         mode: action.payload,
