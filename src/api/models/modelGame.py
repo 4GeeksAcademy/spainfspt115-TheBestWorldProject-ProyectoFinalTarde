@@ -15,7 +15,7 @@ game_word =Table(
 
 class Game (db.Model):
 
-    __tablename__ = 'game' #nombre de la tabla
+    __tablename__ = 'game'
 
     id_game: Mapped[int] = mapped_column(primary_key=True,)
     id_user: Mapped[int] = mapped_column(ForeignKey("user.id_user"), nullable=False)

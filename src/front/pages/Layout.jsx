@@ -6,6 +6,7 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useEffect } from "react";
 
 export const Layout = () => {
+
   const { store, dispatch } = useGlobalReducer();
   const location = useLocation();
 

@@ -18,8 +18,9 @@ flask-admin = "*"
 typing-extensions = "*"
 wtforms = "==3.1.2"
 sqlalchemy = "*"
-flask-bcrypt = "*"
 flask-jwt-extended = "*"
+flask-bcrypt = "*"
+requests = "*"
 flask-cors = "*"
 
 [requires]

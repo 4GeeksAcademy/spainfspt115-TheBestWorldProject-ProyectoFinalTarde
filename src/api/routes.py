@@ -11,6 +11,8 @@ from flask_jwt_extended import jwt_required
 from datetime import datetime
 from sqlalchemy import func
 import os, json
+import requests
+
 
 api = Blueprint('api', __name__)
 
@@ -145,20 +147,21 @@ def get_game(id_game):
         return jsonify({"msg": "Usuario no existe"}), 400
     return jsonify(game.serialize()), 200
 
-# --- Crear juego
-@api.route('/game', methods=['POST'])
-@jwt_required()
+
+#--- Crear juego
+@api.route('/game', methods = ['POST'])
 def create_game():
     body = request.get_json()
-    current_user_id = int(get_jwt_identity())  # del token
+    
     game = Game(
-        id_user=current_user_id,
+        id_user=body.get("id_user"),
         final_score=body.get("final_score", 0),
         correct_words=body.get("correct_words", 0),
         failed_words=body.get("failed_words", 0),
         average_precision=body.get("average_precision", 0.0),
         wpm_average=body.get("wpm_average", 0.0),
         difficulty=body.get("difficulty", 1),
+        played_at=body.get("played_at")
     )
     db.session.add(game)
     db.session.commit()
@@ -204,45 +207,59 @@ def words_for_level():
     }), 200
 
 # === ADMIN ROUTES ===
+#Funcion para quitar los acentos de las palabras, para poder utilizarlas en el juego
+def delete_accents(text):
+    table = str.maketrans(
+        "áéíóúüÁÉÍÓÚÜ",
+        "aeiouuAEIOUU"
+    )
+    clearText = text.translate(table)
+    if clearText.isalpha() and clearText.isascii():
+
+        return clearText
+    
+    return None
+
 # Insertar una nueva palabra en el diccionario
 @api.route("/words", methods=["POST"])
-@jwt_required()
 def add_word():
     data = request.get_json()
 
-    if not data or "word" not in data:
-        return jsonify({"msg": "Se necesita al menos 'word'"}), 400
+    word_ = data.get('word')
+    word = delete_accents(str(word_))
+    
+    if not word:
+        return jsonify({"msg": "no hay palabra"}), 400
 
-    word = data["word"].strip().lower()
     length = len(word)
-    points = data.get("points_per_word", length)   # default = longitud
 
-    # Calcular dificultad en base a la longitud
-    if length < 6:
-        difficulty = 1   # Fácil
-    elif 6 <= length <= 8:
-        difficulty = 2   # Media
+    if length < 4:
+        return jsonify({"msg": "la palabra tiene menos de 4 letras"}), 400
+
+    if length >= 4 and length < 6:
+        difficulty = 1 
+    elif length >= 6 and length < 9:
+        difficulty = 2
     else:
-        difficulty = 3   # Difícil
+        difficulty = 3
 
-    # Evitar duplicados
-    if Dictionary.query.filter_by(word=word).first():
-        return jsonify({"msg": "La palabra ya existe"}), 400
+    points = length * 10
 
-    new_word = Dictionary(
-        word=word,
-        length=length,
-        points_per_word=points,
-        difficulty=difficulty
-    )
-    db.session.add(new_word)
-    db.session.commit()
-
-    return jsonify(new_word.serialize()), 201
+    if not Dictionary.query.filter_by(word=word).first():
+        new_word = Dictionary(
+            word=word,
+            length=length,
+            points_per_word=points,
+            difficulty=difficulty
+        )
+        db.session.add(new_word)
+        db.session.commit()
+        return jsonify(new_word.serialize()), 201
+    else:
+        return jsonify({"msg": "word already exist","palabra": word}), 200
 
 # Obtener todas las palabras
 @api.route("/words", methods=["GET"])
-@jwt_required()
 def get_words():
     words = Dictionary.query.all()
     return jsonify([w.serialize() for w in words]), 200
@@ -254,6 +271,7 @@ def get_word(word_id):
     word = Dictionary.query.get(word_id)
     if not word:
         return jsonify({"msg": f"La palabra con id {word_id} no existe"}), 404
+
     return jsonify(word.serialize()), 200
 
 # === COUNTRY & CITY ROUTES ===
@@ -270,3 +288,47 @@ def get_cities(country_name):
     if not country:
         return jsonify({"error": "País no encontrado"}), 404
     return jsonify(country["cities"]), 200
+
+    
+    return jsonify(word.serialize()), 200
+
+# PEDIR PALABRAS A LA API DE LA RAE (RANDOM WORDS)
+@api.route('/words/get-random', methods=['GET'])
+def get_random_word():
+
+    response = requests.get(
+        'https://rae-api.com/api/random/',
+        headers= {"Accept": "application/json"},
+    )
+
+    data = response.json()
+
+    # calcular datos derivados
+    word_ = data.get("data").get('word')
+    word = delete_accents(str(word_))
+    if word == None:
+        return jsonify({"msg": "cadena no válida", "word": str(word_)})
+    length = len(str(word))
+    if length < 4:
+        return jsonify({"msg": "la palabra tiene menos de 4 letras"})
+    points = length * 10
+    if length >= 4 and length < 6:
+        difficulty = 1 
+    elif length >= 6 and length < 9:
+        difficulty = 2
+    else:
+        difficulty = 3
+
+    if word and not Dictionary.query.filter_by(word=word).first():
+        new_word = Dictionary(
+            word=word,
+            length=length,
+            points_per_word=points,
+            difficulty=difficulty
+        )
+        db.session.add(new_word)
+        db.session.commit()
+    else:
+        return jsonify({"msg": "word already exist","palabra": word})
+    
+    return jsonify(new_word.serialize()), 200
