@@ -9,37 +9,42 @@ export const Navbar = () => {
   const { store } = useGlobalReducer();
   const location = useLocation();
 
-  // Renderizar botón PayPal y asignar animación con desfase aleatorio
   useEffect(() => {
-    // Evitar cargar el script más de una vez
+    // Función que renderiza el botón de PayPal
+    const renderPayPalButton = () => {
+      const container = document.getElementById("donate-button");
+      if (!container || !window.PayPal?.Donation) return;
+
+      container.innerHTML = "";
+      window.PayPal.Donation.Button({
+        env: "production",
+        hosted_button_id: "JZPMUB4B2P3RA",
+        image: {
+          src: moneda,
+          alt: "Donate with PayPal button",
+          title: "PayPal - The safer, easier way to pay online!",
+          width: 80,
+          height: 80,
+          border: 2,
+          radius: 50,
+        },
+      }).render("#donate-button");
+    };
+
+    // Cargar script si no está cargado
     if (!document.getElementById("paypal-sdk")) {
       const script = document.createElement("script");
       script.src = "https://www.paypalobjects.com/donate/sdk/donate-sdk.js";
       script.id = "paypal-sdk";
       script.async = true;
-      script.onload = () => {
-        if (window.PayPal) {
-          const container = document.getElementById("donate-button");
-          container.innerHTML = "";
-          window.PayPal.Donation.Button({
-            env: "production",
-            hosted_button_id: "JZPMUB4B2P3RA",
-            image: {
-              src: moneda,
-              alt: "Donate with PayPal button",
-              title: "PayPal - The safer, easier way to pay online!",
-              width: 80,
-              height: 80,
-              border: 2,
-              radius: 50,
-            },
-          }).render("#donate-button");
-        }
-      };
+      script.onload = renderPayPalButton;
       document.body.appendChild(script);
+    } else {
+      // Si el script ya está cargado, renderizar directamente
+      renderPayPalButton();
     }
 
-    // Aplicar desfase aleatorio a todos los elementos
+    // Animación con desfase aleatorio
     const animatedElements = document.querySelectorAll(
       ".navbar-custom .nav-link, .logo-img, #donate-button img"
     );
@@ -47,7 +52,7 @@ export const Navbar = () => {
       const delay = Math.random() * 1.5; // retraso entre 0 y 1.5s
       el.style.animationDelay = `${delay}s`;
     });
-  }, []);
+  }, [store]); // Ejecutar cada vez que cambia el store
 
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
@@ -80,7 +85,6 @@ export const Navbar = () => {
               Inicio
             </Link>
           </li>
-
           <li className="nav-item">
             <Link
               to="/about"
@@ -90,7 +94,6 @@ export const Navbar = () => {
               Info
             </Link>
           </li>
-
           <li className="nav-item">
             <Link
               to="/profile"
@@ -126,7 +129,10 @@ export const Navbar = () => {
           )}
 
           {/* Botón PayPal */}
-          <div id="donate-button" style={{ width: "80px", height: "80px" }}></div>
+          <div
+            id="donate-button"
+            style={{ width: "80px", height: "80px", minWidth: "80px" }}
+          ></div>
         </div>
       </div>
     </nav>

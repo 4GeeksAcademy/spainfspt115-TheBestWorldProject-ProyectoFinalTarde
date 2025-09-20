@@ -1,7 +1,7 @@
 .modal-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0, 0, 0, 0.7);
+    background: rgba(0, 0, 0, 0.55);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -9,61 +9,45 @@
 }
 
 .modal-card {
-    width: 80%;
-    max-width: 1200px;
-    min-width: 600px;
-    min-height: 200px;
-    padding: 4rem;
-    text-align: center;
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(6px);
-    border: 2px solid #590ead;
-    box-shadow: 0 0 25px #590ead, inset 0 0 15px #590ead;
+    background: #0f1115;
     color: #fff;
+    padding: 1.25rem;
     border-radius: 12px;
-    animation: glowIn 1.5s ease-in-out;
-    transition: all 0.3s ease-in-out;
+    min-width: 320px;
+    max-width: 90%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+.card-neon {
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 16px rgba(0, 150, 255, 0.06);
+}
+
+.modal-title {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.1rem;
+}
+
+.modal-message {
+    margin: 0 0 1rem 0;
+    font-size: 0.98rem;
 }
 
 .modal-buttons {
     display: flex;
-    justify-content: center;
-    gap: 2rem;
-    margin-top: 2.5rem;
+    justify-content: flex-end;
 }
 
-.modal-card .close-btn {
-    padding: 1rem 2rem;
-    border-radius: 12px;
-    border: 2px solid #590ead;
-    background: transparent;
-    color: #fff;
-    font-weight: bold;
+.close-btn {
+    padding: 0.45rem 0.85rem;
+    border: none;
+    border-radius: 8px;
     cursor: pointer;
-    box-shadow: 0 0 15px #590ead;
-    transition: all 0.3s ease, transform 0.2s ease;
-    flex: 1;
-    text-transform: uppercase;
-    font-size: 1.1rem;
+    background: linear-gradient(90deg, #2b7cff, #3ec5ff);
+    color: #fff;
+    font-weight: 600;
 }
 
-.modal-card .close-btn:hover {
-    box-shadow:
-        0 0 20px #590ead,
-        0 0 25px #ff0000,
-        0 0 30px #ffae00,
-        inset 0 0 15px #590ead;
-    transform: translateY(-3px);
-}
-
-@keyframes glowIn {
-    from {
-        box-shadow: none;
-        opacity: 0;
-    }
-
-    to {
-        box-shadow: 0 0 25px #590ead, inset 0 0 15px #590ead;
-        opacity: 1;
-    }
+.close-btn:focus {
+    outline: 3px solid rgba(62, 197, 255, 0.25);
 }

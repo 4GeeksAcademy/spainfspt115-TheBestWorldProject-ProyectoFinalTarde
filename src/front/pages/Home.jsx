@@ -6,7 +6,7 @@ import videoFondo from "../assets/videos/Hechizera.mp4";
 
 export const Home = () => {
   const { store } = useGlobalReducer();
-  const title = "M e c a M a g i A";
+  const title = "M E C A M A G I A";
   const [colors, setColors] = useState([]);
 
   const neonColors = ["#ff00ff", "#00ffff", "#ffae00", "#ff0000", "#590ead"];

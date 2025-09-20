@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/profile.css";
+import { LogoutModal } from "./LogoutModal"; // Importamos el nuevo modal
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -9,6 +10,7 @@ export const Profile = () => {
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState("");
   const [isEditing, setIsEditing] = useState(false);
+  const [showDescriptionModal, setShowDescriptionModal] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -33,9 +35,9 @@ export const Profile = () => {
       });
       const updateUser = await response.json();
       if (response.ok) {
-        alert("Descripción guardada con éxito");
         dispatch({ type: "set_user", payload: { user: updateUser, token } });
         setIsEditing(false);
+        setShowDescriptionModal(true);
       } else {
         alert(updateUser.error || "No se pudo guardar la descripción.");
       }
@@ -47,16 +49,15 @@ export const Profile = () => {
 
   return (
     <div className="profile-container">
-      {/* Video de fondo */}
       <video className="bg-video" autoPlay muted loop>
         <source src="/videos/background.mp4" type="video/mp4" />
       </video>
       <div className="home-overlay"></div>
 
-      {/* Modal */}
+      {/* Modal de acceso denegado */}
       {showModal && (
         <div className="modal-overlay">
-          <div className="modal-card">
+          <div className="modal-card card-neon">
             <h2>Acceso denegado</h2>
             <p>Debes iniciar sesión o registrarte para acceder al perfil.</p>
             <div className="modal-buttons">
@@ -103,7 +104,7 @@ export const Profile = () => {
 
               <h4>----------------</h4>
 
-              {/* Descripción arriba de los botones */}
+              {/* Descripción */}
               {isEditing ? (
                 <textarea
                   placeholder="Escribe aquí lo que quieras que los demás vean"
@@ -116,7 +117,6 @@ export const Profile = () => {
                 </p>
               )}
 
-              {/* Botones horizontalmente */}
               <div className="profile-buttons">
                 {isEditing ? (
                   <button className="profile-btn save-btn" onClick={handleSaveDescription}>
@@ -147,7 +147,7 @@ export const Profile = () => {
               <p><strong>Ratio:</strong> {store?.user?.average_precision || "0%"}</p>
             </div>
 
-            {/* Nueva columna debajo */}
+            {/* Columna vacía debajo de estadísticas */}
             <div className="profile-card profile-center-below">
               {/* Vacía por ahora */}
             </div>
@@ -180,6 +180,14 @@ export const Profile = () => {
             )}
           </div>
         </>
+      )}
+
+      {/* Modal de confirmación de descripción */}
+      {showDescriptionModal && (
+        <LogoutModal
+          message="Tu descripción ha sido actualizada correctamente"
+          onClose={() => setShowDescriptionModal(false)}
+        />
       )}
     </div>
   );

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/editprofile.css";
-
+import { ConfirmationModal } from "./ModalEditDescripcion";
 // Avatares
 import avatar1 from "../assets/avatars/avatar1.png";
 import avatar2 from "../assets/avatars/avatar2.png";
@@ -30,6 +30,7 @@ export const EditProfile = () => {
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState("");
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false); // Nuevo estado para modal
 
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
@@ -100,8 +101,7 @@ export const EditProfile = () => {
 
       if (resp.ok) {
         dispatch({ type: "set_user", payload: { user: data, token } });
-        alert("Perfil actualizado correctamente");
-        navigate("/profile");
+        setShowModal(true); // Mostramos el modal al guardar
       } else {
         setError(data.error || data.msg || "Error al actualizar el perfil");
       }
@@ -190,6 +190,14 @@ export const EditProfile = () => {
           </div>
         </form>
       </div>
+
+      {/* Modal de confirmación */}
+      {showModal && (
+        <ConfirmationModal
+          message="Perfil actualizado correctamente"
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 };

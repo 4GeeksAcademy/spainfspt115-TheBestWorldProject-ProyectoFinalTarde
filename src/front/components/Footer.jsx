@@ -1,10 +1,9 @@
-// Footer.jsx
 import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCopyright } from "@fortawesome/free-regular-svg-icons";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useNavigate, Link } from "react-router-dom";
-import { LogoutModal } from "../pages/LogOutModal";
+import { LogoutModal } from "../pages/LogoutModal";
 import "../styles/footer.css";
 
 export const Footer = () => {
@@ -16,6 +15,11 @@ export const Footer = () => {
     localStorage.removeItem("token");
     dispatch({ type: "logout" });
     setShowLogoutModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowLogoutModal(false);
+    navigate("/");
   };
 
   return (
@@ -73,11 +77,8 @@ export const Footer = () => {
 
       {showLogoutModal && (
         <LogoutModal
-          message="Has cerrado sesión correctamente"
-          onClose={() => {
-            setShowLogoutModal(false);
-            navigate("/");
-          }}
+          message="Has cerrado sesión correctamente ✅"
+          onClose={handleCloseModal}
         />
       )}
     </footer>
