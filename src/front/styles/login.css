@@ -1,12 +1,10 @@
-/* Contenedor principal */
 .home-container {
     position: relative;
-    height: 100vh;
+    height: 80vh;
     display: flex;
     flex-direction: column;
 }
 
-/* Video de fondo */
 .bg-video {
     position: fixed;
     top: 0;
@@ -17,7 +15,6 @@
     z-index: -2;
 }
 
-/* Capa oscura */
 .home-overlay {
     position: fixed;
     inset: 0;
@@ -25,7 +22,6 @@
     z-index: -1;
 }
 
-/* Contenido centrado, pero más arriba */
 .home-content {
     flex: 1;
     display: flex;
@@ -36,11 +32,9 @@
     position: relative;
     z-index: 1;
     gap: 2rem;
-    padding-top: 5rem;
     animation: fadeInUp 1s ease-in-out;
 }
 
-/* Card estilo neón */
 .card-neon {
     background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(6px);
@@ -48,14 +42,13 @@
     box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
     color: #fff;
     border-radius: 12px;
-    padding: 2rem;
+    padding: 1.5rem 2rem;
     max-width: 400px;
     width: 100%;
     animation: glowIn 1.5s ease-in-out;
     transition: all 0.3s ease-in-out;
 }
 
-/* Hover multicolor */
 .card-neon:hover {
     box-shadow:
         0 0 15px #590ead,
@@ -65,7 +58,6 @@
     transform: translateY(-3px);
 }
 
-/* Inputs dentro de card */
 .card-neon input {
     width: 100%;
     padding: 0.5rem;
@@ -85,7 +77,6 @@
         0 0 16px #ffae00;
 }
 
-/* Botón dentro de card */
 .card-neon button {
     width: 100%;
     padding: 0.7rem;
@@ -109,10 +100,14 @@
     transform: translateY(-2px);
 }
 
-/* Texto y links */
 .card-neon p {
-    margin-top: 1rem;
     text-align: center;
+    margin-top: 1.25rem;
+    line-height: 1.4;
+    max-width: 220px;
+    margin-left: auto;
+    margin-right: auto;
+    word-wrap: break-word;
 }
 
 .card-neon a {
@@ -128,14 +123,12 @@
         0 0 16px #ffae00;
 }
 
-/* Error */
 .card-neon .error {
     color: #ff6b6b;
     margin-bottom: 1rem;
     text-align: center;
 }
 
-/* Animaciones */
 @keyframes fadeInUp {
     from {
         opacity: 0;
