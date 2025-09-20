@@ -5,7 +5,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-top: 0.3rem;
+    padding: 0;
+    /* eliminado padding sobrante */
 }
 
 /* Card estilo neón */
@@ -21,7 +22,6 @@
     max-width: 600px;
     animation: glowIn 1s ease-in-out, slideDown 0.4s ease-out;
     transition: box-shadow 0.3s ease-in-out;
-    box-sizing: border-box;
 }
 
 .edit-card:hover {
@@ -200,7 +200,8 @@
 @media (max-width: 768px) {
     .edit-container {
         height: auto;
-        padding: 0.8rem 1rem;
+        padding: 0;
+        /* eliminado padding sobrante */
     }
 
     .edit-card {
