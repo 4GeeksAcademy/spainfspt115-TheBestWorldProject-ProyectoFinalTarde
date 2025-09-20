@@ -1,7 +1,10 @@
   
 import os
 from flask_admin import Admin
-from .models import db, User
+from api.models.modelGame import Game
+from api.models.modelDictionary import Dictionary
+from api.models.modelUser import User
+from api.extensions import db
 from flask_admin.contrib.sqla import ModelView
 
 def setup_admin(app):
