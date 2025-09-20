@@ -61,7 +61,6 @@
 /* Historial */
 .profile-right {
   max-height: 350px;
-  overflow-y: auto;
 }
 
 .game-card {

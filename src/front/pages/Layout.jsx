@@ -43,18 +43,19 @@ export const Layout = () => {
 
   return (
     <ScrollToTop>
-      <div className="d-flex flex-column min-vh-100">
+      <div className="d-flex flex-column">
         <Navbar />
 
-        {/* Contenido principal QUITAR PARA QUE EL SCROLL NO APAREZCA */}
+        {/* Contenido principal */}
         <main
-          className="flex-grow-1 d-flex flex-column justify-content-center"
+          className={`flex-grow-1 d-flex flex-column justify-content-center align-items-center`}
           style={{
-            paddingTop: isHome ? "0" : "80px",
-            paddingBottom: isHome ? "0" : "70px",
+            height: isHome
+              ? "calc(100vh - 80px - 60px)" // Ajusta 80px navbar + 60px footer
+              : "auto",
+            overflow: isHome ? "hidden" : "visible",
           }}
         >
-          {/* {store.isRegistered ? <Outlet /> : <Navigate to="/signup" />} */}
           <Outlet />
         </main>
 
@@ -63,4 +64,3 @@ export const Layout = () => {
     </ScrollToTop>
   );
 };
-

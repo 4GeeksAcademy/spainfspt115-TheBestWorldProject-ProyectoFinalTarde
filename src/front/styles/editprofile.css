@@ -1,7 +1,7 @@
 /* Contenedor principal */
 .edit-container {
     position: relative;
-    height: 10vh;
+    height: 80vh;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -21,6 +21,7 @@
     max-width: 600px;
     animation: glowIn 1s ease-in-out, slideDown 0.4s ease-out;
     transition: box-shadow 0.3s ease-in-out;
+    box-sizing: border-box;
 }
 
 .edit-card:hover {

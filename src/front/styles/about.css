@@ -159,8 +159,33 @@
 .dev-konstantin {
     background: linear-gradient(90deg, #ff0080, #7928ca);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
     font-weight: bold;
+    position: relative;
+    overflow: hidden;
+}
+
+.dev-konstantin::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+    transform: skewX(-25deg);
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% {
+        left: -75%;
+    }
+
+    100% {
+        left: 125%;
+    }
 }
 
 /* Arturo - efecto bounce */
@@ -185,12 +210,27 @@
 /* Constantin - efecto glow */
 .dev-constantin {
     color: #00ff7f;
-    text-shadow: 0 0 5px #00ff7f, 0 0 15px #00ff7f;
-    transition: color 0.3s ease;
+    text-shadow: 0 0 5px #a71691, 0 0 15px #1d06ec;
+    font-weight: bold;
+    display: inline-block;
+    animation: neonPulse 2s infinite alternate;
 }
 
-.dev-constantin:hover {
-    color: #ffffff;
+@keyframes neonPulse {
+    0% {
+        text-shadow: 0 0 5px #a71691, 0 0 15px #1d06ec, 0 0 20px #00ff7f;
+        transform: scale(1);
+    }
+
+    50% {
+        text-shadow: 0 0 10px #a71691, 0 0 25px #1d06ec, 0 0 30px #00ff7f;
+        transform: scale(1.05);
+    }
+
+    100% {
+        text-shadow: 0 0 5px #a71691, 0 0 15px #1d06ec, 0 0 20px #00ff7f;
+        transform: scale(1);
+    }
 }
 
 /* =========================

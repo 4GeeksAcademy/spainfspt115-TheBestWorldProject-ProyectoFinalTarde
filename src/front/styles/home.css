@@ -3,22 +3,20 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
 }
 
-/* Contenedor principal centrado */
 .home-container {
   position: relative;
-  height: 100vh;
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   overflow: hidden;
+  padding-top: 80px;
+  padding-bottom: 60px;
 }
 
-/* Video de fondo */
 .bg-video {
   position: fixed;
   top: 0;
@@ -29,7 +27,6 @@ body {
   z-index: -2;
 }
 
-/* Capa oscura */
 .home-overlay {
   position: fixed;
   inset: 0;
@@ -37,40 +34,60 @@ body {
   z-index: -1;
 }
 
-/* Contenido centrado en columna */
-.home-content {
+.content-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 2rem;
+  gap: 20px;
   z-index: 1;
+  width: 100%;
+  max-width: 800px;
+  overflow: hidden;
 }
 
-/* Título M e c a M a g i C animado */
-.mecamagic-title {
+.title-svg {
+  width: 100%;
+  height: auto;
+}
+
+.letter {
+  opacity: 0;
+  display: inline-block;
   font-size: 4rem;
   letter-spacing: 1rem;
-  margin: 0 0 2rem 0;
-  transform: translateY(-80px);
-  color: #fff;
-  text-shadow: 0 0 12px #590ead, 0 0 24px #ff0000;
+  animation: letterMagic 2s infinite;
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff,
+    0 0 10px #ff00ff,
+    0 0 20px #ff00ff,
+    0 0 30px #ff00ff;
 }
 
-.mecamagic-title span {
-  display: inline-block;
-  opacity: 0;
-  transform: translateY(-30px) rotateY(90deg) scale(0);
-  animation: letterMagic 0.6s forwards;
+@keyframes letterMagic {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(10px) scale(1.2);
+  }
+
+  70% {
+    transform: translateY(-3px) scale(0.95);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
-/* Card estilo neón */
 .card-neon {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
   text-align: center;
   background: rgba(0, 0, 0, 0.7);
   backdrop-filter: blur(6px);
@@ -82,58 +99,47 @@ body {
   width: 100%;
   max-width: 500px;
   transition: all 0.3s ease-in-out;
+  overflow: hidden;
 }
 
-/* Hover multicolor */
 .card-neon:hover {
-  box-shadow:
-    0 0 15px #590ead,
+  box-shadow: 0 0 15px #590ead,
     0 0 20px #ff0000,
     0 0 25px #ffae00,
     inset 0 0 10px #590ead;
   transform: translateY(-3px);
 }
 
-/* Créditos debajo */
-.created-by {
-  color: #fff;
-  text-shadow: 0 0 6px #590ead;
-  font-size: 14px;
-  margin-top: 3rem;
+.card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
 }
 
-/* Animación de letras */
-@keyframes letterMagic {
-  0% {
-    opacity: 0;
-    transform: translateY(-30px) rotateY(90deg) scale(0);
-  }
-
-  50% {
-    opacity: 1;
-    transform: translateY(10px) rotateY(-10deg) scale(1.2);
-  }
-
-  70% {
-    transform: translateY(-3px) rotateY(5deg) scale(0.95);
-  }
-
-  100% {
-    opacity: 1;
-    transform: translateY(0) rotateY(0deg) scale(1);
-  }
+.card-title {
+  font-size: 2.5rem;
+  font-weight: bold;
 }
 
-/* Responsive */
+.card-text {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.btn-play {
+  padding: 0.8rem 1.5rem;
+  font-size: 1.1rem;
+}
+
 @media (max-width: 768px) {
   .card-neon {
     padding: 1rem;
     max-width: 90%;
   }
 
-  .mecamagic-title {
-    font-size: 2.5rem;
-    letter-spacing: 0.5rem;
-    transform: translateY(-50px);
+  .letter {
+    font-size: 3rem;
+    letter-spacing: 0.6rem;
   }
 }

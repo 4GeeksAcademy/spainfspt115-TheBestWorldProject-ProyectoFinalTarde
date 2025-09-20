@@ -6,17 +6,9 @@ import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 export const About = () => {
   return (
     <div className="about-container">
-      {/* Imagen de fondo */}
-      {/* <img
-        src="src/front/assets/img/rigo-baby.jpg"
-        alt="Gameplay background"
-        className="about-bg"
-      /> */}
-
       {/* Overlay oscuro */}
       <div className="about-overlay"></div>
 
-      {/* Contenido principal */}
       <div className="about-card">
         <h1>Sobre el Juego</h1>
         <p className="lead">Trabajo, trabajo.</p>
@@ -24,7 +16,7 @@ export const About = () => {
         <h3>Desarrolladores</h3>
         <ul>
           <li className="dev-carlos">
-            Carlos –
+            Carlos –{" "}
             <a
               href="https://www.linkedin.com/in/carlos-moreira-chávez-911597259/"
               target="_blank"
@@ -43,7 +35,7 @@ export const About = () => {
           </li>
 
           <li className="dev-javier">
-            Javier –
+            <span>Javier</span> –{" "}
             <a
               href="https://www.linkedin.com/in/javier-miguel-valenciano-896336107/"
               target="_blank"
@@ -62,7 +54,7 @@ export const About = () => {
           </li>
 
           <li className="dev-konstantin">
-            Konstantin –
+            Konstantin –{" "}
             <a
               href="https://www.linkedin.com/in/kostantin-a-n-1b0427317"
               target="_blank"
@@ -81,7 +73,7 @@ export const About = () => {
           </li>
 
           <li className="dev-arturo">
-            Arturo –
+            Arturo –{" "}
             <a
               href="https://www.linkedin.com/in/arturo-duarte-a9646536b/"
               target="_blank"
@@ -100,9 +92,9 @@ export const About = () => {
           </li>
 
           <li className="dev-constantin">
-            Constantin –
+            Constantin –{" "}
             <a
-              href="https://www.linkedin.com/in/constantin-s%C3%BArin-631331270/"
+              href="https://www.linkedin.com/in/constantin-s%C3%BBrin-631331270/"
               target="_blank"
               rel="noopener noreferrer"
             >

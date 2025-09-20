@@ -9,11 +9,10 @@
   padding: 0.5rem 1rem;
 }
 
-/* ===== LOGO ===== */
+/* ===== LOGO REDONDO ===== */
 .logo-circle {
   height: 80px;
   width: 80px;
-  overflow: hidden;
   border-radius: 50%;
   border: 2px solid #590ead;
   box-shadow: 0 0 8px #590ead;
@@ -24,14 +23,12 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 50%;
 }
 
 .logo-img:hover {
   transform: scale(1.05);
-  box-shadow:
-    0 0 15px #590ead,
-    0 0 20px #ff0000,
-    0 0 25px #ffae00;
+  box-shadow: 0 0 15px #590ead, 0 0 20px #ff0000, 0 0 25px #ffae00;
 }
 
 /* ===== LINKS ESTILO NEÓN ===== */
@@ -60,20 +57,34 @@
 /* Hover glow multicolor */
 .navbar-custom .nav-link:hover {
   color: #ffae00 !important;
-  text-shadow:
-    0 0 8px #590ead,
-    0 0 12px #ff0000,
-    0 0 16px #ffae00;
+  text-shadow: 0 0 8px #fff700, 0 0 16px #ffe135, 0 0 32px #fffacd;
 }
 
 .navbar-custom .nav-link:hover::after {
   width: 100%;
   left: 0;
-  background: linear-gradient(90deg, #590ead, #ff0000, #ffae00);
-  box-shadow:
-    0 0 8px #590ead,
-    0 0 12px #ff0000,
-    0 0 16px #ffae00;
+  background: linear-gradient(90deg, #fffacd, #ffef99, #ffe135);
+  box-shadow: 0 0 12px #fff700, 0 0 20px #ffe135, 0 0 30px #fffacd;
+}
+
+/* ===== BRILLO ACTIVO ===== */
+.navbar-custom .active-link {
+  color: #ffea70 !important;
+  text-shadow: 0 0 10px #fffacd, 0 0 20px #ffe135, 0 0 40px #fff700,
+    0 0 60px #fffacd;
+  animation: goldenGlow 1.5s infinite alternate;
+}
+
+@keyframes goldenGlow {
+  0% {
+    text-shadow: 0 0 10px #fffacd, 0 0 20px #ffe135, 0 0 40px #fff700,
+      0 0 60px #fffacd;
+  }
+
+  100% {
+    text-shadow: 0 0 15px #fffacd, 0 0 30px #ffe135, 0 0 60px #fff700,
+      0 0 90px #fffacd;
+  }
 }
 
 /* Navbar centrado (desktop) */
@@ -86,24 +97,7 @@
   gap: 1.5rem;
 }
 
-/* ===== BOTÓN PAYPAL (REDONDO COMO EL LOGO) ===== */
-#donate-button-container {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 80px;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-}
-
-#donate-button {
-  width: 100%;
-  height: 100%;
-}
-
+/* ===== BOTÓN PAYPAL ===== */
 #donate-button img {
   width: 80px !important;
   height: 80px !important;
@@ -116,10 +110,7 @@
 
 #donate-button img:hover {
   transform: scale(1.05);
-  box-shadow:
-    0 0 15px #ffff00,
-    0 0 20px #ff8c00,
-    0 0 25px #ffe135;
+  box-shadow: 0 0 15px #ffff00, 0 0 20px #ff8c00, 0 0 25px #ffe135;
 }
 
 /* ===== RESPONSIVE ===== */
