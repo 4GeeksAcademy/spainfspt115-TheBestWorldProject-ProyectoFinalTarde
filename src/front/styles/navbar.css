@@ -1,7 +1,6 @@
 /* ===== NAVBAR PRINCIPAL ===== */
 .navbar-custom {
   background: rgba(18, 18, 18, 0.6);
-  border-bottom: 2px solid #590ead;
   box-shadow: 0 0 10px #590ead;
   backdrop-filter: blur(8px);
   transition: background-color 0.4s ease, box-shadow 0.4s ease;
@@ -9,26 +8,30 @@
   padding: 0.5rem 1rem;
 }
 
-/* ===== LOGO REDONDO ===== */
-.logo-circle {
+/* ===== LOGO BOTÓN ===== */
+#logo-button {
   height: 80px;
   width: 80px;
   border-radius: 50%;
-  border: 2px solid #590ead;
-  box-shadow: 0 0 8px #590ead;
+
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
-.logo-img {
+#logo-button img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
   border-radius: 50%;
+  transition: all 0.3s ease;
+  animation: bounce 2s infinite;
 }
 
-.logo-img:hover {
+#logo-button img:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px #590ead, 0 0 20px #ff0000, 0 0 25px #ffae00;
+  box-shadow: 0 0 15px #ffff00, 0 0 20px #ff8c00, 0 0 25px #ffe135;
 }
 
 /* ===== LINKS ESTILO NEÓN ===== */
@@ -39,9 +42,9 @@
   text-shadow: 0 0 6px #590ead;
   transition: color 0.25s ease, text-shadow 0.25s ease;
   padding-bottom: 6px;
+  animation: bounce 2s infinite;
 }
 
-/* Subrayado animado */
 .navbar-custom .nav-link::after {
   content: "";
   position: absolute;
@@ -54,7 +57,6 @@
   transition: width 0.25s ease, left 0.25s ease;
 }
 
-/* Hover glow multicolor */
 .navbar-custom .nav-link:hover {
   color: #ffae00 !important;
   text-shadow: 0 0 8px #fff700, 0 0 16px #ffe135, 0 0 32px #fffacd;
@@ -70,20 +72,17 @@
 /* ===== BRILLO ACTIVO ===== */
 .navbar-custom .active-link {
   color: #ffea70 !important;
-  text-shadow: 0 0 10px #fffacd, 0 0 20px #ffe135, 0 0 40px #fff700,
-    0 0 60px #fffacd;
-  animation: goldenGlow 1.5s infinite alternate;
+  text-shadow: 0 0 10px #fffacd, 0 0 20px #ffe135, 0 0 40px #fff700, 0 0 60px #fffacd;
+  animation: goldenGlow 1.5s infinite alternate, bounce 2s infinite;
 }
 
 @keyframes goldenGlow {
   0% {
-    text-shadow: 0 0 10px #fffacd, 0 0 20px #ffe135, 0 0 40px #fff700,
-      0 0 60px #fffacd;
+    text-shadow: 0 0 10px #fffacd, 0 0 20px #ffe135, 0 0 40px #fff700, 0 0 60px #fffacd;
   }
 
   100% {
-    text-shadow: 0 0 15px #fffacd, 0 0 30px #ffe135, 0 0 60px #fff700,
-      0 0 90px #fffacd;
+    text-shadow: 0 0 15px #fffacd, 0 0 30px #ffe135, 0 0 60px #fff700, 0 0 90px #fffacd;
   }
 }
 
@@ -102,15 +101,28 @@
   width: 80px !important;
   height: 80px !important;
   border-radius: 50%;
-  border: 2px solid #590ead;
   box-shadow: 0 0 8px #590ead;
   transition: all 0.3s ease;
   object-fit: cover;
+  animation: bounce 2s infinite;
 }
 
 #donate-button img:hover {
   transform: scale(1.05);
   box-shadow: 0 0 15px #ffff00, 0 0 20px #ff8c00, 0 0 25px #ffe135;
+}
+
+/* ===== ANIMACIÓN BOUNCE ===== */
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
 }
 
 /* ===== RESPONSIVE ===== */

@@ -9,7 +9,7 @@ export const Navbar = () => {
   const { store } = useGlobalReducer();
   const location = useLocation();
 
-  // Renderizar botón PayPal
+  // Renderizar botón PayPal y asignar animación con desfase aleatorio
   useEffect(() => {
     // Evitar cargar el script más de una vez
     if (!document.getElementById("paypal-sdk")) {
@@ -28,9 +28,9 @@ export const Navbar = () => {
               src: moneda,
               alt: "Donate with PayPal button",
               title: "PayPal - The safer, easier way to pay online!",
-              width: 100,
-              height: 100,
-              border: 1,
+              width: 80,
+              height: 80,
+              border: 2,
               radius: 50,
             },
           }).render("#donate-button");
@@ -38,14 +38,23 @@ export const Navbar = () => {
       };
       document.body.appendChild(script);
     }
+
+    // Aplicar desfase aleatorio a todos los elementos
+    const animatedElements = document.querySelectorAll(
+      ".navbar-custom .nav-link, .logo-img, #donate-button img"
+    );
+    animatedElements.forEach((el) => {
+      const delay = Math.random() * 1.5; // retraso entre 0 y 1.5s
+      el.style.animationDelay = `${delay}s`;
+    });
   }, []);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
       <div className="container-fluid position-relative">
         {/* Logo */}
-        <div className="d-flex align-items-center justify-content-center logo-circle">
-          <Link to="/" className="text-decoration-none">
+        <div id="logo-button" className="logo-circle">
+          <Link to="/">
             <img src={logo} alt="Logo" className="logo-img" />
           </Link>
         </div>
