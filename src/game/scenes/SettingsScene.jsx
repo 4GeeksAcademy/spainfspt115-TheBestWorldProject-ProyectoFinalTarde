@@ -21,6 +21,7 @@ export default class SettingsScene extends Phaser.Scene {
         this.shakeEnabled = true;
 
         this.fxDropdowns = {};
+        this.dropdowns = {};
     }
 
     create() {
@@ -43,6 +44,7 @@ export default class SettingsScene extends Phaser.Scene {
             fontSize: "42px",
             fill: "#11e0e7ff"
         }).setOrigin(0.5);
+
         //-----AJUSTES DE AUDIO-----
         const audioOptions = [
             { name: "Global", key: "global", y: 0.15, on: this.globalOn, volume: this.globalVolume },
@@ -56,17 +58,15 @@ export default class SettingsScene extends Phaser.Scene {
                 fontSize: "26px",
                 fill: "#fff"
             }).setOrigin(0.5);
-            //---Barra de volumen---
+
             this.createMusicBar(centerX - 90, height * opt.y, GameSettings.audio[opt.key].volume, (value) => {
                 GameSettings.audio[opt.key].volume = value;
-                console.log(`Volumen de ${opt.key}: ${value.toFixed(2)}`);
-                
                 if (opt.key === "music" || opt.key === "global") {
                     const music = this.sound.get("bgMusic");
                     if (music) music.setVolume(GameSettings.audio.global.volume * GameSettings.audio.music.volume);
                 }
             });
-            //--- AJUSTES AUDIO ON/OFF ---
+
             const toggle = this.add.text(centerX + 190, height * opt.y, GameSettings.audio[opt.key].on ? "ON" : "OFF", {
                 fontSize: "20px",
                 fill: GameSettings.audio[opt.key].on ? "#0f0" : "#f00"
@@ -74,9 +74,6 @@ export default class SettingsScene extends Phaser.Scene {
 
             toggle.on("pointerdown", () => {
                 GameSettings.audio[opt.key].on = !GameSettings.audio[opt.key].on;
-                
-                console.log(`Botón ${opt.key} presionado. Nuevo estado: ${GameSettings.audio[opt.key].on}`);
-                
                 toggle.setText(GameSettings.audio[opt.key].on ? "ON" : "OFF")
                     .setStyle({ fill: GameSettings.audio[opt.key].on ? "#0f0" : "#f00" });
 
@@ -94,6 +91,7 @@ export default class SettingsScene extends Phaser.Scene {
                 }
             });
         });
+
         //-----AJUSTES DE CALIDAD Y ACCESIBILIDAD-----
         this.add.text(centerX, height * 0.40, "---Efectos FX---", {
             fontSize: "28px",
@@ -104,38 +102,26 @@ export default class SettingsScene extends Phaser.Scene {
             fontSize: "22px",
             fill: "#fff"
         }).setOrigin(0.5);
-        
-        // --- BOTÓN PRINCIPAL DEL DROPDOWN DE CALIDAD ---
-        this.qualityButton = this.add.text(centerX + 100, height * 0.45, "", {
-            fontSize: "20px",
-            fill: "#0f0",
-            backgroundColor: "#333",
-            padding: { x: 10, y: 5 }
-        }).setOrigin(0.5).setInteractive({ useHandCursor: true })
-            .on("pointerdown", () => this.toggleDropdown('quality'));
 
-        // --- OPCIONES DEL DROPDOWN (AHORA HACIA LA DERECHA) ---
-        this.qualityDropdown = this.add.container(centerX + 160, height * 0.45);
-        this.qualityDropdown.setVisible(false);
-        const qualities = ["low", "medium", "high"];
-        const qualityLabels = ["Bajo", "Medio", "Alto"];
+        // --- DROPDOWN DE CALIDAD ---
+        const qualityDropdown = this.createDropdown(
+            centerX + 100, height * 0.45,
+            ["low", "medium", "high"],
+            ["Bajo", "Medio", "Alto"],
+            this.selectQuality.bind(this),
+            'quality'
+        );
+        this.qualityButton = qualityDropdown.button;
+        this.dropdowns.quality = qualityDropdown.optionsContainer;
+        this.qualityButton.setText(this.getQualityDisplayName(this.currentQuality));
 
-        qualities.forEach((quality, i) => {
-            const option = this.add.text(i * 70, 0, qualityLabels[i], {
-                fontSize: "18px",
-                fill: "#fff",
-                backgroundColor: "#222",
-                padding: { x: 10, y: 5 }
-            }).setOrigin(0.5)
-              .setInteractive({ useHandCursor: true });
-
-            option.on("pointerdown", () => this.selectQuality(quality));
-            this.qualityDropdown.add(option);
-        });
-        
-        //--- OPCIONES DE CALIDAD DE FX ---
+        //--- DROPDOWNS DE CALIDAD DE FX ---
         const fxKeys = ["fire", "ice", "lightning"];
         const fxLabels = ["Fuego", "Hielo", "Rayos"];
+        // Modificado: Eliminado "off"
+        const fxQualities = ["low", "medium", "high"];
+        const fxQualityLabels = ["Bajo", "Medio", "Alto"];
+
         fxKeys.forEach((fx, i) => {
             const yPos = 0.50 + i * 0.05;
             this.add.text(centerX - 100, height * yPos, fxLabels[i], {
@@ -143,47 +129,20 @@ export default class SettingsScene extends Phaser.Scene {
                 fill: "#fff"
             }).setOrigin(0.5);
 
-            // --- CADA FX TIENE AHORA SU PROPIO DROPDOWN ---
-            const fxDropdown = this.add.container(centerX + 100, height * yPos);
-            this.fxDropdowns[fx] = fxDropdown;
-
-            // Botón principal del dropdown de FX
-            const mainButton = this.add.text(0, 0, "", {
-                fontSize: "20px",
-                fill: "#0f0",
-                backgroundColor: "#333",
-                padding: { x: 10, y: 5 }
-            }).setOrigin(0.5).setInteractive({ useHandCursor: true })
-              .on("pointerdown", () => this.toggleDropdown(fx));
-
-            // Opciones del dropdown de FX (AHORA HACIA LA DERECHA)
-            const optionsContainer = this.add.container(70, 0);
-            optionsContainer.setVisible(false);
-            
-            const fxQualities = ["low", "medium", "high", "off"];
-            const fxQualityLabels = ["Bajo", "Medio", "Alto", "Inactivo"];
-
-            // Añadir fondo dinámico para el dropdown
-            const bgWidth = fxQualities.length * 70;
-            const optionsBg = this.add.rectangle(bgWidth / 2 - 35, 0, bgWidth, 40, 0x111111, 0.9).setOrigin(0.5);
-            optionsContainer.add(optionsBg);
-
-            fxQualities.forEach((quality, j) => {
-                const option = this.add.text(j * 70 - (bgWidth / 2 - 35), 0, fxQualityLabels[j], {
-                    fontSize: "18px",
-                    fill: "#fff",
-                    backgroundColor: "#222",
-                    padding: { x: 10, y: 5 }
-                }).setOrigin(0.5).setInteractive({ useHandCursor: true })
-                  .on("pointerdown", () => this.selectFXOption(fx, quality));
-                optionsContainer.add(option);
-            });
-
-            fxDropdown.add([mainButton, optionsContainer]);
+            const fxDropdown = this.createDropdown(
+                centerX + 100, height * yPos,
+                fxQualities,
+                fxQualityLabels,
+                (quality) => this.selectFXOption(fx, quality),
+                fx
+            );
+            this.dropdowns[fx] = fxDropdown.optionsContainer;
+            this.fxDropdowns[fx] = fxDropdown.button;
         });
 
         this.updateQualityDisplay();
         this.updateFXToggles();
+
         //--- ACCESIBILIDAD ---
         this.add.text(centerX, height * 0.70, "---Accesibilidad---", {
             fontSize: "28px",
@@ -194,14 +153,12 @@ export default class SettingsScene extends Phaser.Scene {
             fontSize: "22px",
             fill: "#fff"
         }).setOrigin(0.5);
-        //--- ACCESIBILIDAD: FLASH Y SHAKE ON/OFF---
+
         this.flashToggle = this.add.text(centerX + 120, height * 0.75, this.flashEnabled ? "ON" : "OFF", {
             fontSize: "20px",
             fill: this.flashEnabled ? "#0f0" : "#f00"
         }).setOrigin(0.5).setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {
-                console.log(`Botón de Flash presionado. Nuevo estado: ${!this.flashEnabled}`);
-
                 this.flashEnabled = !this.flashEnabled;
                 this.registry.set("flashEnabled", this.flashEnabled);
                 this.flashToggle.setText(this.flashEnabled ? "ON" : "OFF")
@@ -218,8 +175,6 @@ export default class SettingsScene extends Phaser.Scene {
             fill: this.shakeEnabled ? "#0f0" : "#f00"
         }).setOrigin(0.5).setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {
-                console.log(`Botón de Shake presionado. Nuevo estado: ${!this.shakeEnabled}`);
-                
                 this.shakeEnabled = !this.shakeEnabled;
                 this.registry.set("shakeEnabled", this.shakeEnabled);
                 this.shakeToggle.setText(this.shakeEnabled ? "ON" : "OFF")
@@ -232,11 +187,42 @@ export default class SettingsScene extends Phaser.Scene {
         }).setOrigin(0.5)
             .setInteractive({ useHandCursor: true })
             .on("pointerdown", () => {
-                console.log("Volviendo al menú.");
                 this.scene.start("MenuScene");
             })
             .on("pointerover", function () { this.setStyle({ fill: "#ff0" }); })
             .on("pointerout", function () { this.setStyle({ fill: "#11e0e7ff" }); });
+    }
+
+    createDropdown(x, y, values, labels, callback, type) {
+        const mainButton = this.add.text(x, y, "", {
+            fontSize: "20px",
+            fill: "#0f0",
+            backgroundColor: "#333",
+            padding: { x: 10, y: 5 }
+        }).setOrigin(0.5).setInteractive({ useHandCursor: true })
+            .on("pointerdown", () => this.toggleDropdown(type));
+
+        const optionsContainer = this.add.container(x + 100, y);
+        optionsContainer.setVisible(false);
+
+        let currentX = 0;
+        labels.forEach((label, i) => {
+            const option = this.add.text(currentX, 0, label, {
+                fontSize: "18px",
+                fill: "#fff",
+                backgroundColor: "#222",
+                padding: { x: 10, y: 5 }
+            }).setOrigin(0, 0.5)
+                .setInteractive({ useHandCursor: true })
+                .on("pointerdown", () => {
+                    callback(values[i]);
+                    optionsContainer.setVisible(false);
+                });
+            optionsContainer.add(option);
+            currentX += option.width + 10;
+        });
+
+        return { button: mainButton, optionsContainer: optionsContainer };
     }
 
     createMusicBar(x, y, initialValue, callback) {
@@ -260,75 +246,89 @@ export default class SettingsScene extends Phaser.Scene {
         });
     }
 
-    // ===== GESTIÓN DE MENÚS DESPLEGABLES =====
     toggleDropdown(type) {
-        this.qualityDropdown.setVisible(false);
-        for (const key in this.fxDropdowns) {
-            this.fxDropdowns[key].getAt(1).setVisible(false);
+        for (const key in this.dropdowns) {
+            this.dropdowns[key].setVisible(false);
         }
 
-        if (type === 'quality') {
-            this.qualityDropdown.setVisible(!this.qualityDropdown.visible);
-            console.log(`Menú de Calidad: ${this.qualityDropdown.visible ? "Visible" : "Oculto"}`);
-        } else {
-            const optionsContainer = this.fxDropdowns[type].getAt(1);
-            optionsContainer.setVisible(!optionsContainer.visible);
-            console.log(`Menú de ${type}: ${optionsContainer.visible ? "Visible" : "Oculto"}`);
+        if (this.dropdowns[type]) {
+            this.dropdowns[type].setVisible(true);
         }
     }
 
     selectQuality(quality) {
         this.currentQuality = quality;
         applyQualityPreset(this.currentQuality);
+        
+        const presetEffects = GameSettings.presets[quality].effects;
+        Object.keys(presetEffects).forEach(fxKey => {
+            GameSettings.effects[fxKey] = { ...presetEffects[fxKey] };
+        });
+        
         this.updateQualityDisplay();
         this.updateFXToggles();
-        this.toggleDropdown('quality'); 
-        console.log(`Calidad seleccionada: ${quality}`);
     }
 
     selectFXOption(fxKey, quality) {
-        if (quality === "off") {
-            GameSettings.effects[fxKey].enabled = false;
-        } else {
-            // Usa Object.assign para copiar las propiedades del preset al efecto
-            Object.assign(GameSettings.effects[fxKey], GameSettings.presets[quality].effects[fxKey]);
-            GameSettings.effects[fxKey].enabled = true;
-            GameSettings.effects[fxKey].quality = quality; // Guarda la calidad seleccionada
-        }
-
-        this.currentQuality = "custom";
+        Object.assign(GameSettings.effects[fxKey], GameSettings.presets[quality].effects[fxKey]);
+        GameSettings.effects[fxKey].enabled = true;
+        GameSettings.effects[fxKey].quality = quality;
+    
         this.updateQualityDisplay();
         this.updateFXToggles();
-        this.toggleDropdown(fxKey);
-        console.log(`Opción ${fxKey} seleccionada: ${quality}`);
     }
 
     updateQualityDisplay() {
-        if (this.currentQuality === "custom") {
-            this.qualityButton.setText("PERSONALIZADO")
-                .setStyle({ fill: "#ff0" });
+        const isLow = this.compareSettings("low");
+        const isMedium = this.compareSettings("medium");
+        const isHigh = this.compareSettings("high");
+
+        if (isLow) {
+            this.currentQuality = "low";
+        } else if (isMedium) {
+            this.currentQuality = "medium";
+        } else if (isHigh) {
+            this.currentQuality = "high";
         } else {
-            const displayNames = { low: "BAJO", medium: "MEDIO", high: "ALTO" };
-            this.qualityButton.setText(displayNames[this.currentQuality])
-                .setStyle({ fill: "#0f0" });
+            this.currentQuality = "custom";
         }
+        
+        this.qualityButton.setText(this.getQualityDisplayName(this.currentQuality));
+        this.qualityButton.setStyle({ fill: this.currentQuality === "custom" ? "#ff0" : "#0f0" });
     }
 
     updateFXToggles() {
         const fxKeys = ["fire", "ice", "lightning"];
-        const displayNames = { low: "BAJO", medium: "MEDIO", high: "ALTO" };
-        
         fxKeys.forEach(fx => {
-            const mainButton = this.fxDropdowns[fx].getAt(0);
-            
-            if (GameSettings.effects[fx].enabled === false) {
-                mainButton.setText("INACTIVO")
-                    .setStyle({ fill: "#f00" });
-            } else {
-                const currentFxQuality = GameSettings.effects[fx].quality || "high";
-                mainButton.setText(displayNames[currentFxQuality])
-                    .setStyle({ fill: "#0f0" });
-            }
+            const mainButton = this.fxDropdowns[fx];
+            const currentFxQuality = GameSettings.effects[fx].quality || "high";
+            mainButton.setText(this.getQualityDisplayName(currentFxQuality)).setStyle({ fill: "#0f0" });
         });
+    }
+
+    getQualityDisplayName(quality) {
+        const displayNames = { low: "BAJO", medium: "MEDIO", high: "ALTO", custom: "PERSONALIZADO" };
+        return displayNames[quality] || quality.toUpperCase();
+    }
+
+    compareSettings(presetKey) {
+        const preset = GameSettings.presets[presetKey];
+        if (!preset) return false;
+
+        const fxKeys = ["fire", "ice", "lightning"];
+        for (const fx of fxKeys) {
+            const current = GameSettings.effects[fx];
+            const presetFx = preset.effects[fx];
+
+            if (current.quality !== presetFx.quality) {
+                return false;
+            }
+
+            if (current.enabled !== presetFx.enabled) {
+                return false;
+            }
+        }
+        
+        return true;
     }
 }
