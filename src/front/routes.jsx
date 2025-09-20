@@ -14,6 +14,7 @@ import { Login } from "./pages/Login"
 import { Profile } from "./pages/Profile"
 import { About } from "./pages/About";
 import { EditProfile } from "./pages/EditProfile";
+import { Ranking } from "./pages/Ranking";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -34,6 +35,7 @@ export const router = createBrowserRouter(
         <Route path="/profile" element={<Profile />} />
         <Route path="/about" element={<About />} />
         <Route path="/edit-profile" element={<EditProfile />} />
+        <Route path="/ranking" element={<Ranking />} /> 
       </Route>
     )
 );

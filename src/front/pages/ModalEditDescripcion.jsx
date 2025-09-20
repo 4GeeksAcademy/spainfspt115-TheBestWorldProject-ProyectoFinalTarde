@@ -1,6 +1,6 @@
 import React from "react";
 import { createPortal } from "react-dom";
-import "../styles/confirmationModal.css";
+import "../styles/confirmationmodal.css";
 
 export const ConfirmationModal = ({ message = "Acción completada", onClose }) => {
     if (typeof document === "undefined") return null;

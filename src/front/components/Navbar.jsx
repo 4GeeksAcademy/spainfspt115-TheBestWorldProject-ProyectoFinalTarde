@@ -103,6 +103,15 @@ export const Navbar = () => {
               Perfil
             </Link>
           </li>
+          <li className="nav-item">
+            <Link
+              to="/ranking"
+              className={`nav-link fw-bold ${location.pathname === "/ranking" ? "active-link" : ""
+                }`}
+            >
+              Ranking
+            </Link>
+          </li>
         </ul>
 
         {/* LogIn / SignUp y PayPal */}
