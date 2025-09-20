@@ -5,9 +5,29 @@ import MenuScene from "./scenes/MenuScene";
 import GameScene from "./scenes/GameScene";
 import GameOverScene from "./scenes/GameOverScene";
 import SettingsScene from "./scenes/SettingsScene";
+import useGlobalReducer from "../front/hooks/useGlobalReducer.jsx";
+
+const defaultFont = '"Pixelify Sans", sans-serif';
+const origTextFactory = Phaser.GameObjects.GameObjectFactory.prototype.text;
+
+Phaser.GameObjects.GameObjectFactory.prototype.text = function(x, y, text, style = {}) {
+  if (!style.fontFamily && !style.font) {
+    style.fontFamily = defaultFont;
+    style.fontSize = style.fontSize || "24px";
+    style.color = style.color || "#ffffff";
+  }
+  return origTextFactory.call(this, x, y, text, style);
+};
 
 export default function Game() {
+
+  const { store } = useGlobalReducer();
+  
+  // const userId = store?.user?.id_user;
+  const userId = 1;
+
   useEffect(() => {
+
     const game = new Phaser.Game({
       type: Phaser.AUTO,
       backgroundColor: "#222",
@@ -23,7 +43,7 @@ export default function Game() {
       physics: {
         default: "arcade",
         arcade: {
-          debug: true,
+          debug: false,
         },
       },
       fps: {
@@ -35,6 +55,12 @@ export default function Game() {
         bgMusicLoop: true,
       }
     });
+
+    if (userId) {
+      game.registry.set("userId", userId);
+    } else {
+      game.registry.set("userId", -1);
+    }
 
     const resize = () => {
       game.scale.resize(window.innerWidth, window.innerHeight);
@@ -48,6 +74,7 @@ export default function Game() {
       game.destroy(true);
 
     }
+
   }, []);
 
   return (

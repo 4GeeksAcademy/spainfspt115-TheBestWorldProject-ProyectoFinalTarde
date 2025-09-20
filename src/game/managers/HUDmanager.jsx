@@ -21,7 +21,6 @@ export function createHUD(scene, maxLives = 3) {
   // === SCORE ===
   const textScore = scene.add
     .text(startX + maxLives * 50 + 20, 20, "SCORE: 0", {
-      font: "28px Arial Black",
       fill: "#0f0",
       stroke: "#000",
       strokeThickness: 4,
@@ -49,7 +48,6 @@ export function createHUD(scene, maxLives = 3) {
 
     const text = scene.add
       .text(x, y, `-${name.toUpperCase()}`, {
-        font: "24px Arial Black",
         fill: powerConfigs[name].color,
         stroke: "#000",
         strokeThickness: 3,

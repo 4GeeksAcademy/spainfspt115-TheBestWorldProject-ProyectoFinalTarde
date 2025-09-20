@@ -119,6 +119,7 @@ export function handleInput(event, scene) {
     if (letters[typed.length]) {
       shakeLetter(scene, letters[typed.length]);
       letters[typed.length].setStyle({ fill: "#f00" });
+      enemy.setData("hadErrors", true);
     }
     return;
   }
@@ -128,6 +129,16 @@ export function handleInput(event, scene) {
   renderEnemyWord(word, typed, letters);
 
   if (typed === word) {
+    const hadErrors = enemy.getData("hadErrors") || false;
+
+    if (hadErrors) {
+      scene.stats.failedWords++;
+    } else {
+      scene.stats.correctWords++;
+    }
+
+    enemy.setData("hadErrors", false);
+
     const midLetter = letters[Math.floor(letters.length / 2)];
     letters.forEach((letter) => letter.destroy());
     enemy.setData("typed", "");
@@ -153,7 +164,7 @@ export function handleInput(event, scene) {
     } else {
       enemy.setData("__doomed", true);
 
-      updateSpeedEnemy(scene, enemy, 0);
+      updateSpeedEnemy(scene, enemy, 10);
 
       scene.player.playAttackAndThen(enemy.x, () => {
         launchProjectiles(scene, enemy, word.length);

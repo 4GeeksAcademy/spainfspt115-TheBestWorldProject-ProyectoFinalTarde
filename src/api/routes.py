@@ -126,7 +126,6 @@ def update_user():
     db.session.commit()
     return jsonify(user.serialize()), 200
 
-
 # GAME ROUTES
 #--- Obtener todas las partidas
 @api.route('/game', methods = ['GET'])
@@ -145,19 +144,18 @@ def get_game(id_game):
 
 #--- Crear juego
 @api.route('/game', methods = ['POST'])
-@jwt_required()
 def create_game():
     body = request.get_json()
-    current_user_id = int(get_jwt_identity())  # del token
-    
+
     game = Game(
-        id_user=current_user_id,
+        id_user=body.get("id_user"),
         final_score=body.get("final_score", 0),
         correct_words=body.get("correct_words", 0),
         failed_words=body.get("failed_words", 0),
         average_precision=body.get("average_precision", 0.0),
         wpm_average=body.get("wpm_average", 0.0),
         difficulty=body.get("difficulty", 1),
+        played_at=body.get("played_at")
     )
 
     db.session.add(game)
@@ -261,7 +259,6 @@ def add_word():
 
 # Obtener todas las palabras
 @api.route("/words", methods=["GET"])
-#@jwt_required()
 def get_words():
     words = Dictionary.query.all()
 

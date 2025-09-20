@@ -5,15 +5,27 @@ import { spawnEnemy, updateEnemyWordPosition, enemyAttack } from "../managers/En
 import { createPlayer } from "../managers/PlayerManager";
 import { createHUD } from "../managers/HUDmanager";
 import { createAnimations } from "../managers/AnimationManager";
+import { clearWordPool, loadWordsFromAPI } from "../managers/WordManager";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
   }
 
-  create() {
+  async create() {
+
+    // Game Stats
+    this.stats = {
+      startTime: Date.now(),
+      correctWords: 0,
+      failedWords: 0,
+    };
+
     this.width = this.sys.game.config.width;
     this.height = this.sys.game.config.height;
+
+    // === CARGA DE PALABRAS ===
+    await loadWordsFromAPI();
 
     // === AJUSTES REGISTRO ===
     const showScore = this.registry.get("showScore") ?? true;
@@ -74,7 +86,7 @@ export default class GameScene extends Phaser.Scene {
     let count = 3;
     const countdownText = this.add
       .text(this.width / 2, this.height / 2, count, {
-        font: "80px Arial Black",
+        font: "80px",
         fill: "#ff0",
         stroke: "#000",
         strokeThickness: 6,
@@ -149,6 +161,39 @@ export default class GameScene extends Phaser.Scene {
   }
 
   gameOver() {
+
+    if (this.registry.get("userID") != -1) {
+      const endTime = Date.now();
+      const elapsedMinutes = (endTime - this.stats.startTime) / 60000;
+
+      const correct = this.stats.correctWords;
+      const failed = this.stats.failedWords;
+      const total = correct + failed;
+
+      const averagePrecision = total > 0 ? (correct / total) * 100 : 0;
+      const wpm = elapsedMinutes > 0 ? total / elapsedMinutes : 0;
+
+      const payload = {
+        id_user: this.registry.get("userId"),
+        final_score: this.player.getData("score") || 0,
+        played_at: new Date().toISOString(),
+        correct_words: correct,
+        failed_words: failed,
+        average_precision: averagePrecision,
+        wpm_average: wpm,
+        difficulty: 1
+      };
+
+      console.log(payload);
+      
+
+      fetch("https://probable-sniffle-975jjx97p7v7cr7-3001.app.github.dev/api/game", {
+        method: "POST",
+        headers: {"content-Type": "application/json"},
+        body: JSON.stringify(payload),
+      }).catch(err => console.error("Error saving game: ", err));
+    }
+
     if (!this.isPlaying) return;
     this.isPlaying = false;
 
@@ -171,6 +216,8 @@ export default class GameScene extends Phaser.Scene {
     this.activeEnemy = null;
     this.enemies.clear(true, true);
     this.projectiles.clear(true, true);
+
+    clearWordPool();
 
     this.scene.start("GameOverScene", {
       score: this.player.getData("score") || 0,

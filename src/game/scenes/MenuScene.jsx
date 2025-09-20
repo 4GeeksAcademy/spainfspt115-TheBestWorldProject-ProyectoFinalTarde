@@ -29,23 +29,18 @@ export default class MenuScene extends Phaser.Scene {
     const { width, height } = this.sys.game.config;
     const centerX = width / 2;
 
-    // --- título ---
-    this.add
-      .text(centerX, height * 0.15, "- NOMBRE DEL JUEGO -", {
-        fontSize: "40px",
-        color: "#fff",
-        fontStyle: "bold",
-      })
-      .setOrigin(0.5);
+    // --- titulo ---
+    const title = this.add.text(centerX, height * 0.15, "- M E C A M A G I C -", {
+      fontSize: "40px",
+      color: "#fff",
+      fontStyle: "bold"
+    }).setOrigin(0.5);
 
-    // === botón: iniciar partida ===
-    const startButton = this.add
-      .text(centerX, height * 0.35, "Iniciar Partida", {
-        fontSize: "32px",
-        fill: "#fff",
-      })
-      .setOrigin(0.5)
-      .setInteractive();
+    // === boton: iniciar partida ===
+    const startButton = this.add.text(centerX, height * 0.35, "Iniciar Partida", {
+      fontSize: "32px",
+      fill: "#fff"
+    }).setOrigin(0.5).setInteractive();
 
     startButton.on("pointerdown", () => {
       this.scene.start("GameScene");
