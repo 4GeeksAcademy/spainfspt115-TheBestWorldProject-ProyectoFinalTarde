@@ -36,10 +36,10 @@ def get_users():
 def get_user(user_id):
     current_user_id = int(get_jwt_identity())
     if current_user_id != user_id:
-        return jsonify({"error": "Not Authorized"}), 403
+        return jsonify({"error": "No Authorizado"}), 403
     user = User.query.get(user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": "Usario no encontrado"}), 404
     return jsonify(user.serialize()), 200
 
 # ---para la pagina de profile
@@ -49,7 +49,7 @@ def profile():
     current_user_id = int(get_jwt_identity())
     user = User.query.get(current_user_id)
     if not user:
-        return jsonify({"error": "User not found"}), 404
+        return jsonify({"error": "Usario no encontrado"}), 404
     return jsonify(user.serialize()), 200
 
 # ---creacion usuario
@@ -57,13 +57,13 @@ def profile():
 def signup():
     data = request.get_json()
     if not data.get("email") or not data.get("password") or not data.get("username"):
-        return jsonify({"msg": "Email, username and password required"}), 400
+        return jsonify({"msg": "Email, nombre de usuario y contraseña son requeridos"}), 400
     # verificar duplicados por email o username
     existing_user = User.query.filter(
         (User.email == data["email"]) | (User.username == data["username"])
     ).first()
     if existing_user:
-        return jsonify({"msg": "User already exists"}), 400
+        return jsonify({"msg": "Usuario o email ya registrados"}), 400
     new_user = User(
         email=data["email"],
         username=data["username"],
@@ -75,7 +75,7 @@ def signup():
     db.session.add(new_user)
     db.session.commit()
     return jsonify({
-        "msg": "User created successfully",
+        "msg": "Usuario creado satisfactoriamente",
         "user": new_user.serialize()
     }), 201
 
@@ -84,15 +84,15 @@ def signup():
 def login():
     data = request.get_json()
     if not data.get("username") or not data.get("password"):
-        return jsonify({"msg": "Username and Password are required"}), 400
+        return jsonify({"msg": "Usuario y contraseña son obligatorios"}), 400
 
     user = User.query.filter_by(username=data["username"]).first()
     if user is None or not user.check_password(data["password"]):
-        return jsonify({"msg": "Invalid username or password"}), 401
+        return jsonify({"msg": "Usuario o contraseña inválidos"}), 401
 
     access_token = create_access_token(identity=str(user.id_user))
     return jsonify({
-        "msg": "Login successfully",
+        "msg": "Estás dentro",
         "token": access_token,
         "user": user.serialize()
     }), 200
@@ -104,7 +104,7 @@ def update_user():
     current_user_id = int(get_jwt_identity())
     user = User.query.get(current_user_id)
     if not user:
-        return jsonify({"error": "Usuario not found"}), 404
+        return jsonify({"error": "Usuario no encontrado"}), 404
 
     data = request.get_json()
 
@@ -114,7 +114,7 @@ def update_user():
 
     if "email" in data:
         if User.query.filter(User.email == data["email"], User.id_user != current_user_id).first():
-            return jsonify({"error": "Email used"}), 400
+            return jsonify({"error": "Email ya en uso"}), 400
         user.email = data["email"]
 
     if "password" in data:
@@ -142,7 +142,7 @@ def get_games():
 def get_game(id_game):
     game = Game.query.get(id_game)
     if game is None:
-        return jsonify({"msg": "User doesn't exists"}), 400
+        return jsonify({"msg": "Usuario no existe"}), 400
     return jsonify(game.serialize()), 200
 
 # --- Crear juego
@@ -186,7 +186,7 @@ def random_words_by_difficulty(difficulty):
     words = Dictionary.query.filter_by(difficulty=difficulty).order_by(
         func.random()).limit(amount).all()
     if not words:
-        return jsonify({"error": "No words for this difficulty"}), 404
+        return jsonify({"error": "No hay palabras para esta dificultad"}), 404
     return jsonify([w.serialize() for w in words]), 200
 
 # Obtener palabras de un nivel
@@ -227,7 +227,7 @@ def add_word():
 
     # Evitar duplicados
     if Dictionary.query.filter_by(word=word).first():
-        return jsonify({"msg": "The Word already exists"}), 400
+        return jsonify({"msg": "La palabra ya existe"}), 400
 
     new_word = Dictionary(
         word=word,
@@ -268,5 +268,5 @@ def get_cities(country_name):
     """Devuelve las ciudades de un país dado"""
     country = next((c for c in countries_cities_data if c["name"].lower() == country_name.lower()), None)
     if not country:
-        return jsonify({"error": "Country not found"}), 404
+        return jsonify({"error": "País no encontrado"}), 404
     return jsonify(country["cities"]), 200

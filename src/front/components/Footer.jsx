@@ -1,22 +1,25 @@
-import React from "react";
+// Footer.jsx
+import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCopyright } from "@fortawesome/free-regular-svg-icons";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useNavigate, Link } from "react-router-dom";
+import { LogoutModal } from "../pages/LogOutModal";
 import "../styles/footer.css";
 
 export const Footer = () => {
   const { store, dispatch } = useGlobalReducer();
   const navigate = useNavigate();
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     dispatch({ type: "logout" });
-    alert("Has cerrado sesión.");
-    navigate("/");
+    setShowLogoutModal(true);
   };
 
   return (
     <footer className="footer-custom fixed-bottom">
-      {/* Avatar y dropdown */}
       {store?.isRegistered && (
         <div className="dropup d-flex align-items-center">
           <a
@@ -43,17 +46,11 @@ export const Footer = () => {
             </div>
           </a>
 
-          {/* Opciones del menú de perfil */}
           <ul className="dropdown-menu" aria-labelledby="profileDropdown">
             <li>
               <Link to="/profile" className="dropdown-item">
                 <i className="bi bi-person-circle me-2"></i>Perfil
               </Link>
-            </li>
-            <li>
-              <a className="dropdown-item" href="#">
-                <i className="bi bi-bell me-2"></i>Notificaciones
-              </a>
             </li>
             <li className="dropdown-divider"></li>
             <li>
@@ -68,10 +65,21 @@ export const Footer = () => {
         </div>
       )}
 
-      {/* Texto de copyright centrado */}
       <div className="footer-center">
-        <p className="mb-0">© 2025 Mi Proyecto</p>
+        <p className="mb-0">
+          <FontAwesomeIcon icon={faCopyright} /> All rights reserved
+        </p>
       </div>
+
+      {showLogoutModal && (
+        <LogoutModal
+          message="Has cerrado sesión correctamente"
+          onClose={() => {
+            setShowLogoutModal(false);
+            navigate("/");
+          }}
+        />
+      )}
     </footer>
   );
 };

@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import "../styles/signup.css"; // Importa tu CSS separado
+import "../styles/signup.css";
+import { SuccessModal } from "./RegistroOkModal";
 
 export const Signup = () => {
   const { dispatch } = useGlobalReducer();
@@ -10,6 +11,7 @@ export const Signup = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -30,8 +32,7 @@ export const Signup = () => {
       );
       const data = await response.json();
       if (response.ok) {
-        alert("Usuario creado correctamente. Ahora inicia sesión.");
-        navigate("/login");
+        setShowModal(true);
       } else {
         setError(data.msg || "Error al registrar usuario");
       }
@@ -93,6 +94,13 @@ export const Signup = () => {
           </p>
         </div>
       </div>
+
+      {showModal && (
+        <SuccessModal
+          message="Usuario creado correctamente. Ahora inicia sesión."
+          onClose={() => navigate("/login")}
+        />
+      )}
     </div>
   );
 };
