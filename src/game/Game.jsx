@@ -19,13 +19,12 @@ Phaser.GameObjects.GameObjectFactory.prototype.text = function(x, y, text, style
   return origTextFactory.call(this, x, y, text, style);
 };
 
-export default function Game() {
+export const Game = () => {
 
   const { store } = useGlobalReducer();
   
-  // const userId = store?.user?.id_user;
-  const userId = 1;
-
+  let userId = store?.user?.id_user;
+  
   useEffect(() => {
 
     const game = new Phaser.Game({
@@ -56,10 +55,10 @@ export default function Game() {
       }
     });
 
-    if (userId) {
+    if (userId != undefined && userId != null) {
       game.registry.set("userId", userId);
     } else {
-      game.registry.set("userId", -1);
+      game.registry.set("userId", "pepe");
     }
 
     const resize = () => {

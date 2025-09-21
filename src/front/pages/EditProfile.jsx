@@ -56,7 +56,7 @@ export const EditProfile = () => {
   }, [navigate]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}api/countries`)
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/countries`)
       .then(res => res.json())
       .then(data => setCountries(data))
       .catch(err => console.error(err));
@@ -64,7 +64,7 @@ export const EditProfile = () => {
 
   useEffect(() => {
     if (country) {
-      fetch(`${import.meta.env.VITE_BACKEND_URL}api/cities/${country}`)
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cities/${country}`)
         .then(res => res.json())
         .then(data => setCities(data))
         .catch(err => console.error(err));
@@ -81,7 +81,7 @@ export const EditProfile = () => {
     }
 
     try {
-      const resp = await fetch(`${import.meta.env.VITE_BACKEND_URL}api/user`, {
+      const resp = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

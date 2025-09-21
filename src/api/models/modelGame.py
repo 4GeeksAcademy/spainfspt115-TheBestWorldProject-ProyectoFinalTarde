@@ -51,5 +51,10 @@ class Game (db.Model):
             "wpm_average": self.wpm_average,
             "difficulty": self.difficulty,
             "game_words": [word.serialize() for word in self.game_words],
-            "id_user": self.id_user
+            "id_user": self.id_user,
+            "user": {
+                "id_user": self.user.id_user,
+                "username": self.user.username,
+                "avatar_url": self.user.avatar_url
+            }
         }

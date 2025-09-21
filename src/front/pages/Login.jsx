@@ -15,7 +15,7 @@ export const Login = () => {
     setError("");
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}api/login`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -42,7 +42,7 @@ export const Login = () => {
   return (
     <div className="home-container">
       <video className="bg-video" autoPlay muted loop>
-        <source src="/videos/background.mp4" type="video/mp4" />
+        <source src="src/front/assets/videos/Hechizero.mp4" type="video/mp4" />
       </video>
       <div className="home-overlay"></div>
 

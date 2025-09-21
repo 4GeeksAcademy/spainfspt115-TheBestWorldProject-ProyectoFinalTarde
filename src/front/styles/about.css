@@ -137,21 +137,34 @@
 
 /* Javier - efecto máquina de escribir */
 .dev-javier {
-    font-family: "Courier New", monospace;
+    background: linear-gradient(90deg, #ffcc00, #ff0000);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+    position: relative;
     overflow: hidden;
-    border-right: 2px solid #ffcc00;
-    white-space: nowrap;
-    display: inline-block;
-    animation: typing 3s steps(20, end) infinite alternate;
 }
 
-@keyframes typing {
-    from {
-        width: 0;
+.dev-javier::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -75%;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+    transform: skewX(-25deg);
+    animation: shine 2s infinite;
+}
+
+@keyframes shine {
+    0% {
+        left: 125%;
     }
 
-    to {
-        width: 100%;
+    100% {
+        left: -75%;
     }
 }
 

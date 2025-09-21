@@ -52,7 +52,7 @@ export const Profile = () => {
   return (
     <div className="profile-container">
       <video className="bg-video" autoPlay muted loop>
-        <source src="/videos/background.mp4" type="video/mp4" />
+        <source src="src/front/assets/videos/Hechizero.mp4" type="video/mp4" />
       </video>
       <div className="home-overlay"></div>
 

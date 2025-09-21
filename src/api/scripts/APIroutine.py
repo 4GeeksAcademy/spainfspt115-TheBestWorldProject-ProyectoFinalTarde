@@ -1,5 +1,6 @@
 import time
 import requests
+import os
 
 API_EXTERNAL = "https://rae-api.com/api/random/"
 API_BACKEND = "https://probable-sniffle-975jjx97p7v7cr7-3001.app.github.dev/api/words"
@@ -32,4 +33,7 @@ def loop():
         time.sleep(1)
 
 if __name__ == "__main__":
-    loop()
+    try:
+        loop()
+    except KeyboardInterrupt:
+        print("\nScript detenido por el usuario.")
