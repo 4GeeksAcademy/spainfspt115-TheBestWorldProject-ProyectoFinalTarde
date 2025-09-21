@@ -15,6 +15,7 @@ import { Profile } from "./pages/Profile"
 import { About } from "./pages/About";
 import { EditProfile } from "./pages/EditProfile";
 import { Ranking } from "./pages/Ranking";
+import { Game } from "../game/Game";
 
 export const router = createBrowserRouter(
     createRoutesFromElements(
@@ -36,6 +37,7 @@ export const router = createBrowserRouter(
         <Route path="/about" element={<About />} />
         <Route path="/edit-profile" element={<EditProfile />} />
         <Route path="/ranking" element={<Ranking />} /> 
+        <Route path="/game" element={<Game />} />
       </Route>
     )
 );
