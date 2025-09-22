@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/profile.css";
+import { UpdateUser } from "../ApiServices";
 
 export const Profile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
-
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [messages, setMessages] = useState([]);
+  // const [userStats, setuserStats] = useState({ "correct_words": "", "failed_words": 0, "ratio": 0});
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -18,6 +19,7 @@ export const Profile = () => {
       if (store.isRegistered) dispatch({ type: "logout" });
       setShowModal(true);
     } else {
+      UpdateUser(dispatch, token);
       setDescription(store.user?.description || "");
     }
   }, [store.isRegistered, dispatch]);

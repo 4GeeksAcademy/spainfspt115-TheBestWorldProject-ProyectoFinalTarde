@@ -2,7 +2,7 @@ import Phaser from "phaser";
 
 let wordPool = [];
 
-const API_BASE_URL = "https://probable-sniffle-975jjx97p7v7cr7-3001.app.github.dev/api"
+const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`
 
 export async function loadWordsFromAPI() {
   try {

@@ -82,7 +82,26 @@ export default class MenuScene extends Phaser.Scene {
       .setInteractive();
 
     exitButton.on("pointerdown", () => {
+      const goProfile = this.game.registry.get("exitToProfile");
+
+      // 1) Limpieza de escenas activas
+      this.scene.manager.getScenes(true).forEach(scene => {
+        scene.time?.removeAllEvents();
+        scene.tweens?.killAll();
+        scene.sound?.stopAll();
+        scene.input?.removeAllListeners();
+        if (scene.children) scene.children.removeAll(true); // destruye todos los objetos gráficos
+        if (scene.physics?.world) scene.physics.world.shutdown();
+      });
+
+      // 2) Destruir animaciones globales
+      this.anims.destroy();
+
+      // 3) Finalmente destruir el juego completo
       this.game.destroy(true);
+
+      // 4) Redirigir al perfil (React Router)
+      if (typeof goProfile === "function") goProfile();
     });
 
     // === EFECTO HOVER para botones ===

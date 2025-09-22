@@ -33,6 +33,12 @@ export default function storeReducer(store, action = {}) {
         isRegistered: true,
       };
 
+    case "update_user":
+      return {
+        ...store,
+        user: action.payload.user,
+      };
+
     case "logout":
       return {
         ...store,

@@ -6,6 +6,7 @@ import GameScene from "./scenes/GameScene";
 import GameOverScene from "./scenes/GameOverScene";
 import SettingsScene from "./scenes/SettingsScene";
 import useGlobalReducer from "../front/hooks/useGlobalReducer.jsx";
+import { useNavigate } from "react-router-dom";
 
 const defaultFont = '"Pixelify Sans", sans-serif';
 const origTextFactory = Phaser.GameObjects.GameObjectFactory.prototype.text;
@@ -25,6 +26,8 @@ export const Game = () => {
   
   let userId = store?.user?.id_user;
   
+  const navigate = useNavigate();
+
   useEffect(() => {
 
     const game = new Phaser.Game({
@@ -52,7 +55,7 @@ export const Game = () => {
       settings: {
         bgMusicVolume: 1,
         bgMusicLoop: true,
-      }
+      },
     });
 
     if (userId != undefined && userId != null) {
@@ -67,6 +70,8 @@ export const Game = () => {
     }
 
     window.addEventListener("resize", resize);
+
+    game.registry.set("exitToProfile",  () => navigate("/profile"));
 
     return () => {
       window.removeEventListener("resize", resize);  
