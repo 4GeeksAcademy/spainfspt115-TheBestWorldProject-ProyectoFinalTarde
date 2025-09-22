@@ -91,7 +91,7 @@ export const Navbar = () => {
               to="/login"
               className={`nav-link ${location.pathname === "/login" ? "active-link" : ""}`}
             >
-              Entrar
+              Iniciar sesión
             </Link>
             <Link
               to="/signup"

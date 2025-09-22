@@ -5,7 +5,7 @@ export const SuccessModal = ({ message, onClose }) => {
     return createPortal(
         <div className="modal-overlay">
             <div className="card-neon modal-card">
-                <h3>Registrado con éxito. Puedes entrar con tu cuenta.</h3>
+                <h3>Registrado con éxito. Puedes iniciar sesión con tu cuenta.</h3>
                 <div className="modal-buttons">
                     <button className="close-btn" onClick={onClose}>
                         Cerrar

@@ -90,7 +90,7 @@ export const Signup = () => {
           </form>
 
           <p>
-            ¿Ya tienes cuenta? <Link to="/login">Entrar</Link>
+            ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
           </p>
         </div>
       </div>
