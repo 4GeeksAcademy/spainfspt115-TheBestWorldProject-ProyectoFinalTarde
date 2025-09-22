@@ -8,7 +8,8 @@ export const Ranking = () => {
     useEffect(() => {
         const fetchRanking = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/leaderboard`);
+                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/leaderboard`, {
+                });
                 if (!res.ok) throw new Error("Error al obtener el ranking");
                 const data = await res.json();
                 setPlayers(data);
@@ -46,7 +47,7 @@ export const Ranking = () => {
                                 {players.map((game, index) => (
                                     <tr key={game.id_game}>
                                         <td>{index + 1}</td>
-                                        <td>{game.user?.username || "Anónimo"}</td>
+                                        <td>{game.user.username}</td>
                                         <td>{game.final_score}</td>
                                         <td>{game.average_precision}%</td>
                                     </tr>

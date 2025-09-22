@@ -1,8 +1,9 @@
 import time
 import requests
+import os
 
 API_EXTERNAL = "https://rae-api.com/api/random/"
-API_BACKEND = "https://probable-sniffle-975jjx97p7v7cr7-3001.app.github.dev/api/words"
+API_BACKEND = os.getenv('VITE_BACKEND_URL') + "/api/words"
 
 def loop():
     while True:
@@ -12,6 +13,7 @@ def loop():
                 print(f"Error in External API: {response.status_code}")
                 time.sleep(10)
                 continue
+
 
             data = response.json()
             word = data.get("data").get("word")
@@ -26,10 +28,14 @@ def loop():
             else:
                 print(f"Backend ERROR response - {response.status_code}: {response.text}")
 
+
         except Exception as exc:
             print("Error in LOOP routine:", exc)
 
         time.sleep(1)
 
 if __name__ == "__main__":
-    loop()
+    try:
+        loop()
+    except KeyboardInterrupt:
+        print("\nScript detenido por el usuario.")

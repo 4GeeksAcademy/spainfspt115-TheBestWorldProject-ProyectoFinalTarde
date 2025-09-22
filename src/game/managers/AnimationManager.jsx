@@ -1,22 +1,26 @@
 export function createAnimations(scene) {
   // ---- HEARTS ----
-  scene.anims.create({
-    key: "heart_break",
-    frames: scene.anims.generateFrameNumbers("heart", { start: 85, end: 97 }),
-    frameRate: 15,
-    repeat: 0,
-  });
+  if (!scene.anims.exists("heart_break")) {
+    scene.anims.create({
+      key: "heart_break",
+      frames: scene.anims.generateFrameNumbers("heart", { start: 85, end: 97 }),
+      frameRate: 15,
+      repeat: 0,
+    });
+  }
 
-  const fill = scene.anims
-    .generateFrameNumbers("heart", { start: 102, end: 112 })
-    .reverse();
+  if (!scene.anims.exists("heart_fill")) {
+    const fill = scene.anims
+      .generateFrameNumbers("heart", { start: 102, end: 112 })
+      .reverse();
 
-  scene.anims.create({
-    key: "heart_fill",
-    frames: fill,
-    frameRate: 15,
-    repeat: 0,
-  });
+    scene.anims.create({
+      key: "heart_fill",
+      frames: fill,
+      frameRate: 15,
+      repeat: 0,
+    });
+  }
 
   // ---- ENEMIGOS ----
   const types = [
@@ -32,50 +36,62 @@ export function createAnimations(scene) {
   });
 
   // ---- PLAYER ----
-  scene.anims.create({
-    key: "player_idle",
-    frames: scene.anims.generateFrameNumbers("player_idle"),
-    framreRate:8,
-    repeat: -1,
-  });
+  if (!scene.anims.exists("player_idle")) {
+    scene.anims.create({
+      key: "player_idle",
+      frames: scene.anims.generateFrameNumbers("player_idle"),
+      frameRate: 8,
+      repeat: -1,
+    });
+  }
 
-  scene.anims.create({
-    key: "player_attack",
-    frames: scene.anims.generateFrameNumbers("player_attack"),
-    framreRate:12,
-    repeat: 0,
-  });
+  if (!scene.anims.exists("player_attack")) {
+    scene.anims.create({
+      key: "player_attack",
+      frames: scene.anims.generateFrameNumbers("player_attack"),
+      frameRate: 12,
+      repeat: 0,
+    });
+  }
 
-  scene.anims.create({
-    key: "player_hit",
-    frames: scene.anims.generateFrameNumbers("player_hit"),
-    framreRate:6,
-    repeat: 0,
-    duration: 400
-  });
+  if (!scene.anims.exists("player_hit")) {
+    scene.anims.create({
+      key: "player_hit",
+      frames: scene.anims.generateFrameNumbers("player_hit"),
+      frameRate: 6,
+      repeat: 0,
+      duration: 400,
+    });
+  }
 
-  scene.anims.create({
-    key: "player_death",
-    frames: scene.anims.generateFrameNumbers("player_death"),
-    framreRate:12,
-    repeat: 0,
-  });
+  if (!scene.anims.exists("player_death")) {
+    scene.anims.create({
+      key: "player_death",
+      frames: scene.anims.generateFrameNumbers("player_death"),
+      frameRate: 12,
+      repeat: 0,
+    });
+  }
 
   // ---- PROJECTILE ----
-  scene.anims.create({
-    key: "projectile_move",
-    frames: scene.anims.generateFrameNumbers("projectile_move"),
-    framreRate:18,
-    repeat: -1,
-  });
+  if (!scene.anims.exists("projectile_move")) {
+    scene.anims.create({
+      key: "projectile_move",
+      frames: scene.anims.generateFrameNumbers("projectile_move"),
+      frameRate: 18,
+      repeat: -1,
+    });
+  }
 
-  scene.anims.create({
-    key: "projectile_explode",
-    frames: scene.anims.generateFrameNumbers("projectile_explode"),
-    framreRate:20,
-    repeat: 0,
-    hideOnComplete: true
-  });
+  if (!scene.anims.exists("projectile_explode")) {
+    scene.anims.create({
+      key: "projectile_explode",
+      frames: scene.anims.generateFrameNumbers("projectile_explode"),
+      frameRate: 20,
+      repeat: 0,
+      hideOnComplete: true,
+    });
+  }
 }
 
 function makeDirectionalAnims(scene, sheetKey, baseKey, frameRate = 12, loop = false) {

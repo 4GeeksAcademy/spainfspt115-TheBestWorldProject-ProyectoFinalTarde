@@ -23,7 +23,7 @@ export const Signup = () => {
     }
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}api/signup`,
+        `${import.meta.env.VITE_BACKEND_URL}/api/signup`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -44,7 +44,7 @@ export const Signup = () => {
   return (
     <div className="home-container">
       <video className="bg-video" autoPlay muted loop>
-        <source src="/videos/background.mp4" type="video/mp4" />
+        <source src="src/front/assets/videos/Hechizera.mp4" type="video/mp4" />
       </video>
       <div className="home-overlay"></div>
 

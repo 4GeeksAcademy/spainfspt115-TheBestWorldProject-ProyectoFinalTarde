@@ -20,7 +20,8 @@ static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
 app = Flask(__name__)
 
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": os.getenv('VITE_FRONTEND_URL')}})
+#CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.url_map.strict_slashes = False
 

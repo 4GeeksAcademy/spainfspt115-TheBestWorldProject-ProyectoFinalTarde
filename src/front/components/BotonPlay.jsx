@@ -10,12 +10,21 @@ export const Play = () => {
     const [showModal, setShowModal] = useState(false);
 
     const handleClick = () => {
+        handleModalPlay();
+
         if (store.isRegistered) {
             navigate("/game");
         } else {
             setShowModal(true);
         }
     };
+
+    const handleModalPlay = () => {
+        if (showModal)
+        {
+            navigate("/game");
+        }
+    }
 
     return (
         <div>
@@ -33,7 +42,7 @@ export const Play = () => {
 
                             <div className="modal-buttons">
                                 <button
-                                    onClick={() => setShowModal(false)}
+                                    onClick={handleClick}
                                     className="close-btn"
                                 >
                                     Jugar

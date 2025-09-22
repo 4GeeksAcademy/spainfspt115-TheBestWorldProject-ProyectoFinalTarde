@@ -161,8 +161,10 @@ export default class GameScene extends Phaser.Scene {
   }
 
   gameOver() {
-
-    if (this.registry.get("userID") != -1) {
+    
+    const user = this.registry.get("userId");
+    
+    if (user != "pepe") {
       const endTime = Date.now();
       const elapsedMinutes = (endTime - this.stats.startTime) / 60000;
 
@@ -187,7 +189,7 @@ export default class GameScene extends Phaser.Scene {
       console.log(payload);
       
 
-      fetch("https://probable-sniffle-975jjx97p7v7cr7-3001.app.github.dev/api/game", {
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/game`, {
         method: "POST",
         headers: {"content-Type": "application/json"},
         body: JSON.stringify(payload),

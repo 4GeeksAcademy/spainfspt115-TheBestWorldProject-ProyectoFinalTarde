@@ -6,6 +6,7 @@ import GameScene from "./scenes/GameScene";
 import GameOverScene from "./scenes/GameOverScene";
 import SettingsScene from "./scenes/SettingsScene";
 import useGlobalReducer from "../front/hooks/useGlobalReducer.jsx";
+import { useNavigate } from "react-router-dom";
 
 const defaultFont = '"Pixelify Sans", sans-serif';
 const origTextFactory = Phaser.GameObjects.GameObjectFactory.prototype.text;
@@ -19,12 +20,13 @@ Phaser.GameObjects.GameObjectFactory.prototype.text = function(x, y, text, style
   return origTextFactory.call(this, x, y, text, style);
 };
 
-export default function Game() {
+export const Game = () => {
 
   const { store } = useGlobalReducer();
   
-  // const userId = store?.user?.id_user;
-  const userId = 1;
+  let userId = store?.user?.id_user;
+  
+  const navigate = useNavigate();
 
   useEffect(() => {
 
@@ -53,13 +55,13 @@ export default function Game() {
       settings: {
         bgMusicVolume: 1,
         bgMusicLoop: true,
-      }
+      },
     });
 
-    if (userId) {
+    if (userId != undefined && userId != null) {
       game.registry.set("userId", userId);
     } else {
-      game.registry.set("userId", -1);
+      game.registry.set("userId", "pepe");
     }
 
     const resize = () => {
@@ -68,6 +70,8 @@ export default function Game() {
     }
 
     window.addEventListener("resize", resize);
+
+    game.registry.set("exitToProfile",  () => navigate("/profile"));
 
     return () => {
       window.removeEventListener("resize", resize);  

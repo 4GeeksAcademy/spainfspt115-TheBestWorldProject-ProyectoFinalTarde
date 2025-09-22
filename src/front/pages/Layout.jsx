@@ -42,10 +42,12 @@ export const Layout = () => {
     checkSession();
   }, []);
 
+  const hideLayout = location.pathname === "/game";
+
   return (
     <ScrollToTop>
       <div className="d-flex flex-column">
-        <Navbar />
+        {!hideLayout && <Navbar />}
 
         {/* Contenido principal */}
         <main
@@ -60,7 +62,7 @@ export const Layout = () => {
           <Outlet />
         </main>
 
-        <Footer />
+        {!hideLayout && <Footer />}
       </div>
     </ScrollToTop>
   );

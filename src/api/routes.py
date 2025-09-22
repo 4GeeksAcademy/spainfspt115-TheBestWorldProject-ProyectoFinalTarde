@@ -9,15 +9,11 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from datetime import datetime
-from sqlalchemy import func
+from sqlalchemy import func, select
 import os, json
 import requests
 
-
 api = Blueprint('api', __name__)
-
-# Allow CORS requests to this API
-CORS(api)
 
 # === CARGAR DATA DE PAISES Y CIUDADES ===
 base_path = os.path.join(os.path.dirname(__file__), "data")
@@ -170,8 +166,27 @@ def create_game():
 # LeaderBoard Rout --> query exclusiva para generar la tabla de score
 @api.route("/leaderboard", methods=["GET"])
 def leaderboard():
-    top = Game.query.order_by(Game.final_score.desc()).limit(10).all()
-    return jsonify([g.serialize() for g in top]), 200
+    subq = (
+        db.session.query(
+            Game.id_user,
+            func.max(Game.final_score).label("best_score")
+        )
+        .group_by(Game.id_user)
+        .subquery()
+    )
+
+    results = (
+        db.session.query(Game)
+        .join(
+            subq,
+            (Game.id_user == subq.c.id_user) & (Game.final_score == subq.c.best_score)
+        )
+        .order_by(Game.final_score.desc())
+        .limit(10)
+        .all()
+    )
+
+    return jsonify([g.serialize() for g in results]), 200
 
 # DICTIONARY ROUTES
 # --- GAME WORDS ROUTES ---
