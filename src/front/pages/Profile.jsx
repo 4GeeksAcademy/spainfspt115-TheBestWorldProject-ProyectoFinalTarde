@@ -7,15 +7,13 @@ import { UpdateUser } from "../ApiServices";
 export const Profile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
-  const [description, setDescription] = useState(store?.user?.description || "");
-  const [modalDescription, setModalDescription] = useState(description);
   const [showModal, setShowModal] = useState(false);
-  const [saving, setSaving] = useState(false);
-  useEffect(() => {
-    setDescription(store?.user?.description || "");
-  }, [store.user]);
+  const [description, setDescription] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [messages, setMessages] = useState([]);
+  // const [userStats, setuserStats] = useState({ "correct_words": "", "failed_words": 0, "ratio": 0});
 
-  const handleSaveDescription = async () => {
+  useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
       if (store.isRegistered) dispatch({ type: "logout" });
@@ -24,37 +22,37 @@ export const Profile = () => {
       UpdateUser(dispatch, token);
       setDescription(store.user?.description || "");
     }
+  }, [store.isRegistered, dispatch]);
 
+  const addMessage = (msg) => setMessages((prev) => [...prev, msg]);
+
+  const handleSaveDescription = async () => {
+    const token = localStorage.getItem("token");
     try {
-      setSaving(true);
       const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ description: modalDescription }),
+        body: JSON.stringify({ description }),
       });
       const updateUser = await response.json();
-
       if (response.ok) {
         dispatch({ type: "set_user", payload: { user: updateUser, token } });
-        setDescription(modalDescription);
-        setShowModal(false); // Cierra el modal al guardar
+        setIsEditing(false);
+        addMessage("Tu descripción ha sido actualizada correctamente");
       } else {
-        alert(updateUser.error || "No se pudo guardar la descripción.");
+        addMessage(updateUser.error || "No se pudo guardar la descripción.");
       }
     } catch (error) {
       console.error("Error al guardar:", error);
-      alert("Error de conexión al guardar la descripción.");
-    } finally {
-      setSaving(false);
+      addMessage("Error de conexión al guardar la descripción.");
     }
   };
 
   return (
     <div className="profile-container">
-
       <video className="bg-video" autoPlay muted loop>
         <source src="src/front/assets/videos/Hechizero.mp4" type="video/mp4" />
       </video>
@@ -125,95 +123,61 @@ export const Profile = () => {
                 )}
                 <button className="profile-btn" onClick={() => navigate("/edit-profile")}>Editar Perfil</button>
               </div>
-
-            </div>
-            <h3 className="profile-username">{store?.user?.username || "Usuario"}</h3>
-          </div>
-
-          <div className="profile-centered-content">
-            <p><strong>País:</strong> {store?.user?.country || "No registrado"}</p>
-            <p><strong>Ciudad:</strong> {store?.user?.city || "No registrada"}</p>
-            <p><strong>Email:</strong> {store?.user?.email || "email@dominio.com"}</p>
-            <p className="profile-description">
-              {description || <i>Añade una descripción...</i>}
-            </p>
-            <div className="profile-buttons">
-              <button
-                className="profile-btn"
-                onClick={() => {
-                  setModalDescription(description);
-                  setShowModal(true);
-                }}
-              >
-                Editar descripción
-              </button>
-              <button
-                className="profile-btn warning"
-                onClick={() => navigate("/edit-profile")}
-              >
-                Editar Perfil
-              </button>
             </div>
           </div>
-        </div>
 
-        <div className="profile-card profile-center-below">
-          <h4>Aquí puedes añadir contenido debajo del perfil</h4>
-        </div>
-      </div>
-
-      {/* HISTORIAL DERECHA */}
-      <div className="profile-card profile-right">
-        <h4>Historial de partidas</h4>
-        <div className="game-list">
-          {store?.user?.games && store.user.games.length > 0 ? (
-            [...store.user.games]
-              .sort((a, b) => new Date(b.played_at) - new Date(a.played_at))
-              .map((game) => (
-                <div key={game.id_game} className="game-card">
-                  <p><strong>Partida #{game.id_game}</strong></p>
-                  <p>
-                    Jugado el{" "}
-                    {new Date(game.played_at).toLocaleDateString("es-ES", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                  <p><strong>Puntuación:</strong> {game.final_score}</p>
-                  <p><strong>Precisión:</strong> {game.average_precision}%</p>
-                  <hr />
-                </div>
-              ))
-          ) : (
-            <p className="text-danger">Aún no tienes partidas registradas.</p>
-          )}
-        </div>
-      </div>
-
-      {/* MODAL */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-card">
-            <h2 className="modal-title">Editar descripción</h2>
-            <textarea
-              value={modalDescription}
-              onChange={(e) => setModalDescription(e.target.value)}
-            />
-            <div className="modal-buttons">
-              <button className="profile-btn" onClick={handleSaveDescription} disabled={saving}>
-                {saving ? "Guardando..." : "Guardar"}
-              </button>
-              <button
-                className="profile-btn warning"
-                onClick={() => setShowModal(false)}
-              >
-                Cancelar
-              </button>
+          <div className="center-column-wrapper">
+            <div className="profile-card profile-center">
+              <h4>Estadísticas</h4>
+              <p><strong>Partidas jugadas:</strong> {store?.user?.games?.length || "Todavía no has jugado"}</p>
+              <p><strong>Palabras correctas:</strong> {store?.user?.correct_words || "0"}</p>
+              <p><strong>Palabras erróneas:</strong> {store?.user?.failed_words || "0"}</p>
+              <p><strong>Ratio:</strong> {store?.user?.average_precision || "0%"}</p>
             </div>
+
+            <div className="profile-card profile-center-below"></div>
           </div>
-        </div>
+
+          <div className="profile-card profile-right">
+            <h4>Historial de partidas</h4>
+            {store?.user?.games && store.user.games.length > 0 ? (
+              [...store.user.games]
+                .sort((a, b) => new Date(b.played_at) - new Date(a.played_at))
+                .map((game) => (
+                  <div key={game.id_game} className="game-card">
+                    <p><strong>Partida #{game.id_game}</strong></p>
+                    <p>
+                      Jugado el{" "}
+                      {new Date(game.played_at).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                    <p><strong>Puntuación:</strong> {game.final_score}</p>
+                    <p><strong>Precisión:</strong> {game.average_precision}%</p>
+                    <hr />
+                  </div>
+                ))
+            ) : (
+              <p className="text-danger">Aún no tienes partidas registradas.</p>
+            )}
+          </div>
+        </>
       )}
+
+      {/* Renderizar todos los mensajes como modales */}
+      {messages.map((msg, i) => (
+        <div key={i} className="modal-overlay">
+          <div className="modal-card">
+            <h2 className="modal-title">Aviso</h2>
+            <p className="modal-message">{msg}</p>
+            <div className="modal-buttons">
+              <button className="profile-btn" onClick={() => setMessages((prev) => prev.filter((_, idx) => idx !== i))}>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
