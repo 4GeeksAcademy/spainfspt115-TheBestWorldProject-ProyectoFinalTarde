@@ -271,7 +271,7 @@ def add_word():
         db.session.commit()
         return jsonify(new_word.serialize()), 201
     else:
-        return jsonify({"msg": "word already exist","palabra": word}), 200
+        return jsonify({"msg": "palabra ya existe","palabra": word}), 200
 
 # Obtener todas las palabras
 @api.route("/words", methods=["GET"])
@@ -344,6 +344,6 @@ def get_random_word():
         db.session.add(new_word)
         db.session.commit()
     else:
-        return jsonify({"msg": "word already exist","palabra": word})
+        return jsonify({"msg": "la palabra ya existe","palabra": word})
     
     return jsonify(new_word.serialize()), 200

@@ -1,5 +1,8 @@
 /* ===== NAVBAR PRINCIPAL ===== */
 .navbar-custom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: rgba(18, 18, 18, 0.6);
   box-shadow: 0 0 10px #590ead;
   backdrop-filter: blur(8px);
@@ -114,14 +117,22 @@
   }
 }
 
-/* Navbar centrado (desktop) */
+/* ===== BLOQUE CENTRADO ===== */
 .navbar-center {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  align-items: center;
   display: flex;
   gap: 1.5rem;
+  align-items: center;
+}
+
+/* ===== BLOQUE DERECHO ===== */
+.navbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 /* ===== BOTÓN PAYPAL ===== */
@@ -169,5 +180,12 @@
   #donate-button-container {
     position: static;
     margin-top: 0.5rem;
+  }
+
+  .navbar-right {
+    position: static;
+    margin-top: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
   }
 }

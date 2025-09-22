@@ -186,7 +186,7 @@ export const EditProfile = () => {
 
           <div className="d-flex justify-content-between mt-3">
             <button type="button" className="btn btn-secondary" onClick={() => navigate("/profile")}>Cancelar</button>
-            <button type="submit" className="btn btn-success">Guardar cambios</button>
+            <button type="submit" className="btn btn-success" >Guardar cambios</button>
           </div>
         </form>
       </div>
@@ -195,7 +195,10 @@ export const EditProfile = () => {
       {showModal && (
         <ConfirmationModal
           message="Perfil actualizado correctamente"
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false);
+            navigate("/profile");
+          }}
         />
       )}
     </div>
