@@ -12,6 +12,7 @@ from api.commands import setup_commands
 from api.extensions import db
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
+from datetime import timedelta
 
 
 
@@ -36,6 +37,8 @@ else:
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 MIGRATE = Migrate(app, db, compare_type=True)
 db.init_app(app)
+
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=10)
 
 app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
 jwt = JWTManager(app)

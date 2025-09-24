@@ -50,6 +50,34 @@ export const Profile = () => {
     }
   };
 
+  const calculateStats = () => {
+    if (!store.user || !store.user.games || store.user.length === 0 ) {
+      return {
+        gamesPlayed: 0,
+        totalCorrect: 0,
+        totalFailed: 0,
+        averageRatio: "0.00",
+        bestWPM: 0
+      };
+    }
+
+    const games = store.user.games;
+    const gamesPlayed = games.length;
+
+    const totalCorrect = games.reduce((sum, game) => sum + game.correct_words, 0);
+    const totalFailed = games.reduce((sum, game) => sum + game.failed_words, 0);
+
+    const totalWords = totalCorrect + totalFailed;
+    const averageRatio = totalWords > 0 ? ((totalCorrect / totalWords) * 100).toFixed(2) : "0.00";
+    const totalWPM = games.reduce((sum, game) => + game.wpm_average, 0) 
+    const averageWPM = Math.round(totalWPM / gamesPlayed);
+    const bestWPM = games.reduce((max, game) => Math.max(max, game.wpm_average), 0 )
+
+    return { gamesPlayed, totalCorrect, totalFailed, averageRatio, averageWPM, bestWPM: Math.round(bestWPM) };
+  };
+
+  const userStats = calculateStats();
+
   return (
     <div className="profile-container">
       {/* 🔹 Video de fondo con URL optimizada */}
@@ -96,10 +124,12 @@ export const Profile = () => {
           <div className="profile-left">
             <div className="profile-card">
               <h4>Estadísticas</h4>
-              <p><strong>Partidas jugadas:</strong> {store?.user?.games?.length || "Todavía no has jugado"}</p>
-              <p><strong>Palabras correctas:</strong> {store?.user?.correct_words || "0"}</p>
-              <p><strong>Palabras erróneas:</strong> {store?.user?.failed_words || "0"}</p>
-              <p><strong>Ratio:</strong> {store?.user?.average_precision || "0%"}</p>
+              <p><strong>Partidas jugadas:</strong> {userStats.gamesPlayed || "Todavía no has jugado"}</p>
+              <p><strong>Palabras correctas:</strong> {userStats.totalCorrect || "0"}</p>
+              <p><strong>Palabras erróneas:</strong> {userStats.totalFailed || "0"}</p>
+              <p><strong>Ratio:</strong> {userStats.averageRatio || "0%"}</p>
+              <p><strong>Palabras por minuto:</strong>{userStats.averageWPM}</p>
+              <p><strong>Mejor WPM "Record":</strong>{userStats.bestWPM}</p>
             </div>
           </div>
 
