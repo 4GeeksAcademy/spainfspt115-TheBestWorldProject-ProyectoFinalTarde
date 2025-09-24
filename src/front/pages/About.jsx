@@ -94,7 +94,7 @@ export const About = () => {
           <li className="dev-constantin">
             Constantin –{" "}
             <a
-              href="https://www.linkedin.com/in/constantin-s%C3%BBrin-631331270/"
+              href="https://www.linkedin.com/in/constantin-súrin-631331270/"
               target="_blank"
               rel="noopener noreferrer"
             >

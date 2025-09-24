@@ -15,6 +15,7 @@ import requests
 
 api = Blueprint('api', __name__)
 
+
 # === CARGAR DATA DE PAISES Y CIUDADES ===
 base_path = os.path.join(os.path.dirname(__file__), "data")
 with open(os.path.join(base_path, "countries+cities.json"), "r", encoding="utf-8") as f:

@@ -21,7 +21,20 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 
 CORS(app, resources={r"/api/*": {"origins": os.getenv('VITE_FRONTEND_URL')}})
-#CORS(app, resources={r"/api/*": {"origins": "*"}})
+# CORS(app,
+#      resources={r"/api/*": {
+#          "origins": [
+#              "http://localhost:3000",
+#              "https://8x3bbg4x-3000.uks1.devtunnels.ms"
+#          ]
+#      }},
+#      supports_credentials=True,
+#      allow_headers=["Content-Type", "Authorization"],
+#      methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]) 
+# #CONSTAN(TIN) --- ME HACE FALTA PA ARRANCAR EL LOCAL EN VISUAL CODE, NO BORRAR.
+
+
+#CORS(app, resources={r"/api/*": {"origins": "*"}})   
 
 app.url_map.strict_slashes = False
 
