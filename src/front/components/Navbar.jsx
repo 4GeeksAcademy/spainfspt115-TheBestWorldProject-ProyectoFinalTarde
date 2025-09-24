@@ -48,7 +48,7 @@ export const Navbar = () => {
       const delay = Math.random() * 1.5;
       el.style.animationDelay = `${delay}s`;
     });
-  }, [store]);
+  }, []);
 
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
