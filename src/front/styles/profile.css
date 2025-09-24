@@ -9,7 +9,7 @@ body {
 .profile-container {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr; /* Izquierda - Centro - Derecha */
-  gap: 50px;
+  gap: 80px; /* AUMENTADO: Más espacio entre las columnas principales */
   padding: 40px;
   box-sizing: border-box;
   align-items: stretch; /* Estira columnas al mismo alto */
@@ -21,6 +21,7 @@ body {
 .profile-right {
   display: flex;
   flex-direction: column;
+  gap: 30px; /* AUMENTADO: Más espacio entre las tarjetas en las columnas */
 }
 
 /* TARJETAS PRINCIPALES OCUPAN TODO EL ALTO */
@@ -43,21 +44,85 @@ body {
 }
 
 /* TARJETAS */
-.profile-card {
-  background: rgba(0, 0, 0, 0.75);
+.profile-card-stats {
+  width: 100%;
+  height: 50%;
+  background: rgba(0, 0, 0, 0.5);
   backdrop-filter: blur(6px);
   border: 2px solid #590ead;
-  box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
-  color: #fff;
-  border-radius: 12px;
+  box-shadow: 0 0 15px #7700ff, inset 0 0 15px #8214ff;
+  color: #a0b1ff;
+  border-radius: 15px;
   padding: 25px;
   transition: all 0.3s ease-in-out;
+  display: flex;
+  flex-direction: column;
 }
 
-.profile-card:hover {
-  box-shadow: 0 0 15px #590ead, 0 0 20px #ff0000, 0 0 25px #ffae00,
-    inset 0 0 10px #590ead;
+/* NUEVA REGLA PARA EL TÍTULO DE ESTADÍSTICAS */
+.profile-card-stats h4 {
+  color: #c091ff; /* Color morado */
+  text-shadow: 0 0 5px #c091ff, 0 0 10px #c091ff;
+}
+
+/* NUEVA REGLA PARA LAS PALABRAS DE LAS ESTADÍSTICAS */
+.profile-card-stats p {
+  font-size: 1.1rem;
+}
+
+.profile-card-stats:hover {
+  box-shadow: 0 0 15px #7a4dff, 0 0 20px #7a4dff, 0 0 25px #7a4dff,
+    inset 0 0 10px #7a4dff;
   transform: translateY(-5px);
+}
+
+.profile-card-profile {
+  width: 100%;
+  height: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  border: 2px solid #590ead;
+  box-shadow: 0 0 15px #7700ff, inset 0 0 15px #8214ff;
+  color: #a0b1ff;
+  border-radius: 15px;
+  padding: 25px;
+  transition: all 0.3s ease-in-out;
+  display: flex; /* Asegura que la tarjeta es un contenedor flexible */
+  flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
+  gap: 30px; /* AÑADIDO: Más espacio entre los elementos dentro de la tarjeta */
+}
+
+.profile-card-profile:hover {
+  box-shadow: 0 0 15px #7a4dff, 0 0 20px #7a4dff, 0 0 25px #7a4dff,
+    inset 0 0 10px #7a4dff;
+  transform: translateY(-5px);
+}
+
+.profile-card-history {
+  width: 100%;
+  max-height: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(6px);
+  border: 2px solid #590ead;
+  box-shadow: 0 0 15px #7700ff, inset 0 0 15px #8214ff;
+  color: #a0b1ff;
+  border-radius: 15px;
+  padding: 25px;
+  transition: all 0.3s ease-in-out;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+.profile-card-history:hover {
+  box-shadow: 0 0 15px #7a4dff, 0 0 20px #7a4dff, 0 0 25px #7a4dff,
+    inset 0 0 10px #7a4dff;
+  transform: translateY(-5px);
+}
+
+/* NUEVA REGLA PARA EL TÍTULO DEL HISTORIAL */
+.profile-card-history h4 {
+  color: #c091ff; /* Color morado */
+  text-shadow: 0 0 5px #c091ff, 0 0 10px #c091ff;
 }
 
 /* PERFIL */
@@ -65,7 +130,20 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 15px;
+  margin-bottom: 0;
+}
+
+.profile-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 20px;
+  margin-bottom: 0;
+}
+
+.profile-avatar {
+  margin-bottom: 0;
 }
 
 .profile-avatar img {
@@ -76,16 +154,23 @@ body {
 }
 
 .profile-username {
-  margin-top: 10px;
-  font-size: 1.6rem;
+  margin-top: 0;
+  font-size: 2.6rem;
   text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
 }
 
-.profile-centered-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
+/* NUEVAS REGLAS PARA EL DISEÑO DE DOS COLUMNAS */
+.profile-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px 30px;
+  align-items: start;
+  text-align: left;
+  width: 100%;
+}
+
+.profile-details-grid p {
+  margin: 0;
 }
 
 /* VENTANA VACÍA DEBAJO DEL PERFIL */
@@ -103,13 +188,13 @@ body {
 .profile-buttons {
   display: flex;
   gap: 15px;
-  margin-top: 15px;
+  margin-top: auto;
   width: 100%;
 }
 
 .profile-btn {
   flex: 1;
-  padding: 0.8rem;
+  padding: 1.2rem; /* MODIFICADO: Aumentado el padding para hacer los botones más grandes */
   border-radius: 6px;
   border: 2px solid #590ead;
   background: transparent;
@@ -122,9 +207,25 @@ body {
 }
 
 .profile-btn:hover {
+  background-color: rgba(132, 1, 255, 0.274);
   box-shadow: 0 0 15px #590ead, 0 0 20px #ff0000, 0 0 25px #ffae00,
     inset 0 0 10px #590ead;
   transform: translateY(-2px);
+}
+
+.profile-action-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.profile-action-buttons .profile-btn {
+  flex: 1;
+  width: auto;
+  font-size: 20px;
+  background-color: rgba(0, 0, 0, 0.35);
 }
 
 /* TEXTAREA */
@@ -182,11 +283,12 @@ textarea {
 .profile-right {
   display: flex;
   flex-direction: column;
+  gap: 20px;
 }
 
 .profile-right > .profile-card {
   flex: 1;
-  overflow-y: auto; /* scroll si hay muchas partidas */
+  overflow-y: auto;
 }
 
 .game-card {
@@ -214,33 +316,32 @@ textarea {
 
 /* text area y descripcion */
 .description-section {
-    width: 100%;
-    margin-top: 20px; 
-    text-align: left; 
+  width: 100%;
+  margin-top: 20px;
+  text-align: left;
 }
 
-
 .profile-description {
-    white-space: pre-wrap;  
-    word-wrap: break-word;  
-    
-    background-color: rgba(0, 0, 0, 0.3);
-    padding: 10px;
-    border-radius: 8px;
-    min-height: 100px; 
+  white-space: pre-wrap;
+  word-wrap: break-word;
+
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  border-radius: 8px;
+  min-height: 100px;
 }
 
 .char-counter {
-    width: 100%;
-    text-align: right;
-    font-size: 0.8rem;
-    color: #aaa;
-    margin-top: 5px;
-    padding-right: 5px;
+  width: 100%;
+  text-align: right;
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-top: 5px;
+  padding-right: 5px;
 }
 
 .profile-buttons-edit-description {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
 }
