@@ -34,6 +34,8 @@ export default class GameScene extends Phaser.Scene {
 
     this.isPlaying = false;
 
+    this.actualLives = 0;
+
     // === grupos ===
     this.enemies = this.physics.add.group();
     this.projectiles = this.physics.add.group();
@@ -61,9 +63,11 @@ export default class GameScene extends Phaser.Scene {
     this.hud.textScore.setVisible(showScore);
 
     // === INPUT ===
-    this.keyListener = this.input.keyboard.on("keydown", (e) =>
-      handleInput(e, this)
-    );
+    this.keyListener = this.input.keyboard.on("keydown", (e) => {
+      if(this.actualLives > 0) {
+        handleInput(e, this);
+      }
+    });
 
     // contador inicial
     this.startCountdown();
@@ -152,6 +156,8 @@ export default class GameScene extends Phaser.Scene {
 
   update() {
     if (!this.isPlaying) return;
+
+    this.actualLives = this.player.getData("lives");
 
     this.hud.updateScore(this.player.getData("score"), false);
 

@@ -7,8 +7,8 @@ export function createPlayer (scene, x, y) {
 
     scene.physics.add.existing(player);
     player.setOrigin(0.5, 0.5);
-    player.body.setSize(80, 100);
-    player.body.setOffset(30, 20);
+    player.body.setSize(40, 60);
+    player.body.setOffset(55, 40);
     player.body.setImmovable(true);
 
     player.setData("lives", 3);

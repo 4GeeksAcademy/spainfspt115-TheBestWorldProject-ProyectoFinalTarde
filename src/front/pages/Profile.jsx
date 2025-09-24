@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/profile.css";
-import { UpdateUser } from "../ApiServices";
+import { UpdateInfoStoreUser, updateUserProfile } from "../ApiServices";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -18,42 +18,43 @@ export const Profile = () => {
       if (store.isRegistered) dispatch({ type: "logout" });
       setShowModal(true);
     } else {
-      UpdateUser(dispatch, token);
+      UpdateInfoStoreUser(dispatch, token);
       setDescription(store.user?.description || "");
     }
   }, [store.isRegistered, dispatch]);
 
   const addMessage = (msg) => setMessages((prev) => [...prev, msg]);
 
-  const handleSaveDescription = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ description }),
-      });
-      const updateUser = await response.json();
-      if (response.ok) {
-        dispatch({ type: "set_user", payload: { user: updateUser, token } });
-        setIsEditing(false);
-        addMessage("Tu descripción ha sido actualizada correctamente");
-      } else {
-        addMessage(updateUser.error || "No se pudo guardar la descripción.");
-      }
-    } catch (error) {
-      console.error("Error al guardar:", error);
-      addMessage("Error de conexión al guardar la descripción.");
-    }
-  };
-
+  const handleSaveDescription = () => {
+    updateUserProfile({ description: description })
+        .then(updatedUser => {
+          dispatch({
+            type: "set_user",
+            payload: { user: updatedUser, token: localStorage.getItem("token")}
+          });
+          setIsEditing(false);
+          addMessage("Tu descripción ha sido actualizada correctamente");
+        })
+        .catch(error => {
+          addMessage(error.message || "No se pudo guardar la descripción.");
+        });
+      };
   return (
     <div className="profile-container">
-      <video className="bg-video" autoPlay muted loop>
-        <source src="src/front/assets/videos/Hechizero.mp4" type="video/mp4" />
+      {/* 🔹 Video de fondo con URL optimizada */}
+      <video
+        className="bg-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="none"
+        poster="https://res.cloudinary.com/dixwk4tan/video/upload/f_auto,q_auto/Hechizero_cmmfss.jpg"
+      >
+        <source
+          src="https://res.cloudinary.com/dixwk4tan/video/upload/v1758724121/Hechizero_cmmfss.mp4"
+          type="video/mp4"
+        />
       </video>
       <div className="home-overlay"></div>
 
@@ -62,10 +63,16 @@ export const Profile = () => {
         <div className="modal-overlay">
           <div className="modal-card">
             <h2 className="modal-title">Acceso denegado</h2>
-            <p className="modal-message">Debes iniciar sesión o registrarte para acceder al perfil.</p>
+            <p className="modal-message">
+              Debes iniciar sesión o registrarte para acceder al perfil.
+            </p>
             <div className="modal-buttons">
-              <button className="profile-btn" onClick={() => navigate("/login")}>Entrar</button>
-              <button className="profile-btn" onClick={() => navigate("/register")}>Registro</button>
+              <button className="profile-btn" onClick={() => navigate("/login")}>
+                Entrar
+              </button>
+              <button className="profile-btn" onClick={() => navigate("/register")}>
+                Registro
+              </button>
             </div>
           </div>
         </div>
@@ -91,29 +98,41 @@ export const Profile = () => {
               <div className="profile-header">
                 <div className="profile-avatar">
                   <img
-                    src={store?.user?.avatar_url || "/src/front/assets/avatars/avatar1.png"}
+                    src={
+                    store?.user?.avatar_url ||
+                    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png"
+                  }
                     alt="Avatar"
                   />
                 </div>
-                <h3 className="profile-username">{store?.user?.username || "User Name"}</h3>
+                <h3 className="profile-username">
+                {store?.user?.username || "User Name"}
+              </h3>
               </div>
 
               <div className="profile-centered-content">
-                <p><strong>País:</strong> {store?.user?.country || "No registrado"}</p>
-                <p><strong>Ciudad:</strong> {store?.user?.city || "No registrada"}</p>
-                <p><strong>Email:</strong> {store?.user?.email || "notengo@email.net"}</p>
+                <p>
+                <strong>País:</strong> {store?.user?.country || "No registrado"}
+              </p>
+                <p>
+                <strong>Ciudad:</strong> {store?.user?.city || "No registrada"}
+              </p>
+                <p>
+                <strong>Email:</strong>{" "}
+                {store?.user?.email || "notengo@email.net"}
+              </p>
                 <p>
                   <strong>Miembro desde:</strong>{" "}
                   {store?.user?.created_at
                     ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
                     : "No registrado"}
                 </p>
 
-                <h4>----------------</h4>
+                <h4>Descripción Personalizada</h4>
 
                 {isEditing ? (
                   <textarea
@@ -151,7 +170,9 @@ export const Profile = () => {
                   .sort((a, b) => new Date(b.played_at) - new Date(a.played_at))
                   .map((game) => (
                     <div key={game.id_game} className="game-card">
-                      <p><strong>Partida #{game.id_game}</strong></p>
+                      <p>
+                      <strong>Partida #{game.id_game}</strong>
+                    </p>
                       <p>
                         Jugado el{" "}
                         {new Date(game.played_at).toLocaleDateString("es-ES", {
@@ -160,8 +181,12 @@ export const Profile = () => {
                           day: "numeric",
                         })}
                       </p>
-                      <p><strong>Puntuación:</strong> {game.final_score}</p>
-                      <p><strong>Precisión:</strong> {game.average_precision}%</p>
+                      <p>
+                      <strong>Puntuación:</strong> {game.final_score}
+                    </p>
+                      <p>
+                      <strong>Precisión:</strong> {game.average_precision}%
+                    </p>
                       <hr />
                     </div>
                   ))
@@ -180,7 +205,14 @@ export const Profile = () => {
             <h2 className="modal-title">Aviso</h2>
             <p className="modal-message">{msg}</p>
             <div className="modal-buttons">
-              <button className="profile-btn" onClick={() => setMessages((prev) => prev.filter((_, idx) => idx !== i))}>Cerrar</button>
+              <button
+                className="profile-btn"
+                onClick={() =>
+                  setMessages((prev) => prev.filter((_, idx) => idx !== i))
+                }
+              >
+                Cerrar
+              </button>
             </div>
           </div>
         </div>

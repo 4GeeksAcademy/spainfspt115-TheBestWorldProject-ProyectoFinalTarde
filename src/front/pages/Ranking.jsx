@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from "react";
 import "../styles/ranking.css";
+import { getLeaderboard } from "../ApiServices";
 
 export const Ranking = () => {
     const [players, setPlayers] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null)
 
     useEffect(() => {
-        const fetchRanking = async () => {
-            try {
-                const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/leaderboard`, {
-                });
-                if (!res.ok) throw new Error("Error al obtener el ranking");
-                const data = await res.json();
+        getLeaderboard()
+            .then(data => {
                 setPlayers(data);
-            } catch (error) {
-                console.error(error);
-            } finally {
+            })
+            .catch(err => {
+                console.error("Error al obtener el ranking:", err);
+                setError("No se pudo cargar el ranking. Intente de nuevo más tarde.");
+            })
+            .finally(() => {
                 setLoading(false);
-            }
-        };
-
-        fetchRanking();
+            });
     }, []);
+
+
 
     return (
         <div className="ranking-container">
