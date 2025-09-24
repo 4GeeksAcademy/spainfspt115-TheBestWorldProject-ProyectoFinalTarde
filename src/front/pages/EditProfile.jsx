@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/editprofile.css";
 import { ConfirmationModal } from "./ModalEditDescripcion";
+import { getCountries, getCitiesByCountry, updateUserProfile } from "../ApiServices";
 // Avatares
 import avatar1 from "../assets/avatars/avatar1.png";
 import avatar2 from "../assets/avatars/avatar2.png";
@@ -23,12 +24,14 @@ export const EditProfile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
 
-  const [country, setCountry] = useState("");
-  const [city, setCity] = useState("");
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [avatar, setAvatar] = useState("");
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    country: "",
+    city: "",
+    avatar_url: ""
+  });
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false); // Nuevo estado para modal
 
@@ -42,11 +45,14 @@ export const EditProfile = () => {
 
   useEffect(() => {
     if (store?.user) {
-      setUsername(store.user.username || "");
-      setEmail(store.user.email || "");
-      setCountry(store.user.country || "");
-      setCity(store.user.city || "");
-      setAvatar(store.user.avatar_url || "");
+      setFormData({
+        username: store.user.username || "",
+        email: store.user.email || "",
+        password: "",
+        country: store.user.country || "",
+        city: store.user.city || "",
+        avatar_url: store.user.avatar_url || ""
+      });
     }
   }, [store.user]);
 
@@ -55,21 +61,33 @@ export const EditProfile = () => {
     if (!token) navigate("/login");
   }, [navigate]);
 
-  useEffect(() => {
-    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/countries`)
-      .then(res => res.json())
-      .then(data => setCountries(data))
-      .catch(err => console.error(err));
-  }, []);
+    useEffect(() => {
+        getCountries()
+            .then(data => {
+                setCountries(data);
+            })
+            .catch(err => console.error("Error al cargar países:", err));
+    }, []);
 
-  useEffect(() => {
-    if (country) {
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cities/${country}`)
-        .then(res => res.json())
-        .then(data => setCities(data))
-        .catch(err => console.error(err));
-    } else setCities([]);
-  }, [country]);
+    useEffect(() => {
+        if (formData.country) {
+            getCitiesByCountry(formData.country)
+                .then(data => {
+                    setCities(data);
+                })
+                .catch(err => console.error("Error al cargar ciudades:", err));
+        } else {
+            setCities([]);
+        }
+    }, [formData.country]);
+
+const handleChange = (e) => {
+  const { name, value } = e.target;
+  setFormData(prev =>({...prev, [name]: value}));
+  if (name === "country") {
+    setFormData(prev => ({...prev, city: ""}))
+  }
+}
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -79,35 +97,21 @@ export const EditProfile = () => {
       setError("No tienes sesión activa.");
       return;
     }
-
-    try {
-      const resp = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "Bearer " + token,
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password: password || undefined,
-          country,
-          city,
-          avatar_url: avatar,
-        }),
+    const dataToUpdate = {...formData};
+    if (!dataToUpdate.password){
+      delete dataToUpdate.password
+    }
+    updateUserProfile(dataToUpdate)
+      .then(updatedUser => {
+        dispatch({type: "set_user",
+                  payload: {user: updatedUser, token: localStorage.getItem("token")}
+        });
+        setShowModal(true);
+      })
+      .catch(err => {
+        setError(err.message);
       });
 
-      const data = await resp.json();
-
-      if (resp.ok) {
-        dispatch({ type: "set_user", payload: { user: data, token } });
-        setShowModal(true); // Mostramos el modal al guardar
-      } else {
-        setError(data.error || data.msg || "Error al actualizar el perfil");
-      }
-    } catch {
-      setError("Error de conexión con el servidor");
-    }
   };
 
   return (
@@ -123,8 +127,8 @@ export const EditProfile = () => {
                 key={i}
                 src={img}
                 alt={`avatar${i + 1}`}
-                className={avatar === img ? "selected" : ""}
-                onClick={() => setAvatar(img)}
+                className={formData.avatar_url === img ? "selected": ""}
+                onClick={() => setFormData(prev => ({...prev, avatar_url: img}))}
               />
             ))}
           </div>
@@ -132,39 +136,43 @@ export const EditProfile = () => {
           {/* Username */}
           <label className="form-label">Usuario</label>
           <input
+          name="username"
             type="text"
             className="form-control"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={formData.username}
+            onChange={handleChange}
             required
           />
 
           {/* Email */}
           <label className="form-label">Email</label>
           <input
+            name= "email"
             type="email"
             className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={formData.email}
+            onChange={handleChange}
             required
           />
 
           {/* Password */}
           <label className="form-label">Nueva contraseña</label>
           <input
+            name="password"
             type="password"
             className="form-control"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={formData.password}
+            onChange={handleChange}
             placeholder="Deja en blanco para no cambiarla"
           />
 
           {/* País */}
           <label className="form-label">País</label>
           <select
+            name="country"
             className="form-select"
-            value={country}
-            onChange={(e) => { setCountry(e.target.value); setCity(""); }}
+            value={formData.country}
+            onChange={handleChange}
           >
             <option value="">Selecciona un país</option>
             {countries.map((c, i) => <option key={i} value={c}>{c}</option>)}
@@ -173,10 +181,11 @@ export const EditProfile = () => {
           {/* Ciudad */}
           <label className="form-label">Ciudad</label>
           <select
+            name="city"
             className="form-select"
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            disabled={!country}
+            value={formData.city}
+            onChange={handleChange}
+            disabled={!formData.country}
           >
             <option value="">Selecciona una ciudad</option>
             {cities.map((cityName, i) => <option key={i} value={cityName}>{cityName}</option>)}
