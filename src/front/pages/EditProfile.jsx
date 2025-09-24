@@ -8,14 +8,12 @@ export const EditProfile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
 
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-    country: "",
-    city: "",
-    avatar_url: ""
-  });
+  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [avatar, setAvatar] = useState("");
   const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
 
@@ -38,14 +36,11 @@ export const EditProfile = () => {
 
   useEffect(() => {
     if (store?.user) {
-      setFormData({
-        username: store.user.username || "",
-        email: store.user.email || "",
-        password: "",
-        country: store.user.country || "",
-        city: store.user.city || "",
-        avatar_url: store.user.avatar_url || ""
-      });
+      setUsername(store.user.username || "");
+      setEmail(store.user.email || "");
+      setCountry(store.user.country || "");
+      setCity(store.user.city || "");
+      setAvatar(store.user.avatar_url || "");
     }
   }, [store.user]);
 
@@ -54,33 +49,21 @@ export const EditProfile = () => {
     if (!token) navigate("/login");
   }, [navigate]);
 
-    useEffect(() => {
-        getCountries()
-            .then(data => {
-                setCountries(data);
-            })
-            .catch(err => console.error("Error al cargar países:", err));
-    }, []);
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/countries`)
+      .then((res) => res.json())
+      .then((data) => setCountries(data))
+      .catch((err) => console.error(err));
+  }, []);
 
-    useEffect(() => {
-        if (formData.country) {
-            getCitiesByCountry(formData.country)
-                .then(data => {
-                    setCities(data);
-                })
-                .catch(err => console.error("Error al cargar ciudades:", err));
-        } else {
-            setCities([]);
-        }
-    }, [formData.country]);
-
-const handleChange = (e) => {
-  const { name, value } = e.target;
-  setFormData(prev =>({...prev, [name]: value}));
-  if (name === "country") {
-    setFormData(prev => ({...prev, city: ""}))
-  }
-}
+  useEffect(() => {
+    if (country) {
+      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cities/${country}`)
+        .then((res) => res.json())
+        .then((data) => setCities(data))
+        .catch((err) => console.error(err));
+    } else setCities([]);
+  }, [country]);
 
   const handleUpdate = async (e) => {
     e.preventDefault();
@@ -90,21 +73,35 @@ const handleChange = (e) => {
       setError("No tienes sesión activa.");
       return;
     }
-    const dataToUpdate = {...formData};
-    if (!dataToUpdate.password){
-      delete dataToUpdate.password
-    }
-    updateUserProfile(dataToUpdate)
-      .then(updatedUser => {
-        dispatch({type: "set_user",
-                  payload: {user: updatedUser, token: localStorage.getItem("token")}
-        });
-        setShowModal(true);
-      })
-      .catch(err => {
-        setError(err.message);
+
+    try {
+      const resp = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          username,
+          email,
+          password: password || undefined,
+          country,
+          city,
+          avatar_url: avatar,
+        }),
       });
 
+      const data = await resp.json();
+
+      if (resp.ok) {
+        dispatch({ type: "set_user", payload: { user: data, token } });
+        setShowModal(true);
+      } else {
+        setError(data.error || data.msg || "Error al actualizar el perfil");
+      }
+    } catch {
+      setError("Error de conexión con el servidor");
+    }
   };
 
   return (
@@ -120,8 +117,8 @@ const handleChange = (e) => {
                 key={i}
                 src={img}
                 alt={`avatar${i + 1}`}
-                className={formData.avatar_url === img ? "selected": ""}
-                onClick={() => setFormData(prev => ({...prev, avatar_url: img}))}
+                className={avatar === img ? "selected" : ""}
+                onClick={() => setAvatar(img)}
               />
             ))}
           </div>
@@ -129,43 +126,42 @@ const handleChange = (e) => {
           {/* Username */}
           <label className="form-label">Usuario</label>
           <input
-          name="username"
             type="text"
             className="form-control"
-            value={formData.username}
-            onChange={handleChange}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
 
           {/* Email */}
           <label className="form-label">Email</label>
           <input
-            name= "email"
             type="email"
             className="form-control"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
 
           {/* Password */}
           <label className="form-label">Nueva contraseña</label>
           <input
-            name="password"
             type="password"
             className="form-control"
-            value={formData.password}
-            onChange={handleChange}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Deja en blanco para no cambiarla"
           />
 
           {/* País */}
           <label className="form-label">País</label>
           <select
-            name="country"
             className="form-select"
-            value={formData.country}
-            onChange={handleChange}
+            value={country}
+            onChange={(e) => {
+              setCountry(e.target.value);
+              setCity("");
+            }}
           >
             <option value="">Selecciona un país</option>
             {countries.map((c, i) => (
@@ -178,11 +174,10 @@ const handleChange = (e) => {
           {/* Ciudad */}
           <label className="form-label">Ciudad</label>
           <select
-            name="city"
             className="form-select"
-            value={formData.city}
-            onChange={handleChange}
-            disabled={!formData.country}
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            disabled={!country}
           >
             <option value="">Selecciona una ciudad</option>
             {cities.map((cityName, i) => (
