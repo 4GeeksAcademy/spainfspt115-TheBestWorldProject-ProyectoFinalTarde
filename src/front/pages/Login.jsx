@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/login.css";
+import { login } from "../ApiServices";
+
 
 export const Login = () => {
   const { dispatch } = useGlobalReducer();
@@ -10,34 +12,24 @@ export const Login = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/login`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password }),
-        }
-      );
-      const data = await response.json();
+    const handleLogin = (e) => {
+        e.preventDefault();
+        setError("");
 
-      if (response.ok && data.token) {
-        localStorage.setItem("token", data.token);
-        dispatch({
-          type: "set_user",
-          payload: { user: data.user, token: data.token },
-        });
-        navigate("/profile");
-      } else {
-        setError(data.msg || "Credenciales inválidas");
-      }
-    } catch {
-      setError("Error de conexión con el servidor");
-    }
-  };
+        login({ username, password })
+            .then(data => {
+                localStorage.setItem("token", data.token);
+                dispatch({
+                    type: "set_user",
+                    payload: { user: data.user, token: data.token },
+                });
+                navigate("/profile");
+            })
+            .catch(err => {
+                setError(err.message || "Credenciales inválidas");
+            });
+    };
+
 
   return (
     <div className="home-container">

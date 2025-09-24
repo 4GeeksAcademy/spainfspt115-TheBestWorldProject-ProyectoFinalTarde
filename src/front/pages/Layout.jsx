@@ -4,6 +4,7 @@ import { Navbar } from "../components/Navbar";
 import { Footer } from "../components/Footer";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import { useEffect } from "react";
+import { getProfileData } from "../ApiServices";
 
 export const Layout = () => {
 
@@ -14,33 +15,23 @@ export const Layout = () => {
   const isHome = location.pathname === "/";
 
   useEffect(() => {
-    const checkSession = async () => {
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
+    if (token && !store.user) {
+      getProfileData()
+      .then(user => {
+        dispatch({
+          type: "set_user",
+          payload: { user: user, token: token}
+        });
+    })
+      .catch(error => {
+        console.error("Fallo al verificar la sesión:", error.message);
+        localStorage.removeItem("token");
+        dispatch({ type: "logout"})
+      })
+  }
+}, []);
 
-      if (token && !store.user) {
-        const response = await fetch(
-          `${import.meta.env.VITE_BACKEND_URL}/api/profile`,
-          {
-            method: "GET",
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        const data = await response.json();
-
-        if (response.ok) {
-          dispatch({
-            type: "set_user",
-            payload: { user: data, token: token },
-          });
-        } else {
-          localStorage.removeItem("token");
-          dispatch({ type: "logout" });
-        }
-      }
-    };
-    checkSession();
-  }, []);
 
   const hideLayout = location.pathname === "/game";
 

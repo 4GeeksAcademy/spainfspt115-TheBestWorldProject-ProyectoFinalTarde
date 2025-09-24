@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/signup.css";
 import { SuccessModal } from "./RegistroOkModal";
+import { signup } from "../ApiServices";
 
 export const Signup = () => {
   const { dispatch } = useGlobalReducer();
@@ -21,24 +22,15 @@ export const Signup = () => {
       setError("Las contraseñas no coinciden");
       return;
     }
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_BACKEND_URL}/api/signup`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, username, password }),
-        }
-      );
-      const data = await response.json();
-      if (response.ok) {
-        setShowModal(true);
-      } else {
-        setError(data.msg || "Error al registrar usuario");
-      }
-    } catch {
-      setError("Error de conexión con el servidor");
-    }
+
+    signup({ email, username, password })
+        .then(data => {
+          setShowModal(true);
+        })
+        .catch(err => {
+          setError(err.message || "Error al registrar el usuario");
+        });
+    
   };
 
   return (

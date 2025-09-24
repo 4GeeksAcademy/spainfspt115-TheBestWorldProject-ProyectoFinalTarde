@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/profile.css";
-import { UpdateInfoStoreUser } from "../ApiServices";
+import { UpdateInfoStoreUser, updateUserProfile } from "../ApiServices";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -25,31 +25,20 @@ export const Profile = () => {
 
   const addMessage = (msg) => setMessages((prev) => [...prev, msg]);
 
-  const handleSaveDescription = async () => {
-    const token = localStorage.getItem("token");
-    try {
-      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ description }),
-      });
-      const updateUser = await response.json();
-      if (response.ok) {
-        dispatch({ type: "set_user", payload: { user: updateUser, token } });
-        setIsEditing(false);
-        addMessage("Tu descripción ha sido actualizada correctamente");
-      } else {
-        addMessage(updateUser.error || "No se pudo guardar la descripción.");
-      }
-    } catch (error) {
-      console.error("Error al guardar:", error);
-      addMessage("Error de conexión al guardar la descripción.");
-    }
-  };
-
+  const handleSaveDescription = () => {
+    updateUserProfile({ description: description })
+        .then(updatedUser => {
+          dispatch({
+            type: "set_user",
+            payload: { user: updatedUser, token: localStorage.getItem("token")}
+          });
+          setIsEditing(false);
+          addMessage("Tu descripción ha sido actualizada correctamente");
+        })
+        .catch(error => {
+          addMessage(error.message || "No se pudo guardar la descripción.");
+        });
+      };
   return (
     <div className="profile-container">
       {/* 🔹 Video de fondo con URL optimizada */}
@@ -130,20 +119,22 @@ export const Profile = () => {
                   : "No registrado"}
               </p>
 
-              <h4>----------------</h4>
+              <h4>Descripción Personalizada</h4>
 
               {isEditing ? (
+              
                 <textarea
                   placeholder="Escribe aquí lo que quieras que los demás vean"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  maxLength={150}
                 />
               ) : (
                 <p className="profile-description">
                   {description || <i>Añade una descripción...</i>}
                 </p>
               )}
-
+            
               <div className="profile-buttons">
                 {isEditing ? (
                   <button className="profile-btn" onClick={handleSaveDescription}>
@@ -166,7 +157,6 @@ export const Profile = () => {
               </div>
             </div>
           </div>
-
           <div className="center-column-wrapper">
             <div className="profile-card profile-center">
               <h4>Estadísticas</h4>
