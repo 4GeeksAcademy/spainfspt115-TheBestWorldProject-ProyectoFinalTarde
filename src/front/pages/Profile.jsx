@@ -11,7 +11,6 @@ export const Profile = () => {
   const [description, setDescription] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [messages, setMessages] = useState([]);
-  // const [userStats, setuserStats] = useState({ "correct_words": "", "failed_words": 0, "ratio": 0});
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -53,8 +52,20 @@ export const Profile = () => {
 
   return (
     <div className="profile-container">
-      <video className="bg-video" autoPlay muted loop>
-        <source src="src/front/assets/videos/Hechizero.mp4" type="video/mp4" />
+      {/* 🔹 Video de fondo con URL optimizada */}
+      <video
+        className="bg-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="none"
+        poster="https://res.cloudinary.com/dixwk4tan/video/upload/f_auto,q_auto/Hechizero_cmmfss.jpg"
+      >
+        <source
+          src="https://res.cloudinary.com/dixwk4tan/video/upload/v1758724121/Hechizero_cmmfss.mp4"
+          type="video/mp4"
+        />
       </video>
       <div className="home-overlay"></div>
 
@@ -63,10 +74,16 @@ export const Profile = () => {
         <div className="modal-overlay">
           <div className="modal-card">
             <h2 className="modal-title">Acceso denegado</h2>
-            <p className="modal-message">Debes iniciar sesión o registrarte para acceder al perfil.</p>
+            <p className="modal-message">
+              Debes iniciar sesión o registrarte para acceder al perfil.
+            </p>
             <div className="modal-buttons">
-              <button className="profile-btn" onClick={() => navigate("/login")}>Entrar</button>
-              <button className="profile-btn" onClick={() => navigate("/register")}>Registro</button>
+              <button className="profile-btn" onClick={() => navigate("/login")}>
+                Entrar
+              </button>
+              <button className="profile-btn" onClick={() => navigate("/register")}>
+                Registro
+              </button>
             </div>
           </div>
         </div>
@@ -79,25 +96,37 @@ export const Profile = () => {
             <div className="profile-header">
               <div className="profile-avatar">
                 <img
-                  src={store?.user?.avatar_url || "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png"}
+                  src={
+                    store?.user?.avatar_url ||
+                    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png"
+                  }
                   alt="Avatar"
                 />
               </div>
-              <h3 className="profile-username">{store?.user?.username || "User Name"}</h3>
+              <h3 className="profile-username">
+                {store?.user?.username || "User Name"}
+              </h3>
             </div>
 
             <div className="profile-centered-content">
-              <p><strong>País:</strong> {store?.user?.country || "No registrado"}</p>
-              <p><strong>Ciudad:</strong> {store?.user?.city || "No registrada"}</p>
-              <p><strong>Email:</strong> {store?.user?.email || "notengo@email.net"}</p>
+              <p>
+                <strong>País:</strong> {store?.user?.country || "No registrado"}
+              </p>
+              <p>
+                <strong>Ciudad:</strong> {store?.user?.city || "No registrada"}
+              </p>
+              <p>
+                <strong>Email:</strong>{" "}
+                {store?.user?.email || "notengo@email.net"}
+              </p>
               <p>
                 <strong>Miembro desde:</strong>{" "}
                 {store?.user?.created_at
                   ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
-                    year: "numeric",
-                    month: "long",
-                    day: "numeric",
-                  })
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    })
                   : "No registrado"}
               </p>
 
@@ -117,11 +146,23 @@ export const Profile = () => {
 
               <div className="profile-buttons">
                 {isEditing ? (
-                  <button className="profile-btn" onClick={handleSaveDescription}>Guardar</button>
+                  <button className="profile-btn" onClick={handleSaveDescription}>
+                    Guardar
+                  </button>
                 ) : (
-                  <button className="profile-btn" onClick={() => setIsEditing(true)}>Editar Descripción</button>
+                  <button
+                    className="profile-btn"
+                    onClick={() => setIsEditing(true)}
+                  >
+                    Editar Descripción
+                  </button>
                 )}
-                <button className="profile-btn" onClick={() => navigate("/edit-profile")}>Editar Perfil</button>
+                <button
+                  className="profile-btn"
+                  onClick={() => navigate("/edit-profile")}
+                >
+                  Editar Perfil
+                </button>
               </div>
             </div>
           </div>
@@ -129,10 +170,22 @@ export const Profile = () => {
           <div className="center-column-wrapper">
             <div className="profile-card profile-center">
               <h4>Estadísticas</h4>
-              <p><strong>Partidas jugadas:</strong> {store?.user?.games?.length || "Todavía no has jugado"}</p>
-              <p><strong>Palabras correctas:</strong> {store?.user?.correct_words || "0"}</p>
-              <p><strong>Palabras erróneas:</strong> {store?.user?.failed_words || "0"}</p>
-              <p><strong>Ratio:</strong> {store?.user?.average_precision || "0%"}</p>
+              <p>
+                <strong>Partidas jugadas:</strong>{" "}
+                {store?.user?.games?.length || "Todavía no has jugado"}
+              </p>
+              <p>
+                <strong>Palabras correctas:</strong>{" "}
+                {store?.user?.correct_words || "0"}
+              </p>
+              <p>
+                <strong>Palabras erróneas:</strong>{" "}
+                {store?.user?.failed_words || "0"}
+              </p>
+              <p>
+                <strong>Ratio:</strong>{" "}
+                {store?.user?.average_precision || "0%"}
+              </p>
             </div>
 
             <div className="profile-card profile-center-below"></div>
@@ -145,7 +198,9 @@ export const Profile = () => {
                 .sort((a, b) => new Date(b.played_at) - new Date(a.played_at))
                 .map((game) => (
                   <div key={game.id_game} className="game-card">
-                    <p><strong>Partida #{game.id_game}</strong></p>
+                    <p>
+                      <strong>Partida #{game.id_game}</strong>
+                    </p>
                     <p>
                       Jugado el{" "}
                       {new Date(game.played_at).toLocaleDateString("es-ES", {
@@ -154,8 +209,12 @@ export const Profile = () => {
                         day: "numeric",
                       })}
                     </p>
-                    <p><strong>Puntuación:</strong> {game.final_score}</p>
-                    <p><strong>Precisión:</strong> {game.average_precision}%</p>
+                    <p>
+                      <strong>Puntuación:</strong> {game.final_score}
+                    </p>
+                    <p>
+                      <strong>Precisión:</strong> {game.average_precision}%
+                    </p>
                     <hr />
                   </div>
                 ))
@@ -173,7 +232,14 @@ export const Profile = () => {
             <h2 className="modal-title">Aviso</h2>
             <p className="modal-message">{msg}</p>
             <div className="modal-buttons">
-              <button className="profile-btn" onClick={() => setMessages((prev) => prev.filter((_, idx) => idx !== i))}>Cerrar</button>
+              <button
+                className="profile-btn"
+                onClick={() =>
+                  setMessages((prev) => prev.filter((_, idx) => idx !== i))
+                }
+              >
+                Cerrar
+              </button>
             </div>
           </div>
         </div>

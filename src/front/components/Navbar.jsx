@@ -1,15 +1,15 @@
 import { Link, useLocation } from "react-router-dom";
 import React, { useEffect } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
-import logo from "../assets/LogoMago.png";
-import "../styles/navbar.css";
 import moneda from "../assets/img/Moneda.png";
+import "../styles/navbar.css";
 
 export const Navbar = () => {
   const { store } = useGlobalReducer();
   const location = useLocation();
 
   useEffect(() => {
+    // Renderizar botón de PayPal
     const renderPayPalButton = () => {
       const container = document.getElementById("donate-button");
       if (!container || !window.PayPal?.Donation) return;
@@ -17,11 +17,15 @@ export const Navbar = () => {
       container.innerHTML = "";
       window.PayPal.Donation.Button({
         env: "production",
-        hosted_button_id: "8LTQ55BVVBCH4",
+        hosted_button_id: "JZPMUB4B2P3RA",
         image: {
           src: moneda,
           alt: "Donate with PayPal button",
           title: "PayPal - The safer, easier way to pay online!",
+          width: 80,
+          height: 80,
+          border: 2,
+          radius: 50,
         },
       }).render("#donate-button");
     };
@@ -36,73 +40,99 @@ export const Navbar = () => {
     } else {
       renderPayPalButton();
     }
+
+    const animatedElements = document.querySelectorAll(
+      ".navbar-custom .nav-link, .logo-img, #donate-button img"
+    );
+    animatedElements.forEach((el) => {
+      const delay = Math.random() * 1.5;
+      el.style.animationDelay = `${delay}s`;
+    });
   }, [store]);
 
   return (
-    <nav className="navbar-custom">
-      {/* Logo */}
-      <div id="logo-button">
-        <Link to="/">
-          <img src={logo} alt="Logo" />
-        </Link>
-      </div>
+    <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
+      <div className="container-fluid position-relative">
+        {/* Logo */}
+        <div id="logo-button" className="logo-circle">
+          <Link to="/">
+            <img
+              src="https://res.cloudinary.com/dixwk4tan/image/upload/v1758724159/LogoMago_z6ydja.png"
+              alt="Logo"
+              className="logo-img"
+            />
+          </Link>
+        </div>
 
-      {/* Links centrados */}
-      <ul className="navbar-center">
-        <li>
-          <Link
-            to="/"
-            className={`nav-link ${location.pathname === "/" ? "active-link" : ""}`}
-          >
-            Inicio
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/about"
-            className={`nav-link ${location.pathname === "/about" ? "active-link" : ""}`}
-          >
-            Info
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/profile"
-            className={`nav-link ${location.pathname === "/profile" ? "active-link" : ""}`}
-          >
-            Perfil
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/ranking"
-            className={`nav-link ${location.pathname === "/ranking" ? "active-link" : ""}`}
-          >
-            Ranking
-          </Link>
-        </li>
-      </ul>
+        {/* Toggle responsive */}
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-      {/* Bloque derecho */}
-      <div className="navbar-right">
-        {!store?.isRegistered ? (
-          <>
+        {/* Links centrados */}
+        <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
+          <li className="nav-item">
             <Link
-              to="/login"
-              className={`nav-link ${location.pathname === "/login" ? "active-link" : ""}`}
+              to="/"
+              className={`nav-link fw-bold ${location.pathname === "/" ? "active-link" : ""}`}
             >
-              Iniciar sesión
+              Inicio
             </Link>
+          </li>
+          <li className="nav-item">
             <Link
-              to="/signup"
-              className={`nav-link ${location.pathname === "/signup" ? "active-link" : ""}`}
+              to="/about"
+              className={`nav-link fw-bold ${location.pathname === "/about" ? "active-link" : ""}`}
             >
-              Registro
+              Info
             </Link>
-          </>
-        ) : null}
-        <div id="donate-button-container">
-          <div id="donate-button"></div>
+          </li>
+          <li className="nav-item">
+            <Link
+              to="/profile"
+              className={`nav-link fw-bold ${location.pathname === "/profile" ? "active-link" : ""}`}
+            >
+              Perfil
+            </Link>
+          </li>
+          <li className="nav-item">
+            <Link
+              to="/ranking"
+              className={`nav-link fw-bold ${location.pathname === "/ranking" ? "active-link" : ""}`}
+            >
+              Ranking
+            </Link>
+          </li>
+        </ul>
+
+        {/* LogIn / SignUp y PayPal */}
+        <div className="d-none d-lg-flex ms-auto align-items-center gap-3">
+          {!store?.isRegistered ? (
+            <>
+              <Link
+                to="/login"
+                className={`nav-link fw-bold ${location.pathname === "/login" ? "active-link" : ""}`}
+              >
+                Entrar
+              </Link>
+              <Link
+                to="/signup"
+                className={`nav-link fw-bold ${location.pathname === "/signup" ? "active-link" : ""}`}
+              >
+                Registro
+              </Link>
+            </>
+          ) : (
+            <div style={{ width: "160px" }} />
+          )}
+
+          {/* Botón PayPal */}
+          <div id="donate-button" style={{ width: "80px", height: "80px", minWidth: "80px" }}></div>
         </div>
       </div>
     </nav>

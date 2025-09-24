@@ -36,7 +36,7 @@
   object-fit: cover;
   border-radius: 50%;
   transition: all 0.3s ease;
-  animation: bounce 2s infinite;
+  /* animation: bounce 2s infinite; */
 }
 
 #logo-button img:hover {
