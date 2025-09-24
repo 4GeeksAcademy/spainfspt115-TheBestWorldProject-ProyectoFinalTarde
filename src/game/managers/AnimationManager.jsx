@@ -40,7 +40,7 @@ export function createAnimations(scene) {
     scene.anims.create({
       key: "player_idle",
       frames: scene.anims.generateFrameNumbers("player_idle"),
-      frameRate: 8,
+      frameRate: 10,
       repeat: -1,
     });
   }
@@ -49,7 +49,7 @@ export function createAnimations(scene) {
     scene.anims.create({
       key: "player_attack",
       frames: scene.anims.generateFrameNumbers("player_attack"),
-      frameRate: 12,
+      frameRate: 16,
       repeat: 0,
     });
   }
@@ -58,7 +58,7 @@ export function createAnimations(scene) {
     scene.anims.create({
       key: "player_hit",
       frames: scene.anims.generateFrameNumbers("player_hit"),
-      frameRate: 6,
+      frameRate: 8,
       repeat: 0,
       duration: 400,
     });
@@ -68,7 +68,7 @@ export function createAnimations(scene) {
     scene.anims.create({
       key: "player_death",
       frames: scene.anims.generateFrameNumbers("player_death"),
-      frameRate: 12,
+      frameRate: 16,
       repeat: 0,
     });
   }

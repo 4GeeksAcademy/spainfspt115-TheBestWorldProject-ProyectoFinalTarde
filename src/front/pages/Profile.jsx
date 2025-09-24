@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/profile.css";
-import { UpdateUser } from "../ApiServices";
+import { UpdateInfoStoreUser } from "../ApiServices";
 
 export const Profile = () => {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ export const Profile = () => {
       if (store.isRegistered) dispatch({ type: "logout" });
       setShowModal(true);
     } else {
-      UpdateUser(dispatch, token);
+      UpdateInfoStoreUser(dispatch, token);
       setDescription(store.user?.description || "");
     }
   }, [store.isRegistered, dispatch]);

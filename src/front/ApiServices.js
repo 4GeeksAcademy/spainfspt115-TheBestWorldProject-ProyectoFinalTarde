@@ -1,4 +1,4 @@
-export const UpdateUser = async (dispatch, token) => {
+export const UpdateInfoStoreUser = async (dispatch, token) => {
 
     if (!token) return;
 

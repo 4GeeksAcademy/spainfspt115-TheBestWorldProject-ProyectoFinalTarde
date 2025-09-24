@@ -22,6 +22,21 @@ export function spawnEnemy(scene, speed = 80) {
 
   const enemy = scene.physics.add.sprite(x, y, `${enemyType}_run`);
   enemy.setOrigin(0.5).setScale(2.0);
+
+  switch (enemyType) {
+    case "slime":
+      enemy.body.setSize(34, 34);
+      break;
+  
+    case "orc":
+      enemy.body.setSize(42, 42);
+      break;
+
+    case "vampire":
+      enemy.body.setSize(40, 40);
+      break;
+  }
+
   scene.enemies.add(enemy);
 
   const angle = Phaser.Math.Angle.Between(enemy.x, enemy.y, scene.player.x, scene.player.y);
