@@ -1,8 +1,8 @@
 import Phaser from "phaser";
-import bitchesMusic from "../assets/Bitches.mp3";
-import bgImg from "../assets/bg.png";
-import startBtn from "../assets/StartBtn.png";
-import resetBtn from "../assets/ResetBtn.png";
+// import bitchesMusic from "../assets/Bitches.mp3";
+// import bgImg from "../assets/bg.png";
+// import startBtn from "../assets/StartBtn.png";
+// import resetBtn from "../assets/ResetBtn.png";
 import { loadWordsFromAPI } from "../managers/WordManager";
 import { createLoadingBackground } from "../managers/BackgroundManager";
 
@@ -100,10 +100,10 @@ export default class LoadingScene extends Phaser.Scene {
         });
 
         // === ASSETS ===
-        this.load.image("bg", bgImg);
-        this.load.audio("bgMusic", bitchesMusic);
-        this.load.image("buttonImg", startBtn);
-        this.load.image("resetBtn", resetBtn);
+        // this.load.image("bg", bgImg);
+        // this.load.audio("bgMusic", bitchesMusic);
+        // this.load.image("buttonImg", startBtn);
+        // this.load.image("resetBtn", resetBtn);
 
         this.load.image("fire", "https://res.cloudinary.com/dixwk4tan/image/upload/v1758754633/fire_lqd6sn.png");
         this.load.image("ice", "https://res.cloudinary.com/dixwk4tan/image/upload/v1758754672/ice_h8povb.png");
