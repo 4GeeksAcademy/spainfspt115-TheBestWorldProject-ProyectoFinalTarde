@@ -2,48 +2,65 @@ body {
   background-color: #000;
   color: #fff;
   margin: 0;
-  font-family: sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* CONTENEDOR PRINCIPAL */
 .profile-container {
   display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
-  gap: 25px;
-  padding: 20px;
+  grid-template-columns: 1fr 2fr 1fr; /* Izquierda - Centro - Derecha */
+  gap: 50px;
+  padding: 40px;
   box-sizing: border-box;
+  align-items: stretch; /* Estira columnas al mismo alto */
 }
 
-.profile-left, .profile-right {
+/* COLUMNAS */
+.profile-left,
+.center-column-wrapper,
+.profile-right {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+}
+
+/* TARJETAS PRINCIPALES OCUPAN TODO EL ALTO */
+.profile-left > .profile-card,
+.center-column-wrapper > .profile-card,
+.profile-right > .profile-card {
+  flex: 1; /* Ocupa todo el espacio disponible */
+  display: flex;
+  flex-direction: column;
+}
+
+/* PERFIL CENTRADO */
+.center-column-wrapper {
+  align-items: center;
 }
 
 .profile-centered {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  max-width: 400px;
+  width: 100%;
 }
 
+/* TARJETAS */
 .profile-card {
-  background: rgba(0,0,0,0.7);
+  background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(6px);
   border: 2px solid #590ead;
   box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
   color: #fff;
   border-radius: 12px;
-  padding: 15px;
+  padding: 25px;
   transition: all 0.3s ease-in-out;
 }
 
 .profile-card:hover {
-  box-shadow: 0 0 15px #590ead,
-              0 0 20px #ff0000,
-              0 0 25px #ffae00,
-              inset 0 0 10px #590ead;
+  box-shadow: 0 0 15px #590ead, 0 0 20px #ff0000, 0 0 25px #ffae00,
+    inset 0 0 10px #590ead;
   transform: translateY(-5px);
 }
 
+/* PERFIL */
 .profile-header {
   display: flex;
   flex-direction: column;
@@ -52,15 +69,15 @@ body {
 }
 
 .profile-avatar img {
-  width: 80px;
-  height: 80px;
+  width: 90px;
+  height: 90px;
   border-radius: 50%;
   object-fit: cover;
 }
 
 .profile-username {
-  margin: 10px 0 0 0;
-  font-size: 1.5rem;
+  margin-top: 10px;
+  font-size: 1.6rem;
   text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
 }
 
@@ -68,28 +85,31 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  gap: 10px;
+  gap: 12px;
 }
 
+/* VENTANA VACÍA DEBAJO DEL PERFIL */
 .profile-center-below {
-  min-height: 150px;
-  background: rgba(0,0,0,0.3);
+  flex: 1;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   border: 1px solid #590ead;
-  padding: 10px;
+  padding: 15px;
+  margin-top: 20px;
 }
 
+/* BOTONES */
 .profile-buttons {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 15px;
+  margin-top: 15px;
   width: 100%;
 }
 
 .profile-btn {
   flex: 1;
-  padding: 0.7rem;
+  padding: 0.8rem;
   border-radius: 6px;
   border: 2px solid #590ead;
   background: transparent;
@@ -102,40 +122,31 @@ body {
 }
 
 .profile-btn:hover {
-  box-shadow: 0 0 15px #590ead,
-              0 0 20px #ff0000,
-              0 0 25px #ffae00,
-              inset 0 0 10px #590ead;
+  box-shadow: 0 0 15px #590ead, 0 0 20px #ff0000, 0 0 25px #ffae00,
+    inset 0 0 10px #590ead;
   transform: translateY(-2px);
 }
 
-.profile-btn.warning {
-  text-shadow: 0 0 6px #ffae00;
-}
-
-.profile-btn.warning:hover {
-  color: #ff0000;
-}
-
+/* TEXTAREA */
 textarea {
   width: 100%;
-  min-height: 50px;
+  min-height: 60px;
   resize: none;
   border-radius: 8px;
   border: 1px solid #590ead;
-  padding: 5px;
-  background: rgba(0,0,0,0.6);
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.6);
   color: #fff;
 }
 
 /* MODAL */
 .modal-overlay {
   position: fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.7);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -143,10 +154,10 @@ textarea {
 }
 
 .modal-card {
-  background: rgba(0,0,0,0.9);
+  background: rgba(0, 0, 0, 0.9);
   border: 2px solid #590ead;
   border-radius: 12px;
-  padding: 20px;
+  padding: 25px;
   width: 90%;
   max-width: 500px;
   color: #fff;
@@ -167,22 +178,37 @@ textarea {
   justify-content: flex-end;
 }
 
-/* SCROLL PARA HISTORIAL */
-.game-list {
-  max-height: 500px; /* Ajusta según prefieras */
-  overflow-y: auto;
+/* HISTORIAL DE PARTIDAS */
+.profile-right {
+  display: flex;
+  flex-direction: column;
+}
+
+.profile-right > .profile-card {
+  flex: 1;
+  overflow-y: auto; /* scroll si hay muchas partidas */
+}
+
+.game-card {
+  padding: 10px 0;
+  border-bottom: 1px solid #590ead;
 }
 
 /* RESPONSIVE */
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .profile-container {
     grid-template-columns: 1fr;
+    gap: 30px;
   }
 
+  .center-column-wrapper,
   .profile-left,
-  .profile-centered,
   .profile-right {
-    grid-column: 1;
+    align-items: center;
+  }
+
+  .profile-card {
+    max-width: 90%;
   }
 }
 

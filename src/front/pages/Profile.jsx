@@ -89,143 +89,127 @@ export const Profile = () => {
         </div>
       )}
 
-      {/* Perfil */}
+      {/* Contenido del perfil */}
       {!showModal && (
         <>
-          <div className="profile-card profile-left">
-            <div className="profile-header">
-              <div className="profile-avatar">
-                <img
-                  src={
+          {/* Estadísticas a la izquierda */}
+          <div className="profile-left">
+            <div className="profile-card">
+              <h4>Estadísticas</h4>
+              <p><strong>Partidas jugadas:</strong> {store?.user?.games?.length || "Todavía no has jugado"}</p>
+              <p><strong>Palabras correctas:</strong> {store?.user?.correct_words || "0"}</p>
+              <p><strong>Palabras erróneas:</strong> {store?.user?.failed_words || "0"}</p>
+              <p><strong>Ratio:</strong> {store?.user?.average_precision || "0%"}</p>
+            </div>
+          </div>
+
+          {/* Perfil en el centro */}
+          <div className="center-column-wrapper">
+            <div className="profile-card profile-centered">
+              <div className="profile-header">
+                <div className="profile-avatar">
+                  <img
+                    src={
                     store?.user?.avatar_url ||
                     "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png"
                   }
-                  alt="Avatar"
-                />
-              </div>
-              <h3 className="profile-username">
+                    alt="Avatar"
+                  />
+                </div>
+                <h3 className="profile-username">
                 {store?.user?.username || "User Name"}
               </h3>
-            </div>
+              </div>
 
-            <div className="profile-centered-content">
-              <p>
+              <div className="profile-centered-content">
+                <p>
                 <strong>País:</strong> {store?.user?.country || "No registrado"}
               </p>
-              <p>
+                <p>
                 <strong>Ciudad:</strong> {store?.user?.city || "No registrada"}
               </p>
-              <p>
+                <p>
                 <strong>Email:</strong>{" "}
                 {store?.user?.email || "notengo@email.net"}
               </p>
-              <p>
-                <strong>Miembro desde:</strong>{" "}
-                {store?.user?.created_at
-                  ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "No registrado"}
-              </p>
-
-              <h4>----------------</h4>
-
-              {isEditing ? (
-                <textarea
-                  placeholder="Escribe aquí lo que quieras que los demás vean"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              ) : (
-                <p className="profile-description">
-                  {description || <i>Añade una descripción...</i>}
+                <p>
+                  <strong>Miembro desde:</strong>{" "}
+                  {store?.user?.created_at
+                    ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
+                    : "No registrado"}
                 </p>
-              )}
 
-              <div className="profile-buttons">
+                <h4>Descripción Personalizada</h4>
+
                 {isEditing ? (
-                  <button className="profile-btn" onClick={handleSaveDescription}>
-                    Guardar
-                  </button>
+                  <textarea
+                    placeholder="Escribe aquí lo que quieras que los demás vean"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
                 ) : (
-                  <button
-                    className="profile-btn"
-                    onClick={() => setIsEditing(true)}
-                  >
-                    Editar Descripción
-                  </button>
+                  <p className="profile-description">
+                    {description || <i>Añade una descripción...</i>}
+                  </p>
                 )}
-                <button
-                  className="profile-btn"
-                  onClick={() => navigate("/edit-profile")}
-                >
-                  Editar Perfil
-                </button>
+
+                <div className="profile-buttons">
+                  {isEditing ? (
+                    <button className="profile-btn" onClick={handleSaveDescription}>Guardar</button>
+                  ) : (
+                    <button className="profile-btn" onClick={() => setIsEditing(true)}>Editar Descripción</button>
+                  )}
+                  <button className="profile-btn" onClick={() => navigate("/edit-profile")}>Editar Perfil</button>
+                </div>
               </div>
             </div>
+
+            {/* Ventana vacía debajo del perfil */}
+            {/* <div className="profile-card profile-center-below"></div> */}
           </div>
 
-          <div className="center-column-wrapper">
-            <div className="profile-card profile-center">
-              <h4>Estadísticas</h4>
-              <p>
-                <strong>Partidas jugadas:</strong>{" "}
-                {store?.user?.games?.length || "Todavía no has jugado"}
-              </p>
-              <p>
-                <strong>Palabras correctas:</strong>{" "}
-                {store?.user?.correct_words || "0"}
-              </p>
-              <p>
-                <strong>Palabras erróneas:</strong>{" "}
-                {store?.user?.failed_words || "0"}
-              </p>
-              <p>
-                <strong>Ratio:</strong>{" "}
-                {store?.user?.average_precision || "0%"}
-              </p>
-            </div>
-
-            <div className="profile-card profile-center-below"></div>
-          </div>
-
-          <div className="profile-card profile-right">
-            <h4>Historial de partidas</h4>
-            {store?.user?.games && store.user.games.length > 0 ? (
-              [...store.user.games]
-                .sort((a, b) => new Date(b.played_at) - new Date(a.played_at))
-                .map((game) => (
-                  <div key={game.id_game} className="game-card">
-                    <p>
+          {/* Historial de partidas a la derecha */}
+          <div className="profile-right">
+            <div className="profile-card">
+              <h4>Historial de partidas</h4>
+              {store?.user?.games && store.user.games.length > 0 ? (
+                [...store.user.games]
+                  .sort((a, b) => new Date(b.played_at) - new Date(a.played_at))
+                  .map((game) => (
+                    <div key={game.id_game} className="game-card">
+                      <p>
                       <strong>Partida #{game.id_game}</strong>
                     </p>
-                    <p>
-                      Jugado el{" "}
-                      {new Date(game.played_at).toLocaleDateString("es-ES", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </p>
-                    <p>
+                      <p>
+                        Jugado el{" "}
+                        {new Date(game.played_at).toLocaleDateString("es-ES", {
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })}
+                      </p>
+                      <p>
                       <strong>Puntuación:</strong> {game.final_score}
                     </p>
-                    <p>
+                      <p>
                       <strong>Precisión:</strong> {game.average_precision}%
                     </p>
-                    <hr />
-                  </div>
-                ))
-            ) : (
-              <p className="text-danger">Aún no tienes partidas registradas.</p>
-            )}
+                      <hr />
+                    </div>
+                  ))
+              ) : (
+                <p className="text-danger">Aún no tienes partidas registradas.</p>
+              )}
+            </div>
           </div>
         </>
       )}
 
-      {/* Renderizar todos los mensajes como modales */}
+      {/* Renderizar mensajes como modales */}
       {messages.map((msg, i) => (
         <div key={i} className="modal-overlay">
           <div className="modal-card">
