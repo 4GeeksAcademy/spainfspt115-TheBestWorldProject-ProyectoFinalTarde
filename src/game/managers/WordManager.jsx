@@ -1,32 +1,21 @@
 import Phaser from "phaser";
+import { getRandomWords } from "./APIservices";
 
 let wordPool = [];
-
-const API_BASE_URL = `${import.meta.env.VITE_BACKEND_URL}/api`
 
 export async function loadWordsFromAPI() {
   try {
     const pool = [];
-
     const perDifficulty = 20;
 
     for (let diff = 1; diff <= 3; diff++) {
-      const response = await fetch(`${API_BASE_URL}/words/random/${diff}?amount=${perDifficulty}`);
-      if (!response.ok) {
-        console.error(`Error cargando palabras dificultad ${diff}`);
-        continue;
-      }
-
-      const words = await response.json();
+      const words = await getRandomWords(diff, perDifficulty);
       words.forEach((w) => pool.push(w.word));
     }
 
     wordPool = pool;
-    console.log("WordPool cargado:", wordPool.length, "palabras");
-
   } catch (err) {
-    console.error("Error al cargar palabras del backend:", err);
-
+    console.error("Error al cargar palabras:", err);
     wordPool = ["fallback", "ejemplo", "palabra"];
   }
 }

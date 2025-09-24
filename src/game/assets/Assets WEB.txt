@@ -1,0 +1,73 @@
+MUSICA
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755475/game_song_uylcu2.mp3
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755572/menu_song_ahxcoa.mp3
+---------------------------------------------------------------------------------------------------
+SONIDOS
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755609/escarcha_k708yt.wav
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755624/fire_zykbxx.wav
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755633/game_over_apphqo.mp3
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755646/inicio_partida_nwv1gx.wav
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755655/last_live_igwneo.wav
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755670/orc_attack_z8gm6y.wav
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755684/player_attack_tfc88w.mp3
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755697/slime_attack_nc9xiv.mp3
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755711/trueno_wlv0hr.wav
+
+https://res.cloudinary.com/dixwk4tan/video/upload/v1758755725/vampire_attack_xksapz.mp3
+------------------------------------------------------------------------------------------------------
+SPRITES
+BACKGROUND
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758755341/Set_1_bvgi2y.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758755362/Structure_fvhelt.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758755372/Torch_Yellow_whzaa4.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758755382/Vase_Shine_Anim_f9xrif.png
+----------------------------------------------------------------------------------------------------------
+ENEMIES
+ENEMY_VAMPIRE
+Attack:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755218/Vampires_Attack_full_smxdu9.png
+Death:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755229/Vampires_Death_full_u0ogoe.png
+Run:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755239/Vampires_Run_full_ey5l6l.png
+-----------------------------------------------------------------------------------------------
+ENEMY_SLIME
+Attack:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755178/Slime_Attack_full_zpqa5y.png
+Death:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755190/Slime_Death_full_iwgzec.png
+Run:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755203/Slime_Run_full_cgthkv.png
+-------------------------------------------------------------------------------------------------
+ENEMY_ORC
+Attack:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755051/Orc_Attack_full_m9zkjj.png
+Death:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755064/Orc_Death_full_a1hebn.png
+Run:  https://res.cloudinary.com/dixwk4tan/image/upload/v1758755075/Orc_Run_full_moeppp.png
+-------------------------------------------------------------------------------------
+PLAYERS
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754801/Attack_yy3phn.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754841/Get_hit_wdmdqd.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754853/Death_qtafvb.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754866/Attack_cwdnyw.png
+-------------------------------------------------------------------------------------
+PROJECTILE
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754904/Explode_cwednp.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754919/Moving_qdqw5g.png
+-----------------------------------------------------------------------------------
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754633/fire_lqd6sn.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754653/Hearts_ahemkq.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754672/ice_h8povb.png
+
+https://res.cloudinary.com/dixwk4tan/image/upload/v1758754676/spark_ofwagp.png

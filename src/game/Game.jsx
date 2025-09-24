@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 import Phaser from "phaser";
-import PreloadScene from "./scenes/PreloadScenes";
 import MenuScene from "./scenes/MenuScene";
 import GameScene from "./scenes/GameScene";
 import GameOverScene from "./scenes/GameOverScene";
 import SettingsScene from "./scenes/SettingsScene";
 import useGlobalReducer from "../front/hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
+import LoadingScene from "./scenes/LoadingScene.jsx";
 
 const defaultFont = '"Pixelify Sans", sans-serif';
 const origTextFactory = Phaser.GameObjects.GameObjectFactory.prototype.text;
@@ -34,7 +34,7 @@ export const Game = () => {
       type: Phaser.AUTO,
       backgroundColor: "#222",
       parent: "game-container",
-      scene: [PreloadScene, MenuScene, SettingsScene, GameScene, GameOverScene],
+      scene: [LoadingScene, MenuScene, SettingsScene, GameScene, GameOverScene],
       dom: { createContainer: true },
       scale: {
         mode: Phaser.Scale.FIT,

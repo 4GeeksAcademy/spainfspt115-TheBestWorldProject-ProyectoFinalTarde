@@ -6,6 +6,8 @@ import { createPlayer } from "../managers/PlayerManager";
 import { createHUD } from "../managers/HUDmanager";
 import { createAnimations } from "../managers/AnimationManager";
 import { clearWordPool, loadWordsFromAPI } from "../managers/WordManager";
+import { saveGame } from "../managers/APIservices";
+import { createBackground } from "../managers/BackgroundManager";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -67,6 +69,17 @@ export default class GameScene extends Phaser.Scene {
       if(this.actualLives > 0) {
         handleInput(e, this);
       }
+    });
+
+    createBackground(this, {
+      mixPatterns: true,
+      withBorders: true,
+      vaseMin: 2,
+      vaseMax: 10,
+      pillarMin: 2,
+      pillarMax: 8,
+      torchMin: 2,
+      torchMax: 12,
     });
 
     // contador inicial
@@ -162,11 +175,13 @@ export default class GameScene extends Phaser.Scene {
     this.hud.updateScore(this.player.getData("score"), false);
 
     this.enemies.getChildren().forEach((enemy) => {
-      updateEnemyWordPosition(enemy);
+      if (enemy && enemy.active && enemy.getData) {
+        updateEnemyWordPosition(enemy);
+      }
     });
   }
 
-  gameOver() {
+  async gameOver() {
     
     const user = this.registry.get("userId");
     
@@ -178,7 +193,7 @@ export default class GameScene extends Phaser.Scene {
       const failed = this.stats.failedWords;
       const total = correct + failed;
 
-      const averagePrecision = total > 0 ? (correct / total) * 100 : 0;
+      const averagePrecision = total > 0 ? ((correct / total) * 100).toFixed(2) : 0.00;
       const wpm = elapsedMinutes > 0 ? total / elapsedMinutes : 0;
 
       const payload = {
@@ -194,12 +209,7 @@ export default class GameScene extends Phaser.Scene {
 
       console.log(payload);
       
-
-      fetch(`${import.meta.env.VITE_BACKEND_URL}/api/game`, {
-        method: "POST",
-        headers: {"content-Type": "application/json"},
-        body: JSON.stringify(payload),
-      }).catch(err => console.error("Error saving game: ", err));
+      await saveGame(payload).catch(err => console.error("Error al guardar datos de la partida", err));
     }
 
     if (!this.isPlaying) return;

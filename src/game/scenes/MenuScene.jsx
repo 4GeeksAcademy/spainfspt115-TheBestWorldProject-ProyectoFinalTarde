@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { GameSettings } from "../managers/GameSettings";
+import { createMenuBackground } from "../managers/BackgroundManager";
 
 export default class MenuScene extends Phaser.Scene {
   constructor() {
@@ -8,6 +9,8 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create() {
+    createMenuBackground(this);
+
     // === Iniciar música global si no está ya activa ===
     let music = this.sound.get("bgMusic");
 
@@ -43,7 +46,9 @@ export default class MenuScene extends Phaser.Scene {
     }).setOrigin(0.5).setInteractive();
 
     startButton.on("pointerdown", () => {
-      this.scene.start("GameScene");
+      this.scene.start("LoadingScene", {
+        nextScene: "GameScene",
+      });
     });
 
     // === botón: tabla de scores ===
