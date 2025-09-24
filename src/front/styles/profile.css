@@ -185,3 +185,36 @@ textarea {
     grid-column: 1;
   }
 }
+
+/* text area y descripcion */
+.description-section {
+    width: 100%;
+    margin-top: 20px; 
+    text-align: left; 
+}
+
+
+.profile-description {
+    white-space: pre-wrap;  
+    word-wrap: break-word;  
+    
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 10px;
+    border-radius: 8px;
+    min-height: 100px; 
+}
+
+.char-counter {
+    width: 100%;
+    text-align: right;
+    font-size: 0.8rem;
+    color: #aaa;
+    margin-top: 5px;
+    padding-right: 5px;
+}
+
+.profile-buttons-edit-description {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}

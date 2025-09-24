@@ -52,6 +52,7 @@ export const getCitiesByCountry = async (countryName) => {
     return handleApiResponse(response);
 }
 
+//-----------------------------------------------------------------------------//
 
 export const UpdateInfoStoreUser = async (dispatch, token) => {
 
@@ -84,4 +85,31 @@ export const UpdateInfoStoreUser = async (dispatch, token) => {
         localStorage.removeItem("token");
         dispatch({type: "logout"});
     };
+}
+
+// funcion de login
+export const login = async (credentials) => {
+    const response = await fetch(`${API_URL}/api/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(credentials),
+    });
+    return handleApiResponse(response);
+}
+
+//funcion de signup
+export const signup = async (newUserData) => {
+    const response = await fetch(`${API_URL}/api/signup`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json"},
+        body: JSON.stringify(newUserData)
+    });
+    return handleApiResponse(response);
+}
+
+//============== SERVICIOS DEL JUEGO =========== // 
+
+export const getLeaderboard = async () => {
+    const response = await fetch (`${API_URL}/api/leaderboard`);
+    return handleApiResponse(response);
 }
