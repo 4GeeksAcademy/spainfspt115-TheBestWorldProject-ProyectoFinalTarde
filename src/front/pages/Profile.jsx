@@ -50,8 +50,14 @@ export const Profile = () => {
     }
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    dispatch({ type: "logout" });
+    navigate("/");
+  };
+
   const calculateStats = () => {
-    if (!store.user || !store.user.games || store.user.length === 0 ) {
+    if (!store.user || !store.user.games || store.user.length === 0) {
       return {
         gamesPlayed: 0,
         totalCorrect: 0,
@@ -69,9 +75,9 @@ export const Profile = () => {
 
     const totalWords = totalCorrect + totalFailed;
     const averageRatio = totalWords > 0 ? ((totalCorrect / totalWords) * 100).toFixed(2) : "0.00";
-    const totalWPM = games.reduce((sum, game) => + game.wpm_average, 0) 
+    const totalWPM = games.reduce((sum, game) => + game.wpm_average, 0)
     const averageWPM = Math.round(totalWPM / gamesPlayed);
-    const bestWPM = games.reduce((max, game) => Math.max(max, game.wpm_average), 0 )
+    const bestWPM = games.reduce((max, game) => Math.max(max, game.wpm_average), 0)
 
     return { gamesPlayed, totalCorrect, totalFailed, averageRatio, averageWPM, bestWPM: Math.round(bestWPM) };
   };
@@ -122,7 +128,7 @@ export const Profile = () => {
         <>
           {/* Estadísticas a la izquierda */}
           <div className="profile-left">
-            <div className="profile-card">
+            <div className="profile-card-stats">
               <h4>Estadísticas</h4>
               <p><strong>Partidas jugadas:</strong> {userStats.gamesPlayed || "Todavía no has jugado"}</p>
               <p><strong>Palabras correctas:</strong> {userStats.totalCorrect || "0"}</p>
@@ -135,46 +141,50 @@ export const Profile = () => {
 
           {/* Perfil en el centro */}
           <div className="center-column-wrapper">
-            <div className="profile-card profile-centered">
+            <div className="profile-card-profile">
               <div className="profile-header">
-                <div className="profile-avatar">
-                  <img
-                    src={
-                    store?.user?.avatar_url ||
-                    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png"
-                  }
-                    alt="Avatar"
-                  />
+                <div className="profile-header-top">
+                  <div className="profile-avatar">
+                    <img
+                      src={
+                        store?.user?.avatar_url ||
+                        "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png"
+                      }
+                      alt="Avatar"
+                    />
+                  </div>
+                  <h3 className="profile-username">
+                    {store?.user?.username || "User Name"}
+                  </h3>
                 </div>
-                <h3 className="profile-username">
-                {store?.user?.username || "User Name"}
-              </h3>
+                <div className="profile-header-info">
+                  <div className="profile-details-grid"> 
+                    <p>
+                      <strong>País:</strong> {store?.user?.country || "No registrado"}
+                    </p>
+                    <p>
+                      <strong>Ciudad:</strong> {store?.user?.city || "No registrada"}
+                    </p>
+                    <p>
+                      <strong>Email:</strong>{" "}
+                      {store?.user?.email || "notengo@email.net"}
+                    </p>
+                    <p>
+                      <strong>Miembro desde:</strong>{" "}
+                      {store?.user?.created_at
+                        ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : "No registrado"}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="profile-centered-content">
-                <p>
-                <strong>País:</strong> {store?.user?.country || "No registrado"}
-              </p>
-                <p>
-                <strong>Ciudad:</strong> {store?.user?.city || "No registrada"}
-              </p>
-                <p>
-                <strong>Email:</strong>{" "}
-                {store?.user?.email || "notengo@email.net"}
-              </p>
-                <p>
-                  <strong>Miembro desde:</strong>{" "}
-                  {store?.user?.created_at
-                    ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "long",
-                          day: "numeric",
-                        })
-                    : "No registrado"}
-                </p>
-
-                <h4>Descripción Personalizada</h4>
-
+              <h4>Descripción Personalizada</h4>
+              <div className="profile-description-section">
                 {isEditing ? (
                   <textarea
                     placeholder="Escribe aquí lo que quieras que los demás vean"
@@ -186,25 +196,31 @@ export const Profile = () => {
                     {description || <i>Añade una descripción...</i>}
                   </p>
                 )}
+              </div>
 
-                <div className="profile-buttons">
-                  {isEditing ? (
-                    <button className="profile-btn" onClick={handleSaveDescription}>Guardar</button>
-                  ) : (
-                    <button className="profile-btn" onClick={() => setIsEditing(true)}>Editar Descripción</button>
-                  )}
-                  <button className="profile-btn" onClick={() => navigate("/edit-profile")}>Editar Perfil</button>
-                </div>
+              <div className="profile-buttons">
+                {isEditing ? (
+                  <button className="profile-btn" onClick={handleSaveDescription}>Guardar</button>
+                ) : (
+                  <button className="profile-btn" onClick={() => setIsEditing(true)}>Editar Descripción</button>
+                )}
+                <button className="profile-btn" onClick={() => navigate("/edit-profile")}>Editar Perfil</button>
               </div>
             </div>
-
-            {/* Ventana vacía debajo del perfil */}
-            {/* <div className="profile-card profile-center-below"></div> */}
+            {/* Botones de jugar y cerrar sesion */}
+            <div className="profile-action-buttons">
+                <button className="profile-btn start-game-btn" onClick={() => navigate("/game")}>
+                    Jugar
+                </button>
+                <button className="profile-btn logout-btn" onClick={handleLogout}>
+                    Cerrar sesión
+                </button>
+            </div>
           </div>
 
           {/* Historial de partidas a la derecha */}
           <div className="profile-right">
-            <div className="profile-card">
+            <div className="profile-card-history" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <h4>Historial de partidas</h4>
               {store?.user?.games && store.user.games.length > 0 ? (
                 [...store.user.games]
@@ -212,8 +228,8 @@ export const Profile = () => {
                   .map((game) => (
                     <div key={game.id_game} className="game-card">
                       <p>
-                      <strong>Partida #{game.id_game}</strong>
-                    </p>
+                        <strong>Partida #{game.id_game}</strong>
+                      </p>
                       <p>
                         Jugado el{" "}
                         {new Date(game.played_at).toLocaleDateString("es-ES", {
@@ -223,11 +239,11 @@ export const Profile = () => {
                         })}
                       </p>
                       <p>
-                      <strong>Puntuación:</strong> {game.final_score}
-                    </p>
+                        <strong>Puntuación:</strong> {game.final_score}
+                      </p>
                       <p>
-                      <strong>Precisión:</strong> {game.average_precision}%
-                    </p>
+                        <strong>Precisión:</strong> {game.average_precision}%
+                      </p>
                       <hr />
                     </div>
                   ))
