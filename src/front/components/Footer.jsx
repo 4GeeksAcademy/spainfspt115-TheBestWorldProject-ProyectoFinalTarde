@@ -37,7 +37,7 @@ export const Footer = () => {
             <img
               src={
                 store?.user?.avatar_url ||
-                "/src/front/assets/avatars/avatar1.png"
+                "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png"
               }
               alt="Avatar"
               className="footer-avatar me-2"

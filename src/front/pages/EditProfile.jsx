@@ -3,21 +3,6 @@ import { useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/editprofile.css";
 import { ConfirmationModal } from "./ModalEditDescripcion";
-// Avatares
-import avatar1 from "../assets/avatars/avatar1.png";
-import avatar2 from "../assets/avatars/avatar2.png";
-import avatar3 from "../assets/avatars/avatar3.png";
-import avatar4 from "../assets/avatars/avatar4.png";
-import avatar5 from "../assets/avatars/avatar5.png";
-import avatar6 from "../assets/avatars/avatar6.png";
-import avatar7 from "../assets/avatars/avatar7.png";
-import avatar8 from "../assets/avatars/avatar8.png";
-import avatar9 from "../assets/avatars/avatar9.png";
-import avatar10 from "../assets/avatars/avatar10.png";
-import avatar11 from "../assets/avatars/avatar11.png";
-import avatar12 from "../assets/avatars/avatar12.png";
-import avatar13 from "../assets/avatars/avatar13.png";
-import avatar14 from "../assets/avatars/avatar14.png";
 
 export const EditProfile = () => {
   const navigate = useNavigate();
@@ -30,14 +15,23 @@ export const EditProfile = () => {
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState("");
   const [error, setError] = useState("");
-  const [showModal, setShowModal] = useState(false); // Nuevo estado para modal
+  const [showModal, setShowModal] = useState(false);
 
   const [countries, setCountries] = useState([]);
   const [cities, setCities] = useState([]);
 
+  // 🔹 Avatares desde Cloudinary
   const avatarOptions = [
-    avatar1, avatar2, avatar3, avatar4, avatar5, avatar6, avatar7,
-    avatar8, avatar9, avatar10, avatar11, avatar12, avatar13, avatar14,
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709830/avatar2_xohggc.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709831/avatar3_oj34zr.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709831/avatar5_dgkird.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709831/avatar4_ofbl16.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709831/avatar6_cutprw.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709832/avatar14_t9no7e.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709832/avatar11_etxzhm.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709832/avatar13_x9i2az.png",
+    "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709832/avatar12_ttoywl.png",
   ];
 
   useEffect(() => {
@@ -57,17 +51,17 @@ export const EditProfile = () => {
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACKEND_URL}/api/countries`)
-      .then(res => res.json())
-      .then(data => setCountries(data))
-      .catch(err => console.error(err));
+      .then((res) => res.json())
+      .then((data) => setCountries(data))
+      .catch((err) => console.error(err));
   }, []);
 
   useEffect(() => {
     if (country) {
       fetch(`${import.meta.env.VITE_BACKEND_URL}/api/cities/${country}`)
-        .then(res => res.json())
-        .then(data => setCities(data))
-        .catch(err => console.error(err));
+        .then((res) => res.json())
+        .then((data) => setCities(data))
+        .catch((err) => console.error(err));
     } else setCities([]);
   }, [country]);
 
@@ -101,7 +95,7 @@ export const EditProfile = () => {
 
       if (resp.ok) {
         dispatch({ type: "set_user", payload: { user: data, token } });
-        setShowModal(true); // Mostramos el modal al guardar
+        setShowModal(true);
       } else {
         setError(data.error || data.msg || "Error al actualizar el perfil");
       }
@@ -164,10 +158,17 @@ export const EditProfile = () => {
           <select
             className="form-select"
             value={country}
-            onChange={(e) => { setCountry(e.target.value); setCity(""); }}
+            onChange={(e) => {
+              setCountry(e.target.value);
+              setCity("");
+            }}
           >
             <option value="">Selecciona un país</option>
-            {countries.map((c, i) => <option key={i} value={c}>{c}</option>)}
+            {countries.map((c, i) => (
+              <option key={i} value={c}>
+                {c}
+              </option>
+            ))}
           </select>
 
           {/* Ciudad */}
@@ -179,14 +180,26 @@ export const EditProfile = () => {
             disabled={!country}
           >
             <option value="">Selecciona una ciudad</option>
-            {cities.map((cityName, i) => <option key={i} value={cityName}>{cityName}</option>)}
+            {cities.map((cityName, i) => (
+              <option key={i} value={cityName}>
+                {cityName}
+              </option>
+            ))}
           </select>
 
           {error && <div className="alert alert-danger">{error}</div>}
 
           <div className="d-flex justify-content-between mt-3">
-            <button type="button" className="btn btn-secondary" onClick={() => navigate("/profile")}>Cancelar</button>
-            <button type="submit" className="btn btn-success" >Guardar cambios</button>
+            <button
+              type="button"
+              className="btn btn-secondary"
+              onClick={() => navigate("/profile")}
+            >
+              Cancelar
+            </button>
+            <button type="submit" className="btn btn-success">
+              Guardar cambios
+            </button>
           </div>
         </form>
       </div>
