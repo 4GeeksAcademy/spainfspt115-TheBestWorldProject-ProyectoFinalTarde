@@ -135,6 +135,8 @@ export function enemyAttack(enemy, scene) {
 }
 
 export function updateEnemyWordPosition(enemy) {
+  if (!enemy || !enemy.active) return;
+
   const letters = enemy.getData("wordLetters");
   if (!letters || letters.length === 0) return;
 

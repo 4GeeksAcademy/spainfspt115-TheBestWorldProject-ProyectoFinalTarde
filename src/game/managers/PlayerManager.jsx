@@ -43,7 +43,7 @@ export function createPlayer (scene, x, y) {
             this.playIdle();
             if (onComplete) onComplete();
         });
-        this.play("player_attack", true);
+        if (player.getData("lives") > 0) this.play("player_attack", true);
     };
 
     player.playHitAndThen = function (sourceX, onComplete) {
@@ -52,7 +52,7 @@ export function createPlayer (scene, x, y) {
             if (onComplete) onComplete();
             this.playIdle();
         });
-        this.play("player_hit", true);
+        if (player.getData("lives") > 0) this.play("player_hit", true);
     };
 
     player.playDeath = function (onComplete) {

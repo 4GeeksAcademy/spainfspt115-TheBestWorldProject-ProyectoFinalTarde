@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { createGameOverBackground } from "../managers/BackgroundManager";
 
 export default class GameOverScene extends Phaser.Scene {
   constructor() {
@@ -10,6 +11,8 @@ export default class GameOverScene extends Phaser.Scene {
   }
 
   create() {
+    createGameOverBackground(this);
+
     const { width, height } = this.sys.game.config;
     const centerX = width / 2;
     const centerY = height / 2;
@@ -31,7 +34,9 @@ export default class GameOverScene extends Phaser.Scene {
     }).setOrigin(0.5).setInteractive();
 
     restartButton.on("pointerdown", () => {
-        this.scene.start("GameScene");
+      this.scene.start("LoadingScene", {
+        nextScene: "GameScene",
+      });
     });
 
     // boton volver al menu
