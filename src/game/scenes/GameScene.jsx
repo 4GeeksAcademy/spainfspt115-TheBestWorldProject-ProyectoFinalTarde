@@ -23,6 +23,9 @@ export default class GameScene extends Phaser.Scene {
       failedWords: 0,
     };
 
+    this.comboCount = 0;
+    this.multiplier = 1;
+
     this.width = this.sys.game.config.width;
     this.height = this.sys.game.config.height;
 
@@ -132,6 +135,26 @@ export default class GameScene extends Phaser.Scene {
 
   async startGame() {
     this.isPlaying = true;
+
+    this.difficulty = {
+      diff1: 0.7,
+      diff2: 0.25,
+      diff3: 0.05,
+    };
+
+    this.time.addEvent({
+      delay: 15000,
+      loop: true,
+      callback: () => {
+        this.difficulty.diff1 = Math.max(0.3, this.difficulty.diff1 - 0.05);
+        this.difficulty.diff2 = Math.min(0.5, this.difficulty.diff2 + 0.03);
+        this.difficulty.diff3 = Math.min(0.3, this.difficulty.diff3 + 0.02);
+
+        if (this.enemySpawner?.delay > 1000) {
+          this.enemySpawner.delay -= 200;
+        }
+      }
+    });
 
     // === player ===
     this.player = createPlayer(this, this.width / 2, this.height / 2);

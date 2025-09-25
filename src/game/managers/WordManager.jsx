@@ -1,33 +1,51 @@
 import Phaser from "phaser";
 import { getRandomWords } from "./APIservices";
 
-let wordPool = [];
+let wordPool = {
+  1: [],
+  2: [],
+  3: []
+};
 
 export async function loadWordsFromAPI() {
   try {
-    const pool = [];
-    const perDifficulty = 20;
-
+    const perDifficulty = 30;
     for (let diff = 1; diff <= 3; diff++) {
       const words = await getRandomWords(diff, perDifficulty);
-      words.forEach((w) => pool.push(w.word));
+      wordPool[diff] = words.map((w) => w.word);
     }
-
-    wordPool = pool;
   } catch (err) {
     console.error("Error al cargar palabras:", err);
-    wordPool = ["fallback", "ejemplo", "palabra"];
+    wordPool = {
+      1: ["casa", "perro", "gato"],
+      2: ["ventana", "caminar", "montaña"],
+      3: ["electricidad", "programacion", "vampirismo"]
+    };
   }
 }
 
 export function clearWordPool() {
-  wordPool = [];
+  wordPool = { 1: [], 2: [], 3: [] };
 }
 
-export function getRandomWord () {
-  if (wordPool.length === 0) {
-    return "ejemplo";
+export function getRandomWord(scene) {
+  if (!wordPool[1].length && !wordPool[2].length && !wordPool[3].length) {
+    return "fallback";
   }
 
-  return Phaser.Utils.Array.GetRandom(wordPool);
+  // === ruleta de probabilidades segun dificultad ===
+  const probs = scene.difficulty;
+  const roll = Math.random();
+  let acc = 0;
+  let chosenDiff = 1;
+
+  for (const diff of [1, 2, 3]) {
+    acc += probs[`diff${diff}`];
+    if (roll < acc) {
+      chosenDiff = diff;
+      break;
+    }
+  }
+
+  return Phaser.Utils.Array.GetRandom(wordPool[chosenDiff]);
 }

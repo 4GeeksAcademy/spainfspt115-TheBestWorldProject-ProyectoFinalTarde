@@ -145,10 +145,15 @@ export function handleInput(event, scene) {
     enemy.setData("wordLetters", []);
 
     let points;    
+    let multiplier = 1;
 
     if(!enemy.getData("__frozen"))
     {
-      points = word.length * 10;
+      if (enemy.getData("subType") === "giga_slime" || enemy.getData("subType") === "giga_orc" || enemy.getData("subType") === "giga_vampire") {
+        points = (word.length * 20) * multiplier;
+      } else {
+        points = (word.length * 10) * multiplier;
+      }
     } else {
       points = word.length;
     }

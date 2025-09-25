@@ -2,7 +2,7 @@ import { getRandomWord } from "./WordManager";
 
 const letterSpacing = 24;
 
-export function spawnEnemy(scene, speed = 80) {
+export function spawnEnemy(scene, speed = 85) {
   const { width, height } = scene.sys.game.config;
 
   const side = Phaser.Math.Between(0, 2);
@@ -12,12 +12,33 @@ export function spawnEnemy(scene, speed = 80) {
   if (side === 2) { y = Phaser.Math.Between(0, height); x = -50; }
 
   // palabra -> tipo
-  let word, enemyType;
+  let word, enemyType, enemySubType;
   do {
-    word = getRandomWord();
-    if (word.length >= 4 && word.length <= 5) enemyType = "slime";
-    else if (word.length >= 6 && word.length <= 8) enemyType = "orc";
-    else if (word.length >= 9) enemyType = "vampire";
+    word = getRandomWord(scene);
+    if (word.length >= 4 && word.length < 7) {
+        enemySubType = "";
+        enemyType = "slime";
+    }
+    else if (word.length >= 7 && word.length < 10) {
+        enemySubType = "";
+        enemyType = "orc";
+    }
+    else if (word.length >= 10 && word.length < 14) {
+        enemySubType = "";
+        enemyType = "vampire";
+    }
+
+    if ( word.length >= 14 && word.length < 15 ) {
+        enemySubType = "giga_slime";
+        enemyType = "slime";
+    } else if ( word.length >= 15 && word.length < 16 ) {
+        enemySubType = "giga_orc";
+        enemyType = "orc";
+    } else if (word.length >= 16 ){
+        enemySubType = "giga_vampire";
+        enemyType = "vampire";
+    }
+
   } while (!enemyType);
 
   const enemy = scene.physics.add.sprite(x, y, `${enemyType}_run`);
@@ -26,15 +47,38 @@ export function spawnEnemy(scene, speed = 80) {
   switch (enemyType) {
     case "slime":
       enemy.body.setSize(34, 34);
-      break;
-  
-    case "orc":
-      enemy.body.setSize(42, 42);
+      if (enemySubType === "giga_slime") {
+        enemy.setScale(4);
+        enemy.setData("speed", 30);
+        speed = 30;
+      } else {
+        enemy.setData("speed", 85);
+      }
       break;
 
+    case "orc":
+      enemy.body.setSize(42, 42);
+      if (enemySubType === "giga_orc") {
+        enemy.setScale(4);
+        enemy.setData("speed", 30);
+        speed = 30;
+      } else {
+        enemy.setData("speed", 85);
+      }
+      break;
+  
     case "vampire":
       enemy.body.setSize(40, 40);
+
+      if (enemySubType === "giga_vampire") {
+        enemy.setScale(4);
+        enemy.setData("speed", 30);
+        speed = 30;
+      } else {
+        enemy.setData("speed", 85);
+      }
       break;
+
   }
 
   scene.enemies.add(enemy);
@@ -46,6 +90,7 @@ export function spawnEnemy(scene, speed = 80) {
   enemy.play(`${enemyType}_run_${dir}`);
 
   enemy.setData("type", enemyType);
+  enemy.setData("subType", enemySubType);
   enemy.setData("word", word);
   enemy.setData("typed", "");
   enemy.setData("pendingProjectiles", 0);
@@ -73,6 +118,18 @@ export function spawnEnemy(scene, speed = 80) {
 
   scene.physics.moveToObject(enemy, scene.player, speed);
   return enemy;
+}
+
+function pickEnemyType(scene) {
+  const difficulty = scene.difficulty;
+  const roll = Math.random();
+  let acc = 0;
+  
+  for (const [type, prob] of Object.entries(difficulty)) {
+    acc += prob;
+    if (roll < acc) return type;
+  }
+  return "slime";
 }
 
 export function getDirectionFromAngle(angle) {
@@ -149,6 +206,14 @@ export function updateEnemyWordPosition(enemy) {
   });
 }
 
-export function updateSpeedEnemy(scene, enemy, speed = 80) {
-  scene.physics.moveToObject(enemy, scene.player, speed);
+export function updateSpeedEnemy(scene, enemy, speed = enemy.getData("speed")) {
+
+  const enemySpeed = enemy.getData("speed");
+
+  if (enemySpeed != speed) {
+    scene.physics.moveToObject(enemy, scene.player, speed);
+  } else {
+    scene.physics.moveToObject(enemy, scene.player, enemySpeed);
+  }
+  
 }
