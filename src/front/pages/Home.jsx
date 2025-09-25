@@ -5,7 +5,7 @@ import "../styles/home.css";
 
 export const Home = () => {
   const { store } = useGlobalReducer();
-  const title = "M E C A M A G I A";
+  const title = "M     E     C     A     M     A     G     I     C";
 
   return (
     <div className="home-container">

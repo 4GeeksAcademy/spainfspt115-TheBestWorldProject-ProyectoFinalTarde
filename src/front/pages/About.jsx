@@ -6,7 +6,20 @@ import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 export const About = () => {
   return (
     <div className="about-container">
-      {/* Overlay oscuro */}
+      <video
+        className="bg-video"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="none"
+        poster="https://res.cloudinary.com/dixwk4tan/video/upload/f_auto,q_auto/Hechizera_jaqeny.jpg"
+      >
+        <source
+          src="https://res.cloudinary.com/dixwk4tan/video/upload/v1758724121/Hechizera_jaqeny.mp4"
+          type="video/mp4"
+        />
+      </video>
       <div className="about-overlay"></div>
 
       <div className="about-card">
