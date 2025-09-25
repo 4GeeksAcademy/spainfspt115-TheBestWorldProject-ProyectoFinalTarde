@@ -1,0 +1,44 @@
+.donations-container {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 50px;
+    gap: 200px;
+}
+
+.donate-link {
+    display: inline-block;
+    perspective: 1000px;
+    /* perspectiva 3D */
+}
+
+.donate-img {
+    width: 150px;
+    height: 150px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 5px #fff;
+}
+
+/* Hover neón */
+.donate-img.hover {
+    box-shadow: 0 0 20px #ff00ff, 0 0 30px #00ffff, 0 0 40px #ff00ff;
+}
+
+/* Giro 360º */
+.donate-img.spin {
+    animation: spin360 4s linear infinite;
+}
+
+@keyframes spin360 {
+    from {
+        transform: rotateY(0deg);
+    }
+
+    to {
+        transform: rotateY(360deg);
+    }
+}
