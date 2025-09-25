@@ -31,8 +31,8 @@ export default class GameScene extends Phaser.Scene {
 
     // === AJUSTES REGISTRO ===
     const showScore = this.registry.get("showScore") ?? true;
-    const musicOn = this.registry.get("musicOn") ?? true;
-    const musicVolume = this.registry.get("musicVolume") ?? 1;
+    // const musicOn = this.registry.get("musicOn") ?? true;
+    // const musicVolume = this.registry.get("musicVolume") ?? 1;
 
     this.isPlaying = false;
 
@@ -43,19 +43,19 @@ export default class GameScene extends Phaser.Scene {
     this.projectiles = this.physics.add.group();
 
     // === MUSICA ===
-    let bgMusic = this.sound.get("bgMusic");
-    if (!bgMusic) {
-      bgMusic = this.sound.add("bgMusic", {
-        volume: musicVolume,
-        loop: true,
-      });
-      this.sound.mute = !musicOn;
-      if (musicOn) bgMusic.play();
-    } else {
-      bgMusic.setVolume(musicVolume);
-      bgMusic.setMute(!musicOn);
-    }
-    this.bgMusic = bgMusic;
+    // let bgMusic = this.sound.get("bgMusic");
+    // if (!bgMusic) {
+    //   bgMusic = this.sound.add("bgMusic", {
+    //     volume: musicVolume,
+    //     loop: true,
+    //   });
+    //   this.sound.mute = !musicOn;
+    //   if (musicOn) bgMusic.play();
+    // } else {
+    //   bgMusic.setVolume(musicVolume);
+    //   bgMusic.setMute(!musicOn);
+    // }
+    // this.bgMusic = bgMusic;
 
     // === ANIMACIONES ===
     createAnimations(this);
@@ -87,11 +87,11 @@ export default class GameScene extends Phaser.Scene {
 
     // limpieza al cerrar la escena
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      if (this.bgMusic) {
-        this.bgMusic.stop();
-        this.bgMusic.destroy();
-        this.bgMusic = null;
-      }
+      // if (this.bgMusic) {
+      //   this.bgMusic.stop();
+      //   this.bgMusic.destroy();
+      //   this.bgMusic = null;
+      // }
       if (this.keyListener) {
         this.input.keyboard.removeListener("keydown", this.keyListener);
         this.keyListener = null;
@@ -215,11 +215,11 @@ export default class GameScene extends Phaser.Scene {
     if (!this.isPlaying) return;
     this.isPlaying = false;
 
-    if (this.bgMusic) {
-      this.bgMusic.stop();
-      this.bgMusic.destroy();
-      this.bgMusic = null;
-    }
+    // if (this.bgMusic) {
+    //   this.bgMusic.stop();
+    //   this.bgMusic.destroy();
+    //   this.bgMusic = null;
+    // }
 
     if (this.keyListener) {
       this.input.keyboard.removeListener("keydown", this.keyListener);

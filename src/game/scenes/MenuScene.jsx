@@ -12,22 +12,22 @@ export default class MenuScene extends Phaser.Scene {
     createMenuBackground(this);
 
     // === Iniciar música global si no está ya activa ===
-    let music = this.sound.get("bgMusic");
+    // let music = this.sound.get("bgMusic");
 
-    if (!music) {
-      // si no existe, la creamos con el volumen actual de GameSettings
-      music = this.sound.add("bgMusic", {
-        loop: true,
-        volume:
-          GameSettings.audio.global.volume * GameSettings.audio.music.volume,
-      });
-      music.play();
-    } else {
-      // si ya existía, aseguramos el volumen correcto
-      music.setVolume(
-        GameSettings.audio.global.volume * GameSettings.audio.music.volume
-      );
-    }
+    // if (!music) {
+    //   // si no existe, la creamos con el volumen actual de GameSettings
+    //   music = this.sound.add("bgMusic", {
+    //     loop: true,
+    //     volume:
+    //       GameSettings.audio.global.volume * GameSettings.audio.music.volume,
+    //   });
+    //   music.play();
+    // } else {
+    //   // si ya existía, aseguramos el volumen correcto
+    //   music.setVolume(
+    //     GameSettings.audio.global.volume * GameSettings.audio.music.volume
+    //   );
+    // }
 
     const { width, height } = this.sys.game.config;
     const centerX = width / 2;
@@ -89,7 +89,7 @@ export default class MenuScene extends Phaser.Scene {
     exitButton.on("pointerdown", () => {
       const goProfile = this.game.registry.get("exitToProfile");
 
-      // 1) Limpieza de escenas activas
+      // Limpieza de escenas activas
       this.scene.manager.getScenes(true).forEach(scene => {
         scene.time?.removeAllEvents();
         scene.tweens?.killAll();
@@ -99,13 +99,13 @@ export default class MenuScene extends Phaser.Scene {
         if (scene.physics?.world) scene.physics.world.shutdown();
       });
 
-      // 2) Destruir animaciones globales
+      // Destruir animaciones globales
       this.anims.destroy();
 
-      // 3) Finalmente destruir el juego completo
+      // Finalmente destruir el juego completo
       this.game.destroy(true);
 
-      // 4) Redirigir al perfil (React Router)
+      // Redirigir al perfil (React Router)
       if (typeof goProfile === "function") goProfile();
     });
 

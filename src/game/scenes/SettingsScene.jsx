@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { GameSettings, applyQualityPreset } from "../managers/GameSettings";
+import { createSettingsBackground } from "../managers/BackgroundManager";
 
 export default class SettingsScene extends Phaser.Scene {
     constructor() {
@@ -25,6 +26,8 @@ export default class SettingsScene extends Phaser.Scene {
     }
 
     create() {
+        createSettingsBackground(this);
+
         const { width, height } = this.sys.game.config;
         const centerX = width / 2;
 

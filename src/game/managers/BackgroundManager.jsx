@@ -66,7 +66,7 @@ export function createBackground(scene, {
   const cols = Math.ceil(width / DRAW_SIZE);
   const rows = Math.ceil(height / DRAW_SIZE);
 
-  // === 1) Suelo ===
+  // === Suelo ===
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       let frame = pick(FLOOR_TILES.base);
@@ -78,7 +78,7 @@ export function createBackground(scene, {
     }
   }
 
-  // === 2) Bordes ===
+  // === Bordes ===
   if (withBorders) {
     for (let c = 0; c < cols; c++) {
       scene.add.sprite(c * DRAW_SIZE, 0, "set1", pick(FLOOR_TILES.borders.top))
@@ -97,7 +97,7 @@ export function createBackground(scene, {
     }
   }
 
-  // === 3) Vasijas ===
+  // === Vasijas ===
   ensureDecorAnimations(scene);
   const vaseCount = Phaser.Math.Between(vaseMin, vaseMax);
   for (let i = 0; i < vaseCount; i++) {
@@ -109,7 +109,7 @@ export function createBackground(scene, {
       .setDepth(-5).setScale(SCALE).play("vase_shine");
   }
 
-  // === 4) Pilares (cabeza + base) ===
+  // === Pilares (cabeza + base) ===
   const pillarCount = Phaser.Math.Between(pillarMin, pillarMax);
   for (let i = 0; i < pillarCount; i++) {
     const gx = Phaser.Math.Between(2, cols - 3);
@@ -124,7 +124,7 @@ export function createBackground(scene, {
       .setOrigin(0).setScale(SCALE).setDepth(-10);
   }
 
-  // === 5) Antorchas ===
+  // === Antorchas ===
   const torchCount = Phaser.Math.Between(torchMin, torchMax);
   for (let i = 0; i < torchCount; i++) {
     const gx = Phaser.Math.Between(1, cols - 2);
@@ -144,7 +144,7 @@ export function createMenuBackground(scene) {
   const cols = Math.ceil(width / DRAW_SIZE);
   const rows = Math.ceil(height / DRAW_SIZE);
 
-  // Suelo fijo (frame 36 = liso)
+  // Suelo plano
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       scene.add.sprite(c * DRAW_SIZE, r * DRAW_SIZE, "set1", 36)
@@ -154,16 +154,30 @@ export function createMenuBackground(scene) {
 
   ensureDecorAnimations(scene);
 
-  // Antorchas en esquinas
-  const positions = [
-    { x: 40, y: 40 },
-    { x: width - 40, y: 40 },
-    { x: 40, y: height - 40 },
-    { x: width - 40, y: height - 40 },
+  // Antorchas en esquinas simetricas
+  const corners = [
+    { x: 120, y: 120 },
+    { x: width - 120, y: 120 },
+    { x: 120, y: height - 120 },
+    { x: width - 120, y: height - 120 },
   ];
-  positions.forEach(p => {
-    scene.add.sprite(p.x, p.y, "torch_yellow", 0)
+  corners.forEach(p => {
+    const torch = scene.add.sprite(p.x, p.y, "torch_yellow", 0)
       .setScale(SCALE).setDepth(-5).play("torch_yellow_anim");
+    scene.tweens.add({
+      targets: torch,
+      alpha: { from: 1, to: 0.6 },
+      duration: 1500,
+      yoyo: true,
+      repeat: -1
+    });
+  });
+
+  // Pilares laterales
+  const yMid = height / 2 - DRAW_SIZE;
+  [160, width - 160].forEach(x => {
+    scene.add.sprite(x, yMid, "pillar", 0).setOrigin(0.5).setScale(SCALE).setDepth(-10);
+    scene.add.sprite(x, yMid + DRAW_SIZE, "pillar", 1).setOrigin(0.5).setScale(SCALE).setDepth(-10);
   });
 }
 
@@ -175,33 +189,63 @@ export function createLoadingBackground(scene) {
   const cols = Math.ceil(width / DRAW_SIZE);
   const rows = Math.ceil(height / DRAW_SIZE);
 
-  if (!scene.textures.exists("set1")) {
-    scene.add.rectangle(width / 2, height / 2, width, height, 0x111111).setDepth(-30);
-    return;
-  }
-
-  const tex = scene.textures.get("set1");
-  const total = tex.frameTotal;
-  const candidates = [36, 39, 120, 123];
-  const baseFrame = candidates.find(f => f < total) ?? 36;
-
-  // Suelo uniforme
+  // Suelo oscuro
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
-      scene.add.sprite(c * DRAW_SIZE, r * DRAW_SIZE, "set1", baseFrame)
+      scene.add.sprite(c * DRAW_SIZE, r * DRAW_SIZE, "set1", 39)
         .setOrigin(0).setScale(SCALE).setDepth(-30);
     }
   }
 
-  // Vasijas decorativas
   ensureDecorAnimations(scene);
-  const vaseCount = Phaser.Math.Between(2, 3);
-  for (let i = 0; i < vaseCount; i++) {
-    const x = Phaser.Math.Between(100, width - 100);
-    const y = Phaser.Math.Between(100, height - 100);
-    scene.add.sprite(x, y, "vase", 0)
-      .setScale(SCALE).setDepth(-5).play("vase_shine");
-  }
+
+  // Antorchas arriba a izquierda y derecha
+  const torchPositions = [
+    { x: 100, y: 100 },
+    { x: width - 100, y: 100 },
+  ];
+  torchPositions.forEach(p => {
+    const torch = scene.add.sprite(p.x, p.y, "torch_yellow", 0)
+      .setScale(SCALE).setDepth(-5).play("torch_yellow_anim");
+    scene.tweens.add({
+      targets: torch,
+      alpha: { from: 1, to: 0.7 },
+      duration: 1200,
+      yoyo: true,
+      repeat: -1
+    });
+  });
+
+  // Vasijas decorativas en la parte baja
+  const vaseY = height - 120;
+  const vaseLeft = scene.add.sprite(150, vaseY, "vase", 0)
+    .setScale(SCALE).setDepth(-5).play("vase_shine");
+  const vaseRight = scene.add.sprite(width - 150, vaseY, "vase", 0)
+    .setScale(SCALE).setDepth(-5).play("vase_shine");
+
+  // Overlay parpadeante
+  const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.25).setDepth(-4);
+  scene.tweens.add({
+    targets: overlay,
+    alpha: { from: 0.25, to: 0.5 },
+    duration: 2000,
+    yoyo: true,
+    repeat: -1,
+    ease: "Sine.easeInOut"
+  });
+
+  // Particulas suaves de chispa en segundo plano
+  scene.add.particles(0, 0, "spark", {
+    x: { min: 0, max: width },
+    y: { min: 0, max: height },
+    lifespan: 4000,
+    speedY: { min: -15, max: -30 },
+    scale: { start: 0.3, end: 0 },
+    alpha: { start: 0.4, end: 0 },
+    frequency: 400,
+    quantity: 1,
+    emitting: true
+  }).setDepth(-6);
 }
 
 /* ================================
@@ -212,7 +256,7 @@ export function createGameOverBackground(scene) {
   const cols = Math.ceil(width / DRAW_SIZE);
   const rows = Math.ceil(height / DRAW_SIZE);
 
-  // Suelo base (frame 39)
+  // Suelo base oscuro
   for (let r = 0; r < rows; r++) {
     for (let c = 0; c < cols; c++) {
       scene.add.sprite(c * DRAW_SIZE, r * DRAW_SIZE, "set1", 39)
@@ -220,16 +264,72 @@ export function createGameOverBackground(scene) {
     }
   }
 
-  // Overlay rojo oscuro
-  scene.add.rectangle(width / 2, height / 2, width, height, 0x550000, 0.5).setDepth(-5);
+  // Overlay rojo
+  scene.add.rectangle(width / 2, height / 2, width, height, 0x660000, 0.7).setDepth(-5);
 
   ensureDecorAnimations(scene);
 
-  // Antorchas lentas aleatorias
-  for (let i = 0; i < 3; i++) {
-    const x = Phaser.Math.Between(100, width - 100);
-    const y = Phaser.Math.Between(100, height - 100);
-    scene.add.sprite(x, y, "torch_yellow", 0)
+  // Antorchas simetricas
+  const torchPositions = [
+    { x: width / 2 - 200, y: height / 2 },
+    { x: width / 2 + 200, y: height / 2 }
+  ];
+  torchPositions.forEach(p => {
+    scene.add.sprite(p.x, p.y, "torch_yellow", 0)
       .setScale(SCALE).setDepth(-5).play("torch_yellow_slow");
+  });
+
+  // Particulas tipo ceniza
+  scene.add.particles(0, 0, "spark", {
+    x: { min: 0, max: width },
+    y: 0,
+    lifespan: 5000,
+    speedY: { min: 40, max: 100 },
+    scale: { start: 0.5, end: 0 },
+    alpha: { start: 0.9, end: 0 },
+    frequency: 150,
+    quantity: 3,
+    emitting: true
+  }).setDepth(-4);
+}
+
+/* ================================
+   SETTINGS BACKGROUND
+================================ */
+export function createSettingsBackground(scene) {
+  const { width, height } = scene.sys.game.config;
+  const cols = Math.ceil(width / DRAW_SIZE);
+  const rows = Math.ceil(height / DRAW_SIZE);
+
+  // Suelo base liso
+  for (let r = 0; r < rows; r++) {
+    for (let c = 0; c < cols; c++) {
+      scene.add.sprite(c * DRAW_SIZE, r * DRAW_SIZE, "set1", 36)
+        .setOrigin(0).setScale(SCALE).setDepth(-30);
+    }
   }
+
+  // Overlay suave
+  const overlay = scene.add.rectangle(width / 2, height / 2, width, height, 0x000000, 0.25).setDepth(-5);
+  scene.tweens.add({
+    targets: overlay,
+    alpha: { from: 0.2, to: 0.4 },
+    duration: 3000,
+    yoyo: true,
+    repeat: -1,
+    ease: "Sine.easeInOut"
+  });
+
+  // Polvo flotante
+  scene.add.particles(0, 0, "spark", {
+    x: { min: 0, max: width },
+    y: { min: 0, max: height },
+    lifespan: 6000,
+    speedY: { min: -20, max: -40 },
+    scale: { start: 0.4, end: 0 },
+    alpha: { start: 0.5, end: 0 },
+    frequency: 300,
+    quantity: 2,
+    emitting: true
+  }).setDepth(-4);
 }

@@ -211,8 +211,6 @@ export default class LoadingScene extends Phaser.Scene {
         });
         this.startTime = Date.now();
 
-        createLoadingBackground(this);
-
     }
 
     updateProgress(value) {
@@ -222,7 +220,9 @@ export default class LoadingScene extends Phaser.Scene {
     }
 
     async create() {
-        // sprite animado real
+        createLoadingBackground(this);
+
+        // sprite animado
         if (this.textures.exists("player_idle") && !this.anims.exists("player_idle")) {
             this.anims.create({
                 key: "player_idle",
