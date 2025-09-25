@@ -21,6 +21,8 @@ def loop():
                 print("Not Word recived - NULL !!")
                 time.sleep(10)
                 continue
+            
+            word = str(word).lower()
 
             response = requests.post(API_BACKEND, json={"word": word})
             if response.status_code in (200, 201):
