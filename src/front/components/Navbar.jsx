@@ -4,8 +4,19 @@ import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/navbar.css";
 
 export const Navbar = () => {
-  const { store } = useGlobalReducer();
+  const { store, dispatch } = useGlobalReducer();
   const location = useLocation();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    dispatch({ type: "logout" });
+    setShowLogoutModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowLogoutModal(false);
+    navigate("/");
+  };
 
   return (
     <nav className="navbar navbar-expand-lg navbar-custom px-3 fixed-top">
@@ -83,7 +94,7 @@ export const Navbar = () => {
                 to="/login"
                 className={`nav-link fw-bold ${location.pathname === "/login" ? "active-link" : ""}`}
               >
-                Entrar
+                Iniciar Sesión
               </Link>
               <Link
                 to="/signup"
@@ -94,6 +105,14 @@ export const Navbar = () => {
             </>
           ) : (
             <div style={{ width: "160px" }} />
+          )}
+        </div>
+
+        <div className="logout-button">
+          {store.isRegistered && (
+            <div className="d-flex align-items-center">
+              <button className="nav-link" onClick={handleLogout}>Cerrar Sesión</button>
+            </div>
           )}
         </div>
       </div>

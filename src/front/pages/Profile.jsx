@@ -112,7 +112,7 @@ export const Profile = () => {
             </p>
             <div className="modal-buttons">
               <button className="profile-btn" onClick={() => navigate("/login")}>
-                Entrar
+                iniciar sesión
               </button>
               <button className="profile-btn" onClick={() => navigate("/register")}>
                 Registro
