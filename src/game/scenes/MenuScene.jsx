@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { GameSettings } from "../managers/GameSettings";
 import { createMenuBackground } from "../managers/BackgroundManager";
+import { getLeaderboard } from "../managers/APIservices";
 
 export default class MenuScene extends Phaser.Scene {
   constructor() {
@@ -116,78 +117,153 @@ export default class MenuScene extends Phaser.Scene {
     });
   }
 
-  showModal() {
+  async showModal() {
     if (this.modal) return;
 
     const { width, height } = this.sys.game.config;
     const centerX = width / 2;
     const centerY = height / 2;
 
-    // sombra
-    const shadow = this.add.graphics();
-    shadow.fillStyle(0x000000, 0.3);
-    shadow.fillRoundedRect(
-      centerX - width * 0.4 + 5,
-      centerY - height * 0.3 + 5,
-      width * 0.8,
-      height * 0.6,
-      20
-    );
-
-    // caja blanca + bordes redondeados
-    const graphics = this.add.graphics();
-    graphics.fillStyle(0xffffff, 1);
-    graphics.fillRoundedRect(
-      centerX - width * 0.4,
-      centerY - height * 0.3,
-      width * 0.8,
-      height * 0.6,
-      20
-    );
-
-    // texto del modal
-    const title = this.add
-      .text(centerX, centerY - height * 0.22, "Tabla de Scores", {
-        fontSize: "28px",
-        color: "#000",
-        fontStyle: "bold",
-      })
-      .setOrigin(0.5);
-
-    const content = this.add
-      .text(
-        centerX,
-        centerY,
-        "1. K0ST4N - 180\n2. Artureyy - 120\n3. JavierMV - 100\n4. BYCARLOSS - 90\n5. TrivM - 80",
-        {
-          fontSize: "21px",
-          color: "#000",
-          align: "center",
-        }
-      )
-      .setOrigin(0.5);
-
-    // botón cerrar
-    const closeBtn = this.add
-      .text(centerX, centerY + height * 0.22, "Cerrar", {
-        fontSize: "22px",
-        color: "#f00",
-      })
-      .setOrigin(0.5)
+    // === Fondo sombra ===
+    const shadow = this.add.rectangle(centerX, centerY, width, height, 0x000000, 0.6)
       .setInteractive();
 
-    closeBtn.on("pointerdown", () => this.closeModal());
-    closeBtn.on("pointerover", () => closeBtn.setStyle({ color: "#ff0" }));
-    closeBtn.on("pointerout", () => closeBtn.setStyle({ color: "#f00" }));
+    const boxWidth = width * 0.45;
+    const boxHeight = height * 0.75;
+    const box = this.add.rectangle(centerX, centerY, boxWidth, boxHeight, 0x1a1a1a, 0.95)
+      .setStrokeStyle(4, 0xffcc00, 0.8);
 
-    // Agrupar en un container
-    this.modal = this.add.container(0, 0, [
-      shadow,
-      graphics,
-      title,
-      content,
-      closeBtn,
-    ]);
+    // === Titulo ===
+    const title = this.add.text(centerX, centerY - boxHeight / 2 + 40, "🏆 Leaderboard 🏆", {
+      fontSize: "34px",
+      fontStyle: "bold",
+      color: "#ffcc00",
+      stroke: "#000",
+      strokeThickness: 6,
+    }).setOrigin(0.5);
+
+    // === Contenedor para la lista ===
+    const content = this.add.container(centerX, centerY);
+
+    const loadingText = this.add.text(0, 0, "Cargando...", {
+      fontSize: "24px",
+      color: "#ffffff",
+    }).setOrigin(0.5);
+    content.add(loadingText);
+
+    // === Boton cerrar ===
+    const closeBtn = this.add.text(centerX, centerY + boxHeight / 2 - 30, "Cerrar", {
+      fontSize: "24px",
+      color: "#ff4444",
+      fontStyle: "bold",
+      backgroundColor: "#222",
+      padding: { x: 12, y: 6 }
+    }).setOrigin(0.5).setInteractive();
+
+    closeBtn.on("pointerdown", () => this.closeModal());
+    closeBtn.on("pointerover", () => closeBtn.setStyle({ color: "#ffff00" }));
+    closeBtn.on("pointerout", () => closeBtn.setStyle({ color: "#ff4444" }));
+
+    // Agrupar modal
+    this.modal = this.add.container(0, 0, [shadow, box, title, content, closeBtn]);
+
+    // Animacion
+    this.tweens.add({
+      targets: this.modal,
+      alpha: { from: 0, to: 1 },
+      scale: { from: 0.85, to: 1 },
+      duration: 400,
+      ease: "Back.Out"
+    });
+
+    // === Cargar leaderboard ===
+    try {
+      const data = await getLeaderboard(100);
+      const userId = Number(this.game.registry.get("userId"));
+
+      loadingText.destroy();
+      content.removeAll(true);
+
+      const top10 = data.slice(0, 10);
+      let userInTop = false;
+
+      // Layout
+      const startY = -boxHeight / 2 + 80;
+      const rowSpacing = 40;
+
+      // === Render top 10 ===
+      top10.forEach((g, i) => {
+        const username = g.user?.username || "Anon";
+        const score = g.final_score;
+        const id = Number(g.user?.id_user);
+
+        let color = "#ffffff";
+        let fontSize = "24px";
+        let strokeThickness = 3;
+
+        if (i === 0) { color = "#ffd700"; fontSize = "28px"; strokeThickness = 6; }
+        else if (i === 1) { color = "#c0c0c0"; fontSize = "26px"; strokeThickness = 5; }
+        else if (i === 2) { color = "#cd7f32"; fontSize = "25px"; strokeThickness = 4; }
+
+        const yPos = startY + i * rowSpacing;
+
+        const row = this.add.text(0, yPos, `${i + 1}. ${username}   ${score}`, {
+          fontSize,
+          color: (id === userId) ? "#00ffcc" : color,
+          fontStyle: "bold",
+          stroke: "#000",
+          strokeThickness,
+          backgroundColor: (id === userId) ? "#333366" : ""
+        }).setOrigin(0.5, 0);
+
+        if (id === userId) userInTop = true;
+        content.add(row);
+
+        if (i === 0) {
+          this.tweens.add({
+            targets: row,
+            scale: { from: 1, to: 1.2 },
+            yoyo: true,
+            repeat: -1,
+            duration: 1000,
+            ease: "Sine.easeInOut",
+          });
+          this.tweens.add({
+            targets: row,
+            alpha: { from: 1, to: 0.7 },
+            yoyo: true,
+            repeat: -1,
+            duration: 800,
+          });
+        }
+      });
+
+      // === Usuario fuera del top 10 ===
+      if (!userInTop && userId && userId !== "pepe") {
+        const index = data.findIndex(g => Number(g.user?.id_user) === userId);
+        if (index !== -1) {
+          const userRank = index + 1;
+          const user = data[index].user?.username || "Tú";
+          const score = data[index].final_score;
+
+          const extraY = startY + top10.length * rowSpacing + 60;
+
+          const extraRow = this.add.text(0, extraY, `${userRank}. ${user}   ${score}`, {
+            fontSize: "22px",
+            color: "#00ffcc",
+            fontStyle: "bold",
+            stroke: "#000",
+            strokeThickness: 4,
+            backgroundColor: "#333366"
+          }).setOrigin(0.5, 0);
+
+          content.add(extraRow);
+        }
+      }
+    } catch (err) {
+      loadingText.setText("Error al cargar leaderboard");
+      console.error(err);
+    }
   }
 
   closeModal() {

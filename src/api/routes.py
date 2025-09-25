@@ -167,6 +167,8 @@ def create_game():
 # LeaderBoard Rout --> query exclusiva para generar la tabla de score
 @api.route("/leaderboard", methods=["GET"])
 def leaderboard():
+    limit = request.args.get("limit", default=10, type=int)
+
     subq = (
         db.session.query(
             Game.id_user,
@@ -183,7 +185,7 @@ def leaderboard():
             (Game.id_user == subq.c.id_user) & (Game.final_score == subq.c.best_score)
         )
         .order_by(Game.final_score.desc())
-        .limit(10)
+        .limit(limit)   # ✅ ahora usa el parámetro
         .all()
     )
 

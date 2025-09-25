@@ -19,7 +19,7 @@ export async function saveGame(payload) {
 }
 
 // === LEADERBOARD ===
-export async function getLeaderboard(limit = 10) {
+export async function getLeaderboard(limit = 100) {
   const res = await fetch(`${API_BASE_URL}/leaderboard?limit=${limit}`);
   if (!res.ok) throw new Error("Error al obtener leaderboard");
   return res.json();
