@@ -25,6 +25,20 @@ export const Ranking = () => {
 
     return (
         <div className="ranking-container">
+                <video
+                className="bg-video"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="none"
+                poster="https://res.cloudinary.com/dixwk4tan/video/upload/f_auto,q_auto/Hechizero_cmmfss.jpg"
+            >
+                <source
+                src="https://res.cloudinary.com/dixwk4tan/video/upload/v1758724121/Hechizero_cmmfss.mp4"
+                type="video/mp4"
+                />
+            </video>
             <div className="ranking-overlay"></div>
 
             <div className="ranking-wrapper">

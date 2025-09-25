@@ -76,10 +76,9 @@ export const Profile = () => {
     const totalWords = totalCorrect + totalFailed;
     const averageRatio = totalWords > 0 ? ((totalCorrect / totalWords) * 100).toFixed(2) : "0.00";
     const totalWPM = games.reduce((sum, game) => + game.wpm_average, 0)
-    const averageWPM = Math.round(totalWPM / gamesPlayed);
     const bestWPM = games.reduce((max, game) => Math.max(max, game.wpm_average), 0)
 
-    return { gamesPlayed, totalCorrect, totalFailed, averageRatio, averageWPM, bestWPM: Math.round(bestWPM) };
+    return { gamesPlayed, totalCorrect, totalFailed, averageRatio, bestWPM: Math.round(bestWPM) };
   };
 
   const userStats = calculateStats();
@@ -133,8 +132,7 @@ export const Profile = () => {
               <p><strong>Partidas jugadas:</strong> {userStats.gamesPlayed || "Todavía no has jugado"}</p>
               <p><strong>Palabras correctas:</strong> {userStats.totalCorrect || "0"}</p>
               <p><strong>Palabras erróneas:</strong> {userStats.totalFailed || "0"}</p>
-              <p><strong>Ratio:</strong> {userStats.averageRatio || "0%"}</p>
-              <p><strong>Palabras por minuto:</strong>{userStats.averageWPM}</p>
+              <p><strong>Precision:</strong> {userStats.averageRatio || "0%"}</p>
               <p><strong>Mejor WPM "Record":</strong>{userStats.bestWPM}</p>
             </div>
           </div>

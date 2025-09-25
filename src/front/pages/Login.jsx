@@ -33,8 +33,19 @@ export const Login = () => {
 
   return (
     <div className="home-container">
-      <video className="bg-video" autoPlay muted loop>
-        <source src="src/front/assets/videos/Hechizero.mp4" type="video/mp4" />
+      <video
+        className="bg-video"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="none"
+        poster="https://res.cloudinary.com/dixwk4tan/video/upload/f_auto,q_auto/Hechizera_jaqeny.jpg"
+      >
+        <source
+          src="https://res.cloudinary.com/dixwk4tan/video/upload/v1758724121/Hechizera_jaqeny.mp4"
+          type="video/mp4"
+        />
       </video>
       <div className="home-overlay"></div>
 

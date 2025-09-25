@@ -106,6 +106,20 @@ export const EditProfile = () => {
 
   return (
     <div className="edit-container">
+      <video
+        className="bg-video"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="none"
+        poster="https://res.cloudinary.com/dixwk4tan/video/upload/f_auto,q_auto/Hechizera_jaqeny.jpg"
+      >
+        <source
+          src="https://res.cloudinary.com/dixwk4tan/video/upload/v1758724121/Hechizera_jaqeny.mp4"
+          type="video/mp4"
+        />
+      </video>
       <div className="edit-card">
         <h2>Editar Perfil</h2>
 
