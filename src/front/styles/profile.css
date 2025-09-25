@@ -120,6 +120,7 @@ body {
 }
 
 .profile-btn {
+  height:40px ;
   flex: 1;
   padding: 1.2rem;
   border-radius: 6px;
@@ -224,9 +225,18 @@ body {
 
 .profile-action-buttons .profile-btn {
   flex: 1;
-  width: auto;
+  width: 180px;
+  height: 50px;
   font-size: 20px;
   background-color: rgba(0, 0, 0, 0.35);
+  border: 1px solid #7700ff;
+  box-shadow: 0 0 15px #8c00ff;
+}
+.profile-action-buttons .profile-btn:hover {
+  background-color: rgba(123, 61, 240, 0.274);
+  box-shadow: 0 0 15px #1f112e, 0 0 20px #00ccff, 0 0 25px #0084ff,
+    inset 0 0 50px #ffffff;
+  transform: translateY(-2px);
 }
 
 /* TEXTAREA */

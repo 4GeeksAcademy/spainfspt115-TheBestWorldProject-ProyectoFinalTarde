@@ -2,11 +2,11 @@
 .ranking-container {
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 100px 20px 40px;
+  padding: 30px 20px 40px;
   box-sizing: border-box;
 }
 
