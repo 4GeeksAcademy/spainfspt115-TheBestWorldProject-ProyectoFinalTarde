@@ -6,7 +6,7 @@ import { killEnemy, updateSpeedEnemy } from "./EnemyManager";
 export function handleInput(event, scene) {
   if (!scene.isPlaying) return;
 
-  if (scene.activeEnemy && !scene.activeEnemy.active) {
+  if (scene.activeEnemy && !isValidForInput(scene.activeEnemy)) {
     clearActiveEnemy(scene);
   }
 
@@ -20,8 +20,7 @@ export function handleInput(event, scene) {
       return;
     }
     if (scene.activeEnemy) {
-
-      if (!scene.activeEnemy.active || !scene.activeEnemy.getData("wordLetters")) {
+      if (!isValidForInput(scene.activeEnemy)) {
         clearActiveEnemy(scene);
         return;
       }
@@ -58,7 +57,9 @@ export function handleInput(event, scene) {
     const powerList = Object.keys(scene.hud.powers);
 
     // evita crash palabra de power erronea
-    const matches = powerList.filter((power) => typeof power === "string" && power.startsWith(clean));
+    const matches = powerList.filter(
+      (power) => typeof power === "string" && power.startsWith(clean)
+    );
     if (matches.length === 0) {
       scene.powerBuffer = "";
       renderPowerWord(scene);
@@ -87,8 +88,9 @@ export function handleInput(event, scene) {
   if (!scene.activeEnemy) {
     const enemies = scene.enemies
       .getChildren()
-      .filter((e) => e.active && e.getData("pendingProjectiles") === 0)
-      .filter((e) => isEnemyOnScreen(scene, e));
+      .filter((e) => e && e.getData && e.getData("pendingProjectiles") === 0)
+      .filter((e) => isEnemyOnScreen(scene, e))
+      .filter(isValidForInput); // 🚀 solo objetivos válidos
 
     const candidates = enemies.filter((e) => {
       const word = e.getData("word");
@@ -109,10 +111,18 @@ export function handleInput(event, scene) {
   if (!enemy?.active) return;
 
   const word = enemy.getData("word");
-  if (typeof word !== "string") return;
+  if (typeof word !== "string") {
+    clearActiveEnemy(scene);
+    return;
+  }
 
   let typed = enemy.getData("typed") || "";
   const letters = enemy.getData("wordLetters") || [];
+
+  if (letters.length === 0) {
+    clearActiveEnemy(scene);
+    return;
+  }
 
   const newTyped = typed + key;
   if (!word.startsWith(newTyped)) {
@@ -121,7 +131,7 @@ export function handleInput(event, scene) {
       letters[typed.length].setStyle({ fill: "#f00" });
       enemy.setData("hadErrors", true);
     }
-    return;
+    return; // corregir con backspace
   }
 
   typed = newTyped;
@@ -144,40 +154,46 @@ export function handleInput(event, scene) {
     enemy.setData("typed", "");
     enemy.setData("wordLetters", []);
 
-    let points;    
-    let multiplier = 1;
-
-    if(!enemy.getData("__frozen"))
-    {
-      if (enemy.getData("subType") === "giga_slime" || enemy.getData("subType") === "giga_orc" || enemy.getData("subType") === "giga_vampire") {
-        points = (word.length * 20) * multiplier;
+    let points;
+    if (!enemy.getData("__frozen")) {
+      if (["giga_slime", "giga_orc", "giga_vampire"].includes(enemy.getData("subType"))) {
+        points = word.length * 20;
       } else {
-        points = (word.length * 10) * multiplier;
+        points = word.length * 10;
       }
     } else {
       points = word.length;
     }
+
     if (midLetter) floatingScore(scene, midLetter.x, midLetter.y, points);
 
     const currentScore = scene.player.getData("score") || 0;
     scene.player.setData("score", currentScore + points);
     scene.hud.updateScore(currentScore + points, true);
 
-    if(enemy.getData("__frozen"))
-    {
+    enemy.setData("__inputDead", true);
+    clearActiveEnemy(scene);
+
+    if (enemy.getData("__frozen")) {
       killEnemy(enemy, scene);
     } else {
       enemy.setData("__doomed", true);
-
       updateSpeedEnemy(scene, enemy, 10);
-
       scene.player.playAttackAndThen(enemy.x, () => {
         launchProjectiles(scene, enemy, word.length);
       });
     }
-
-    clearActiveEnemy(scene);
   }
+}
+
+function isValidForInput(enemy) {
+  if (!enemy || !enemy.active || !enemy.getData) return false;
+  if (enemy.getData("__inputDead") || enemy.getData("dying") || enemy.getData("attacking")) return false;
+  const letters = enemy.getData("wordLetters");
+  if (!letters || letters.length === 0) return false;
+  const word = enemy.getData("word");
+  if (typeof word !== "string" || word.length === 0) return false;
+  return true;
 }
 
 // --- utils ---
@@ -209,14 +225,13 @@ function renderPowerWord(scene) {
     const baseHex = power.color.rgba;
     const label = `-${name.toUpperCase()}`;
 
-    // --- caso: está en cooldown ---
+    // --- caso: esta en cooldown ---
     if (!power.ready) {
-      // si tiene overlay de escritura, limpiarlo
       destroyPowerOverlay(scene, power);
       if (power.text) {
         power.text.setText(label);
         power.text.setAlpha(1);
-        // 👇 NO tocamos el color porque HUDmanager lo va actualizando con el cooldown
+        // NO tocamos color: HUDmanager lo actualiza con el cooldown
       }
       return;
     }
@@ -232,7 +247,7 @@ function renderPowerWord(scene) {
       return;
     }
 
-    // --- caso: activo (se está escribiendo) ---
+    // --- caso: activo (se esta escribiendo) ---
     ensurePowerOverlay(scene, power, label);
     if (power.text) power.text.setAlpha(0);
 
@@ -293,11 +308,19 @@ function destroyPowerOverlay(scene, power) {
 
 export function clearActiveEnemy(scene) {
   if (scene.activeEnemy) {
-    if (!scene.activeEnemy.active) {
+    const enemy = scene.activeEnemy;
+    if (
+      !enemy.active ||
+      enemy.getData("__doomed") ||
+      enemy.getData("dying") ||
+      enemy.getData("attacking") ||
+      enemy.getData("__inputDead") ||
+      (enemy.getData("wordLetters")?.length === 0)
+    ) {
       scene.activeEnemy = null;
       return;
     }
-    highlightEnemy(scene.activeEnemy, false);
+    highlightEnemy(enemy, false);
     scene.activeEnemy = null;
   }
 }

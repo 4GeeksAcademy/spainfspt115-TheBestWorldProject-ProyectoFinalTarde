@@ -12,6 +12,21 @@ function isOnScreen(scene, obj, pad = 0) {
   return obj.x >= -pad && obj.x <= width + pad && obj.y >= -pad && obj.y <= height + pad;
 }
 
+function forceClearActiveEnemy(scene, enemyJustKilled = null) {
+  if (!scene.activeEnemy) return;
+  if (
+    enemyJustKilled === scene.activeEnemy ||
+    !scene.activeEnemy.active ||
+    scene.activeEnemy.getData("__inputDead") ||
+    scene.activeEnemy.getData("dying") ||
+    scene.activeEnemy.getData("attacking") ||
+    (scene.activeEnemy.getData("wordLetters")?.length === 0)
+  ) {
+    if (scene.activeEnemy.setStrokeStyle) scene.activeEnemy.setStrokeStyle();
+    scene.activeEnemy = null;
+  }
+}
+
 export function activatePower(scene, power) {
   const cooldowns = { fuego: 12, hielo: 10, rayo: 6 };
   const hudPower = scene.hud?.powers?.[power];
@@ -38,8 +53,6 @@ export function activatePower(scene, power) {
         const points = word.length;
 
         if (midLetter) {
-          console.log("flotacion del numeor al quemarse !!");
-          
           floatingScore(scene, midLetter.x, midLetter.y, points);
         }
 
@@ -47,9 +60,14 @@ export function activatePower(scene, power) {
         scene.player.setData("score", currentScore + points);
         scene.hud.updateScore(currentScore + points, true);
 
-        killEnemy(enemy, scene)
+        enemy.setData("__inputDead", true);
+        killEnemy(enemy, scene);
+
+        // limpiar si era el activo
+        if (scene.activeEnemy === enemy) forceClearActiveEnemy(scene, enemy);
       });
-      if (scene.activeEnemy && !scene.activeEnemy.active) scene.activeEnemy = null;
+
+      forceClearActiveEnemy(scene);
       break;
     }
 
@@ -138,11 +156,17 @@ export function activatePower(scene, power) {
             scene.player.setData("score", currentScore + points);
             scene.hud.updateScore(currentScore + points, true);
 
+            enemy.setData("__inputDead", true);
             killEnemy(enemy, scene);
-            if (scene.activeEnemy === enemy) scene.activeEnemy = null;
+
+            if (scene.activeEnemy === enemy) {
+              forceClearActiveEnemy(scene, enemy);
+            }
           });
         });
       }
+
+      forceClearActiveEnemy(scene);
       break;
     }
   }

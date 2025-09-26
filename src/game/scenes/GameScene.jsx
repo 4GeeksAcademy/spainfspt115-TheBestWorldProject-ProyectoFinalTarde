@@ -68,6 +68,8 @@ export default class GameScene extends Phaser.Scene {
     this.hud.textScore.setVisible(showScore);
 
     // === INPUT ===
+    this.input.keyboard.addCapture(['BACKSPACE', '-']);
+
     this.keyListener = this.input.keyboard.on("keydown", (e) => {
       if(this.actualLives > 0) {
         handleInput(e, this);
@@ -150,8 +152,8 @@ export default class GameScene extends Phaser.Scene {
         this.difficulty.diff2 = Math.min(0.5, this.difficulty.diff2 + 0.03);
         this.difficulty.diff3 = Math.min(0.3, this.difficulty.diff3 + 0.02);
 
-        if (this.enemySpawner?.delay > 1000) {
-          this.enemySpawner.delay -= 200;
+        if (this.enemySpawner?.delay > 1500) {
+          this.enemySpawner.delay -= 100;
         }
       }
     });

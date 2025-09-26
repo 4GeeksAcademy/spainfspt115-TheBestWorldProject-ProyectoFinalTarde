@@ -13,30 +13,41 @@ export function spawnEnemy(scene, speed = 85) {
 
   // palabra -> tipo
   let word, enemyType, enemySubType;
+
   do {
     word = getRandomWord(scene);
-    if (word.length >= 4 && word.length < 7) {
-        enemySubType = "";
-        enemyType = "slime";
-    }
-    else if (word.length >= 7 && word.length < 10) {
-        enemySubType = "";
-        enemyType = "orc";
-    }
-    else if (word.length >= 10 && word.length < 14) {
-        enemySubType = "";
-        enemyType = "vampire";
+
+    const dupOnScreen = scene.enemies
+      .getChildren()
+      .some(enemy => enemy.active && enemy.getData && enemy.getData("word") === word);
+
+    if (dupOnScreen) {
+      enemyType = undefined;
+      continue;
     }
 
-    if ( word.length >= 14 && word.length < 15 ) {
-        enemySubType = "giga_slime";
-        enemyType = "slime";
-    } else if ( word.length >= 15 && word.length < 16 ) {
-        enemySubType = "giga_orc";
-        enemyType = "orc";
-    } else if (word.length >= 16 ){
-        enemySubType = "giga_vampire";
-        enemyType = "vampire";
+    if (word.length >= 4 && word.length < 7) {
+      enemySubType = "";
+      enemyType = "slime";
+    }
+    else if (word.length >= 7 && word.length < 10) {
+      enemySubType = "";
+      enemyType = "orc";
+    }
+    else if (word.length >= 10 && word.length < 14) {
+      enemySubType = "";
+      enemyType = "vampire";
+    }
+
+    if (word.length >= 14 && word.length < 15) {
+      enemySubType = "giga_slime";
+      enemyType = "slime";
+    } else if (word.length >= 15 && word.length < 16) {
+      enemySubType = "giga_orc";
+      enemyType = "orc";
+    } else if (word.length >= 16) {
+      enemySubType = "giga_vampire";
+      enemyType = "vampire";
     }
 
   } while (!enemyType);
@@ -66,7 +77,7 @@ export function spawnEnemy(scene, speed = 85) {
         enemy.setData("speed", 85);
       }
       break;
-  
+
     case "vampire":
       enemy.body.setSize(40, 40);
 
@@ -78,7 +89,6 @@ export function spawnEnemy(scene, speed = 85) {
         enemy.setData("speed", 85);
       }
       break;
-
   }
 
   scene.enemies.add(enemy);
@@ -120,18 +130,6 @@ export function spawnEnemy(scene, speed = 85) {
   return enemy;
 }
 
-function pickEnemyType(scene) {
-  const difficulty = scene.difficulty;
-  const roll = Math.random();
-  let acc = 0;
-  
-  for (const [type, prob] of Object.entries(difficulty)) {
-    acc += prob;
-    if (roll < acc) return type;
-  }
-  return "slime";
-}
-
 export function getDirectionFromAngle(angle) {
   const deg = Phaser.Math.RadToDeg(angle);
   if (deg >= -45 && deg <= 45) return "right";
@@ -144,13 +142,15 @@ export function getDirectionFromAngle(angle) {
 export function killEnemy(enemy, scene) {
   if (!enemy || !enemy.active) return;
   if (enemy.getData("dying")) return;
+
   enemy.setData("dying", true);
+  enemy.setData("__inputDead", true);
 
   const type = enemy.getData("type");
   const dir = enemy.getData("direction");
   const key = `${type}_death_${dir}`;
 
-  if(enemy.body) {
+  if (enemy.body) {
     updateSpeedEnemy(scene, enemy, 0);
     enemy.body.enable = false;
   }
@@ -162,11 +162,13 @@ export function killEnemy(enemy, scene) {
   });
 }
 
-// ataque con animación antes de quitar vida
+// ataque con animacion antes de quitar vida
 export function enemyAttack(enemy, scene) {
   if (!enemy || !enemy.active) return;
   if (enemy.getData("attacking")) return;
+
   enemy.setData("attacking", true);
+  enemy.setData("__inputDead", true);
 
   const type = enemy.getData("type");
   const dir = enemy.getData("direction");
@@ -175,9 +177,7 @@ export function enemyAttack(enemy, scene) {
   enemy.play(key);
   enemy.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + key, () => {
     scene.player.playHitAndThen(enemy.x, () => {
-      // quitar vida
       const lives = scene.player.loseLife();
-      // animacion de HUD y gameover despues del ultimo corazon
       scene.hud.loseLife(lives, () => {
         scene.player.playDeath(() => {
           scene.gameOver?.();
@@ -185,7 +185,6 @@ export function enemyAttack(enemy, scene) {
       });
     });
 
-    // limpieza
     enemy.getData("wordLetters")?.forEach((letter) => letter.destroy());
     enemy.destroy();
   });
@@ -207,13 +206,10 @@ export function updateEnemyWordPosition(enemy) {
 }
 
 export function updateSpeedEnemy(scene, enemy, speed = enemy.getData("speed")) {
-
   const enemySpeed = enemy.getData("speed");
-
   if (enemySpeed != speed) {
     scene.physics.moveToObject(enemy, scene.player, speed);
   } else {
     scene.physics.moveToObject(enemy, scene.player, enemySpeed);
   }
-  
 }
