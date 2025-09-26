@@ -217,7 +217,7 @@ export default class GameScene extends Phaser.Scene {
       const total = correct + failed;
 
       const averagePrecision = total > 0 ? ((correct / total) * 100).toFixed(2) : 0.00;
-      const wpm = elapsedMinutes > 0 ? total / elapsedMinutes : 0;
+      const wpm = elapsedMinutes > 0 ? (total / elapsedMinutes).toFixed(2) : 0;
 
       const payload = {
         id_user: this.registry.get("userId"),
