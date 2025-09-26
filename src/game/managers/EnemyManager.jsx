@@ -177,17 +177,24 @@ export function enemyAttack(enemy, scene) {
   const key = `${type}_attack_${dir}`;
 
   enemy.play(key);
-  
+
   if (type === "orc" || subType === "giga_orc") playFx(scene, "orc_attack_fx");
   if (type === "slime" || subType === "giga_slime") playFx(scene, "slime_attack_fx");
-  if (type === "vampire" || subType === "giga_vampire") playFx(scene, "vampire_attack_fx"); 
+  if (type === "vampire" || subType === "giga_vampire") playFx(scene, "vampire_attack_fx");
   enemy.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + key, () => {
-    scene.player.playHitAndThen(enemy.x, () => {
-      const lives = scene.player.loseLife();
-      scene.hud.loseLife(lives, () => {
-        scene.player.playDeath(() => {
-          scene.gameOver?.();
-        });
+    const lives = scene.player.loseLife();
+    scene.hud.loseLife(lives, () => {
+      if (scene.enemySpawner) scene.enemySpawner.paused = true;
+      scene.enemies.getChildren().forEach(cenemy => {
+        if (cenemy.body) {
+          cenemy.body.enable = false;
+          cenemy.body.stop?.();
+        }
+        cenemy.anims?.stop();
+      });
+
+      scene.player.playDeath(() => {
+        scene.gameOver?.();
       });
     });
 

@@ -257,6 +257,14 @@ export default class GameScene extends Phaser.Scene {
       this.enemySpawner = null;
     }
 
+    this.enemies.getChildren().forEach(enemy => {
+      if (enemy.body) {
+        enemy.body.enable = false;
+        enemy.body.stop?.();
+      }
+      enemy.anims?.stop();
+    });
+
     this.activeEnemy = null;
     this.enemies.clear(true, true);
     this.projectiles.clear(true, true);

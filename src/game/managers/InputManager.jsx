@@ -178,10 +178,10 @@ export function handleInput(event, scene) {
     if (enemy.getData("__frozen")) {
       killEnemy(enemy, scene);
     } else {
+      playFx(scene, "player_attack_fx");
       enemy.setData("__doomed", true);
       updateSpeedEnemy(scene, enemy, 10);
       scene.player.playAttackAndThen(enemy.x, () => {
-        playFx(scene, "player_attack_fx");
         launchProjectiles(scene, enemy, word.length);
       });
     }
