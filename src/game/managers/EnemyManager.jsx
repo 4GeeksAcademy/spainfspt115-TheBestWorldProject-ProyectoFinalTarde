@@ -1,5 +1,5 @@
 import { playFx } from "./AudioManager";
-import { getRandomWord } from "./WordManager";
+import { getRandomWord, getWordPool } from "./WordManager";
 
 const letterSpacing = 24;
 
@@ -40,13 +40,18 @@ export function spawnEnemy(scene, speed = 85) {
       enemyType = "vampire";
     }
 
-    if (word.length >= 14 && word.length < 15) {
+    const pool = getWordPool();
+
+    if (word.length === 14 && pool.giga_slime.length > 0) {
+      word = Phaser.Utils.Array.GetRandom(pool.giga_slime);
       enemySubType = "giga_slime";
       enemyType = "slime";
-    } else if (word.length >= 15 && word.length < 16) {
+    } else if (word.length === 15 && pool.giga_orc.length > 0) {
+      word = Phaser.Utils.Array.GetRandom(pool.giga_orc);
       enemySubType = "giga_orc";
       enemyType = "orc";
-    } else if (word.length >= 16) {
+    } else if (word.length >= 16 && pool.giga_vampire.length > 0) {
+      word = Phaser.Utils.Array.GetRandom(pool.giga_vampire);
       enemySubType = "giga_vampire";
       enemyType = "vampire";
     }

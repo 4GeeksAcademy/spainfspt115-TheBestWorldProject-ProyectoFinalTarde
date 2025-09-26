@@ -129,6 +129,25 @@ def update_user():
     return jsonify(user.serialize()), 200
 
 # GAME ROUTES
+# --- Obtener palabras para gigas ---
+@api.route("/words/gigas", methods=["GET"])
+def words_for_gigas():
+    result = {}
+
+    # giga_slime: length == 14
+    words14 = Dictionary.query.filter(Dictionary.length == 14).order_by(func.random()).limit(3).all()
+    result["giga_slime"] = [w.serialize() for w in words14]
+
+    # giga_orc: length == 15
+    words15 = Dictionary.query.filter(Dictionary.length == 15).order_by(func.random()).limit(3).all()
+    result["giga_orc"] = [w.serialize() for w in words15]
+
+    # giga_vampire: length >= 16
+    words16 = Dictionary.query.filter(Dictionary.length >= 16).order_by(func.random()).limit(3).all()
+    result["giga_vampire"] = [w.serialize() for w in words16]
+
+    return jsonify(result), 200
+
 # --- Obtener todas las partidas
 @api.route('/game', methods=['GET'])
 def get_games():

@@ -31,3 +31,9 @@ export async function getUser(id) {
   if (!res.ok) throw new Error("Error al obtener usuario");
   return res.json();
 }
+
+export async function getGigaWords() {
+  const res = await fetch(`${API_BASE_URL}/words/gigas`);
+  if (!res.ok) throw new Error("Error al obtener palabras giga");
+  return res.json();
+}
