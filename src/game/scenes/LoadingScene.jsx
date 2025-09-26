@@ -1,8 +1,4 @@
 import Phaser from "phaser";
-// import bitchesMusic from "../assets/Bitches.mp3";
-// import bgImg from "../assets/bg.png";
-// import startBtn from "../assets/StartBtn.png";
-// import resetBtn from "../assets/ResetBtn.png";
 import { loadWordsFromAPI } from "../managers/WordManager";
 import { createLoadingBackground } from "../managers/BackgroundManager";
 
@@ -99,12 +95,24 @@ export default class LoadingScene extends Phaser.Scene {
             this.updateProgress(value);
         });
 
-        // === ASSETS ===
-        // this.load.image("bg", bgImg);
-        // this.load.audio("bgMusic", bitchesMusic);
-        // this.load.image("buttonImg", startBtn);
-        // this.load.image("resetBtn", resetBtn);
+        // === AUDIOS ===
+        // Musica
+        this.load.audio("game_song", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758889230/game_song_loopable_perfect_rzqu2i.mp3");
+        this.load.audio("menu_song", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758889194/menu_song_loopable_nco9ov.mp3");
 
+        // Sonidos FX
+        this.load.audio("ice_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755609/escarcha_k708yt.wav");
+        this.load.audio("fire_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755624/fire_zykbxx.wav");
+        this.load.audio("game_over_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755633/game_over_apphqo.mp3");
+        this.load.audio("start_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755646/inicio_partida_nwv1gx.wav");
+        this.load.audio("last_live_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755655/last_live_igwneo.wav");
+        this.load.audio("orc_attack_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755670/orc_attack_z8gm6y.wav");
+        this.load.audio("player_attack_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755684/player_attack_tfc88w.mp3");
+        this.load.audio("slime_attack_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755697/slime_attack_nc9xiv.mp3");
+        this.load.audio("lightning_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755711/trueno_wlv0hr.wav");
+        this.load.audio("vampire_attack_fx", "https://res.cloudinary.com/dixwk4tan/video/upload/v1758755725/vampire_attack_xksapz.mp3");
+
+        // particulas poderes
         this.load.image("fire", "https://res.cloudinary.com/dixwk4tan/image/upload/v1758754633/fire_lqd6sn.png");
         this.load.image("ice", "https://res.cloudinary.com/dixwk4tan/image/upload/v1758754672/ice_h8povb.png");
         this.load.image("spark", "https://res.cloudinary.com/dixwk4tan/image/upload/v1758754676/spark_ofwagp.png");
@@ -296,7 +304,7 @@ export default class LoadingScene extends Phaser.Scene {
         if (this.simTimer) this.simTimer.remove();
         this.updateProgress(1);
 
-        // tiempo mínimo 4s
+        // tiempo minimo 4s
         const elapsed = Date.now() - this.startTime;
         const minDuration = 4000;
         const remaining = Math.max(0, minDuration - elapsed);

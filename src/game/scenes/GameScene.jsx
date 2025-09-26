@@ -8,6 +8,7 @@ import { createAnimations } from "../managers/AnimationManager";
 import { clearWordPool, loadWordsFromAPI } from "../managers/WordManager";
 import { saveGame } from "../managers/APIservices";
 import { createBackground } from "../managers/BackgroundManager";
+import { GameSettings } from "../managers/GameSettings";
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -34,8 +35,6 @@ export default class GameScene extends Phaser.Scene {
 
     // === AJUSTES REGISTRO ===
     const showScore = this.registry.get("showScore") ?? true;
-    // const musicOn = this.registry.get("musicOn") ?? true;
-    // const musicVolume = this.registry.get("musicVolume") ?? 1;
 
     this.isPlaying = false;
 
@@ -44,21 +43,6 @@ export default class GameScene extends Phaser.Scene {
     // === grupos ===
     this.enemies = this.physics.add.group();
     this.projectiles = this.physics.add.group();
-
-    // === MUSICA ===
-    // let bgMusic = this.sound.get("bgMusic");
-    // if (!bgMusic) {
-    //   bgMusic = this.sound.add("bgMusic", {
-    //     volume: musicVolume,
-    //     loop: true,
-    //   });
-    //   this.sound.mute = !musicOn;
-    //   if (musicOn) bgMusic.play();
-    // } else {
-    //   bgMusic.setVolume(musicVolume);
-    //   bgMusic.setMute(!musicOn);
-    // }
-    // this.bgMusic = bgMusic;
 
     // === ANIMACIONES ===
     createAnimations(this);
@@ -92,11 +76,7 @@ export default class GameScene extends Phaser.Scene {
 
     // limpieza al cerrar la escena
     this.events.on(Phaser.Scenes.Events.SHUTDOWN, () => {
-      // if (this.bgMusic) {
-      //   this.bgMusic.stop();
-      //   this.bgMusic.destroy();
-      //   this.bgMusic = null;
-      // }
+
       if (this.keyListener) {
         this.input.keyboard.removeListener("keydown", this.keyListener);
         this.keyListener = null;
@@ -105,6 +85,11 @@ export default class GameScene extends Phaser.Scene {
   }
 
   startCountdown() {
+
+    this.sound.play("start_fx", {
+      volume: GameSettings.audio.global.volume * GameSettings.audio.fx.volume,
+    }); 
+
     let count = 3;
     const countdownText = this.add
       .text(this.width / 2, this.height / 2, count, {
@@ -138,6 +123,28 @@ export default class GameScene extends Phaser.Scene {
   async startGame() {
     this.isPlaying = true;
 
+    // --- detener musica de menu ---
+    const menuMusic = this.sound.get("menu_song");
+    if (menuMusic && menuMusic.isPlaying) {
+      menuMusic.stop();
+    }
+
+    // --- lanzar musica de juego ---
+    let gameMusic = this.sound.get("game_song");
+    if (!gameMusic) {
+      gameMusic = this.sound.add("game_song", {
+        loop: true,
+        volume: GameSettings.audio.global.volume * GameSettings.audio.music.volume,
+      });
+    }
+
+    if (!gameMusic.isPlaying && GameSettings.audio.music.on && GameSettings.audio.global.on) {
+      gameMusic.play();
+    }
+
+    gameMusic.setVolume(GameSettings.audio.global.volume * GameSettings.audio.music.volume);
+    gameMusic.setMute(!(GameSettings.audio.music.on && GameSettings.audio.global.on));
+
     this.difficulty = {
       diff1: 0.7,
       diff2: 0.25,
@@ -159,7 +166,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     // === player ===
-    this.player = createPlayer(this, this.width / 2, this.height / 2);
+    this.player = createPlayer(this, this.width * 0.5, this.height * 0.25 );
     this.physics.add.collider(this.player, this.enemies, (_, enemy) => {
       this.handlePlayerHit(enemy);
     });
@@ -239,12 +246,6 @@ export default class GameScene extends Phaser.Scene {
 
     if (!this.isPlaying) return;
     this.isPlaying = false;
-
-    // if (this.bgMusic) {
-    //   this.bgMusic.stop();
-    //   this.bgMusic.destroy();
-    //   this.bgMusic = null;
-    // }
 
     if (this.keyListener) {
       this.input.keyboard.removeListener("keydown", this.keyListener);

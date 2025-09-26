@@ -10,25 +10,24 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create() {
+    // BACKGROUND
     createMenuBackground(this);
 
-    // === Iniciar música global si no está ya activa ===
-    // let music = this.sound.get("bgMusic");
+    // MUSICA
+    let music = this.sound.get("menu_song");
+    if (!music) {
+      music = this.sound.add("menu_song", {
+        loop: true,
+        volume: GameSettings.audio.global.volume * GameSettings.audio.music.volume,
+      });
+    }
 
-    // if (!music) {
-    //   // si no existe, la creamos con el volumen actual de GameSettings
-    //   music = this.sound.add("bgMusic", {
-    //     loop: true,
-    //     volume:
-    //       GameSettings.audio.global.volume * GameSettings.audio.music.volume,
-    //   });
-    //   music.play();
-    // } else {
-    //   // si ya existía, aseguramos el volumen correcto
-    //   music.setVolume(
-    //     GameSettings.audio.global.volume * GameSettings.audio.music.volume
-    //   );
-    // }
+    if (!music.isPlaying && GameSettings.audio.music.on && GameSettings.audio.global.on) {
+      music.play();
+    }
+
+    music.setVolume(GameSettings.audio.global.volume * GameSettings.audio.music.volume);
+    music.setMute(!(GameSettings.audio.music.on && GameSettings.audio.global.on));
 
     const { width, height } = this.sys.game.config;
     const centerX = width / 2;
@@ -52,7 +51,7 @@ export default class MenuScene extends Phaser.Scene {
       });
     });
 
-    // === botón: tabla de scores ===
+    // === boton: tabla de scores ===
     const scoreButton = this.add
       .text(centerX, height * 0.43, "Tabla de Scores", {
         fontSize: "32px",
@@ -65,7 +64,7 @@ export default class MenuScene extends Phaser.Scene {
       this.showModal();
     });
 
-    // === botón: ajustes ===
+    // === boton: ajustes ===
     const settingsButton = this.add
       .text(centerX, height * 0.51, "Ajustes", {
         fontSize: "32px",
@@ -78,7 +77,7 @@ export default class MenuScene extends Phaser.Scene {
       this.scene.start("SettingsScene");
     });
 
-    // === botón: salir ===
+    // === boton: salir ===
     const exitButton = this.add
       .text(centerX, height * 0.59, "Salir", {
         fontSize: "32px",
@@ -96,7 +95,7 @@ export default class MenuScene extends Phaser.Scene {
         scene.tweens?.killAll();
         scene.sound?.stopAll();
         scene.input?.removeAllListeners();
-        if (scene.children) scene.children.removeAll(true); // destruye todos los objetos gráficos
+        if (scene.children) scene.children.removeAll(true); // destruye todos los objetos graficos
         if (scene.physics?.world) scene.physics.world.shutdown();
       });
 

@@ -1,3 +1,4 @@
+import { playFx } from "./AudioManager";
 import { getRandomWord } from "./WordManager";
 
 const letterSpacing = 24;
@@ -171,10 +172,15 @@ export function enemyAttack(enemy, scene) {
   enemy.setData("__inputDead", true);
 
   const type = enemy.getData("type");
+  const subType = enemy.getData("subType");
   const dir = enemy.getData("direction");
   const key = `${type}_attack_${dir}`;
 
   enemy.play(key);
+  
+  if (type === "orc" || subType === "giga_orc") playFx(scene, "orc_attack_fx");
+  if (type === "slime" || subType === "giga_slime") playFx(scene, "slime_attack_fx");
+  if (type === "vampire" || subType === "giga_vampire") playFx(scene, "vampire_attack_fx"); 
   enemy.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + key, () => {
     scene.player.playHitAndThen(enemy.x, () => {
       const lives = scene.player.loseLife();

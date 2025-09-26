@@ -1,4 +1,3 @@
-// managers/BackgroundManager.jsx
 const TILE = 16;
 const SCALE = 2;
 const DRAW_SIZE = TILE * SCALE;

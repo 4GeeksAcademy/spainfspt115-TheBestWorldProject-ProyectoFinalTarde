@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { createGameOverBackground } from "../managers/BackgroundManager";
+import { GameSettings } from "../managers/GameSettings";
 
 export default class GameOverScene extends Phaser.Scene {
   constructor() {
@@ -12,6 +13,14 @@ export default class GameOverScene extends Phaser.Scene {
 
   create() {
     createGameOverBackground(this);
+
+    // parar musicas de fondo
+    this.sound.stopAll();
+
+    // reproducir efecto de game over solo una vez
+    this.sound.play("game_over_fx", {
+      volume: GameSettings.audio.global.volume * GameSettings.audio.fx.volume,
+    });
 
     const { width, height } = this.sys.game.config;
     const centerX = width / 2;

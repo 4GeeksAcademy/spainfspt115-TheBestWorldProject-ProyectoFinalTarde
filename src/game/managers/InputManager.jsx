@@ -2,6 +2,7 @@ import { shakeLetter, floatingScore } from "./Effects";
 import { activatePower } from "./PowerManager";
 import { launchProjectiles } from "./ProjectileManager";
 import { killEnemy, updateSpeedEnemy } from "./EnemyManager";
+import { playFx } from "./AudioManager";
 
 export function handleInput(event, scene) {
   if (!scene.isPlaying) return;
@@ -180,6 +181,7 @@ export function handleInput(event, scene) {
       enemy.setData("__doomed", true);
       updateSpeedEnemy(scene, enemy, 10);
       scene.player.playAttackAndThen(enemy.x, () => {
+        playFx(scene, "player_attack_fx");
         launchProjectiles(scene, enemy, word.length);
       });
     }

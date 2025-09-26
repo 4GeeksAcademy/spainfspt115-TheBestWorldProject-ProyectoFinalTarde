@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import moneda1 from "../assets/img/Moneda.png";
-import moneda2 from "../assets/img/Moneda2.png";
 import "../styles/donations.css";
 
 export const Donations = () => {
@@ -8,11 +6,11 @@ export const Donations = () => {
 
     const monedas = [
         {
-            src: moneda1,
+            src: "https://res.cloudinary.com/dixwk4tan/image/upload/v1758889504/Moneda_cg7jvy.png",
             url: "https://www.paypal.com/donate/?hosted_button_id=6YDTSL4RFEXKQ"
         },
         {
-            src: moneda2,
+            src: "https://res.cloudinary.com/dixwk4tan/image/upload/v1758889456/Moneda2_snl8yh.png",
             url: "https://gofund.me/05f63abdf"
         }
     ];

@@ -1,3 +1,4 @@
+import { playFx } from "./AudioManager";
 import { floatingScore ,fireEffect, iceEffect, chainLightningEffect } from "./Effects";
 import { killEnemy } from "./EnemyManager";
 
@@ -36,6 +37,8 @@ export function activatePower(scene, power) {
     case "fuego": {
       fireEffect(scene);
 
+      playFx(scene, "fire_fx");
+
       const victims = scene.enemies.getChildren().filter(enemy => enemy.active);
       victims.forEach(enemy => {
 
@@ -73,6 +76,8 @@ export function activatePower(scene, power) {
 
     case "hielo": {
       iceEffect(scene, 4000);
+
+      playFx(scene, "ice_fx");
 
       // parar spawner
       if (scene.enemySpawner) scene.enemySpawner.paused = true;
@@ -114,6 +119,8 @@ export function activatePower(scene, power) {
             }
           }
         });
+
+        scene.sound.stopByKey("ice_fx");
       });
       break;
     }
@@ -129,9 +136,12 @@ export function activatePower(scene, power) {
         )
         .slice(0, 3);
 
+      playFx(scene, "lightning_fx");
+      
+
       if (targets.length > 0) {
         chainLightningEffect(scene, targets);
-
+        
         targets.forEach((enemy, i) => {
 
           if (enemy.getData("__doomed")) {

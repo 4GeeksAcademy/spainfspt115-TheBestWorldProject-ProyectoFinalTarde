@@ -1,6 +1,4 @@
 export function createPlayer (scene, x, y) {
-    // const player = scene.add.circle(x, y, 25, 0x00ff00);
-
     const player = scene.add.sprite(x, y, "player_idle", 0);
     player.setDepth(10);
     player.setScale(1.5);

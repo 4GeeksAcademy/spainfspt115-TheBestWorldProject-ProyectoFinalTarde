@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { GameSettings } from "./GameSettings";
 
 // --- temblor de letra para indicar error ---
 export function shakeLetter(scene, letter) {
@@ -110,7 +111,7 @@ export function animateScaleText(scene, target) {
 
   target.setScale(0).setAlpha(0);
 
-  // Animación de aparición
+  // Animacion de aparición
   scene.tweens.add({
     targets: target,
     scale: { from: 0, to: 1.2 },
@@ -128,7 +129,7 @@ export function animateScaleText(scene, target) {
     },
   });
 
-  // ✨ Efecto de resplandor en el borde (sin tween sobre style)
+  // Efecto de resplandor en el borde
   target.setStyle({ stroke: "#00ffff", strokeThickness: 8 });
   scene.time.delayedCall(250, () => {
     target.setStyle({ stroke: "#000", strokeThickness: 4 });
@@ -137,8 +138,12 @@ export function animateScaleText(scene, target) {
 
 // --- FIRE ---
 export function fireEffect(scene) {
-  scene.cameras.main.flash(200, 255, 100, 0);
-  scene.cameras.main.shake(150, 0.01);
+  if (GameSettings.accessibility.flash) {
+    scene.cameras.main.flash(200, 255, 100, 0);
+  }
+  if (GameSettings.accessibility.shake) {
+    scene.cameras.main.shake(150, 0.01);
+  }
 
   const { x, y } = scene.player;
 
@@ -178,8 +183,12 @@ export function fireEffect(scene) {
 
 // --- ICE ---
 export function iceEffect(scene, duration = 4000) { 
-  scene.cameras.main.flash(180, 120, 200, 255);
-  scene.cameras.main.shake(120, 0.008);
+  if (GameSettings.accessibility.flash) {
+    scene.cameras.main.flash(200, 255, 100, 0);
+  }
+  if (GameSettings.accessibility.shake) {
+    scene.cameras.main.shake(150, 0.01);
+  }
 
   const { x, y } = scene.player;
 
@@ -279,8 +288,12 @@ export function chainLightningEffect(scene, targets) {
       });
       scene.time.delayedCall(200, () => burst.destroy());
 
-      scene.cameras.main.flash(100, 0, 200, 255, false);
-      scene.cameras.main.shake(120, 0.01);
+      if (GameSettings.accessibility.flash) {
+        scene.cameras.main.flash(200, 255, 100, 0);
+      }
+      if (GameSettings.accessibility.shake) {
+        scene.cameras.main.shake(150, 0.01);
+      }
 
       prev = { x: enemy.x, y: enemy.y };
     });

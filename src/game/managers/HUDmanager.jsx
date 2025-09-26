@@ -1,4 +1,5 @@
 import { HEART_FRAMES } from "./AnimationManager";
+import { playFx } from "./AudioManager";
 import { animateScaleText } from "./Effects";
 
 export function createHUD(scene, maxLives = 3) {
@@ -87,6 +88,7 @@ export function createHUD(scene, maxLives = 3) {
       const heart = hearts[livesLeft];
       heart.stop();
       heart.play("heart_break");
+      if (livesLeft === 1) playFx(scene, "last_live_fx");
       heart.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         heart.setFrame(HEART_FRAMES.EMPTY);
         if (livesLeft === 0 && typeof onEmpty === "function") {
