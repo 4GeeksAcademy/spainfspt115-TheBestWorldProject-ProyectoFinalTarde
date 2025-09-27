@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../styles/ranking.css";
 import { getLeaderboard } from "../ApiServices";
+import { Link } from "react-router-dom";
 
 export const Ranking = () => {
     const [players, setPlayers] = useState([]);
@@ -61,7 +62,11 @@ export const Ranking = () => {
                                 {players.map((game, index) => (
                                     <tr key={game.id_game}>
                                         <td>{index + 1}</td>
-                                        <td>{game.user.username}</td>
+                                        <td>
+                                            <Link to={`/profile/${game.user.id_user}`}>
+                                                {game.user.username}
+                                            </Link>
+                                        </td>
                                         <td>{game.final_score}</td>
                                         <td>{game.average_precision}%</td>
                                     </tr>

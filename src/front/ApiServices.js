@@ -1,6 +1,3 @@
-
-
-
 const API_URL = import.meta.env.VITE_BACKEND_URL;
 
 //FUNCION PARA MANEJAR RESPUESTAS Y ERRORES DE LA API//
@@ -23,6 +20,12 @@ export const getProfileData = async () => {
     });
     return handleApiResponse(response);
 };
+
+//funcion para obtener el perfil publico de otro jugador
+export const getPublicProfile = async (userId) => {
+    const response = await fetch(`${API_URL}/api/public-profile/${userId}`);
+    return handleApiResponse(response);
+}
 
 //funcion para actualizar los datos del usuario 
 export const updateUserProfile = async (userData) => {

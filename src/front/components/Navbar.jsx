@@ -1,11 +1,15 @@
-import { Link, useLocation } from "react-router-dom";
-import React from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/navbar.css";
+import { LogoutModal } from "../pages/LogoutModal";
 
 export const Navbar = () => {
   const { store, dispatch } = useGlobalReducer();
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -111,10 +115,20 @@ export const Navbar = () => {
         <div className="logout-button">
           {store.isRegistered && (
             <div className="d-flex align-items-center">
-              <button className="nav-link" onClick={handleLogout}>Cerrar Sesión</button>
+              <button className="nav-link" onClick={handleLogout}>
+                Cerrar Sesión
+              </button>
             </div>
           )}
         </div>
+
+        {/* Modal de logout */}
+        {showLogoutModal && (
+          <LogoutModal
+            message="Has cerrado sesión correctamente"
+            onClose={handleCloseModal}
+          />
+        )}
       </div>
     </nav>
   );

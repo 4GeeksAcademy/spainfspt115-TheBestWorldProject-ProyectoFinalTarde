@@ -34,9 +34,10 @@ export const router = createBrowserRouter(
       <Route path="/signup" element={<Signup />} />
       <Route path="/demo" element={<Demo />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/profile/:userId" element={<Profile />} />
       <Route path="/profile" element={<Profile />} />
-      <Route path="/about" element={<About />} />
       <Route path="/edit-profile" element={<EditProfile />} />
+      <Route path="/about" element={<About />} />
       <Route path="/ranking" element={<Ranking />} />
       <Route path="/game" element={<Game />} />
       <Route path="/donations" element={<Donations />} />

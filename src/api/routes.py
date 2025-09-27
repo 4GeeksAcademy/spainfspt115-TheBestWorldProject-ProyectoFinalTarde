@@ -51,6 +51,20 @@ def profile():
         return jsonify({"error": "Usario no encontrado"}), 404
     return jsonify(user.serialize()), 200
 
+# --- para perfiles de otros jugadores publicos
+@api.route("/public-profile/<int:user_id>", methods=["GET"])
+def public_profile(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"error": "Usuraio no encontrado"}), 404
+    
+    data = user.serialize()
+
+    if "email" in data:
+        del data["email"]
+
+    return jsonify(data), 200
+
 # ---creacion usuario
 @api.route('/signup', methods=['POST'])
 def signup():

@@ -1,27 +1,48 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";
 import "../styles/profile.css";
-import { UpdateInfoStoreUser } from "../ApiServices";
+import { UpdateInfoStoreUser, getPublicProfile } from "../ApiServices";
 
 export const Profile = () => {
   const navigate = useNavigate();
   const { store, dispatch } = useGlobalReducer();
-  const [showModal, setShowModal] = useState(false);
+  const { userId } = useParams();
+  const [profileData, setProfileData] = useState(null);
   const [description, setDescription] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [showModal, setShowModal] = useState(false);
 
-  useEffect(() => {
+  const isOwnProfile = !userId || parseInt(userId) === (store.user?.id_user ?? -1);
+
+useEffect(() => {
+  if (!userId) {
     const token = localStorage.getItem("token");
     if (!token) {
       if (store.isRegistered) dispatch({ type: "logout" });
       setShowModal(true);
     } else {
-      UpdateInfoStoreUser(dispatch, token);
-      setDescription(store.user?.description || "");
+      UpdateInfoStoreUser(dispatch, token)
+        .then(() => {
+          setProfileData(store.user);
+          setDescription(store.user?.description || "");
+        })
+        .catch(() => {
+          localStorage.removeItem("token");
+          dispatch({ type: "logout" });
+          setShowModal(true);
+        });
     }
-  }, [store.isRegistered, dispatch]);
+  } else {
+    getPublicProfile(userId)
+      .then((data) => {
+        setProfileData(data);
+        setDescription(data.description || "");
+      })
+      .catch(() => navigate("/ranking"));
+  }
+}, [userId, store.user, dispatch, navigate]);
 
   const addMessage = (msg) => setMessages((prev) => [...prev, msg]);
 
@@ -57,7 +78,7 @@ export const Profile = () => {
   };
 
   const calculateStats = () => {
-    if (!store.user || !store.user.games || store.user.length === 0) {
+    if (!profileData || !profileData.games || profileData.length === 0) {
       return {
         gamesPlayed: 0,
         totalCorrect: 0,
@@ -67,7 +88,7 @@ export const Profile = () => {
       };
     }
 
-    const games = store.user.games;
+    const games = profileData.games;
     const gamesPlayed = games.length;
 
     const totalCorrect = games.reduce((sum, game) => sum + game.correct_words, 0);
@@ -75,7 +96,6 @@ export const Profile = () => {
 
     const totalWords = totalCorrect + totalFailed;
     const averageRatio = totalWords > 0 ? ((totalCorrect / totalWords) * 100).toFixed(2) : "0.00";
-    const totalWPM = games.reduce((sum, game) => + game.wpm_average, 0)
     const bestWPM = games.reduce((max, game) => Math.max(max, game.wpm_average), 0)
 
     return { gamesPlayed, totalCorrect, totalFailed, averageRatio, bestWPM: Math.round(bestWPM) };
@@ -83,9 +103,49 @@ export const Profile = () => {
 
   const userStats = calculateStats();
 
+  if (showModal) {
+    return (
+      <div className="profile-container">
+        <video
+          className="bg-video"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="none"
+          poster="https://res.cloudinary.com/dixwk4tan/video/upload/f_auto,q_auto/Hechizero_cmmfss.jpg"
+        >
+          <source
+            src="https://res.cloudinary.com/dixwk4tan/video/upload/v1758724121/Hechizero_cmmfss.mp4"
+            type="video/mp4"
+          />
+        </video>
+        <div className="home-overlay"></div>
+
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <h2 className="modal-title">Acceso denegado</h2>
+            <p className="modal-message">
+              Debes iniciar sesión o registrarte para acceder al perfil.
+            </p>
+            <div className="modal-buttons">
+              <button className="profile-btn" onClick={() => navigate("/login")}>
+                Iniciar sesión
+              </button>
+              <button className="profile-btn" onClick={() => navigate("/signup")}>
+                Registro
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profileData) return <p>Cargando perfil...</p>;
+
   return (
     <div className="profile-container">
-      {/* 🔹 Video de fondo con URL optimizada */}
       <video
         className="bg-video"
         autoPlay
@@ -101,26 +161,6 @@ export const Profile = () => {
         />
       </video>
       <div className="home-overlay"></div>
-
-      {/* Modal de acceso denegado */}
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-card">
-            <h2 className="modal-title">Acceso denegado</h2>
-            <p className="modal-message">
-              Debes iniciar sesión o registrarte para acceder al perfil.
-            </p>
-            <div className="modal-buttons">
-              <button className="profile-btn" onClick={() => navigate("/login")}>
-                iniciar sesión
-              </button>
-              <button className="profile-btn" onClick={() => navigate("/register")}>
-                Registro
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Contenido del perfil */}
       {!showModal && (
@@ -145,32 +185,29 @@ export const Profile = () => {
                   <div className="profile-avatar">
                     <img
                       src={
-                        store?.user?.avatar_url ||
+                        profileData.avatar_url ||
                         "https://res.cloudinary.com/dixwk4tan/image/upload/v1758709773/avatar1_w4e1wa.png"
                       }
                       alt="Avatar"
                     />
                   </div>
                   <h3 className="profile-username">
-                    {store?.user?.username || "User Name"}
+                    {profileData.username || "User Name"}
                   </h3>
                 </div>
                 <div className="profile-header-info">
                   <div className="profile-details-grid"> 
                     <p>
-                      <strong>País:</strong> {store?.user?.country || "No registrado"}
+                      <strong>País:</strong> {profileData.country || "No registrado"}
                     </p>
                     <p>
-                      <strong>Ciudad:</strong> {store?.user?.city || "No registrada"}
+                      <strong>Ciudad:</strong> {profileData.city || "No registrada"}
                     </p>
-                    <p>
-                      <strong>Email:</strong>{" "}
-                      {store?.user?.email || "notengo@email.net"}
-                    </p>
+                    {isOwnProfile && <p><strong>Email: </strong> {profileData.email}</p>}
                     <p>
                       <strong>Miembro desde:</strong>{" "}
-                      {store?.user?.created_at
-                        ? new Date(store.user.created_at).toLocaleDateString("es-ES", {
+                      {profileData.created_at
+                        ? new Date(profileData.created_at).toLocaleDateString("es-ES", {
                             year: "numeric",
                             month: "long",
                             day: "numeric",
@@ -183,7 +220,7 @@ export const Profile = () => {
 
               <h4>Descripción Personalizada</h4>
               <div className="profile-description-section">
-                {isEditing ? (
+                {isEditing && isOwnProfile ? (
                   <textarea
                     placeholder="Escribe aquí lo que quieras que los demás vean"
                     value={description}
@@ -191,21 +228,25 @@ export const Profile = () => {
                   />
                 ) : (
                   <p className="profile-description">
-                    {description || <i>Añade una descripción...</i>}
+                    {description || (isOwnProfile ? <i>Añade una descripción...</i> : <i>...</i>)}
                   </p>
                 )}
               </div>
 
-              <div className="profile-buttons">
-                {isEditing ? (
-                  <button className="profile-btn" onClick={handleSaveDescription}>Guardar</button>
-                ) : (
-                  <button className="profile-btn" onClick={() => setIsEditing(true)}>Editar Descripción</button>
-                )}
-                <button className="profile-btn" onClick={() => navigate("/edit-profile")}>Editar Perfil</button>
-              </div>
+              {isOwnProfile && (
+                <div className="profile-buttons">
+                  {isEditing ? (
+                    <button className="profile-btn" onClick={handleSaveDescription}>Guardar</button>
+                  ) : (
+                    <button className="profile-btn" onClick={() => setIsEditing(true)}>Editar Descripción</button>
+                  )}
+                  <button className="profile-btn" onClick={() => navigate("/edit-profile")}>Editar Perfil</button>
+                </div>
+              )}
             </div>
+
             {/* Botones de jugar y cerrar sesion */}
+            { isOwnProfile && (
             <div className="profile-action-buttons">
                 <button className="profile-btn start-game-btn" onClick={() => navigate("/game")}>
                     Jugar
@@ -214,14 +255,15 @@ export const Profile = () => {
                     Cerrar sesión
                 </button>
             </div>
+            )}
           </div>
 
           {/* Historial de partidas a la derecha */}
           <div className="profile-right">
             <div className="profile-card-history" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
               <h4>Historial de partidas</h4>
-              {store?.user?.games && store.user.games.length > 0 ? (
-                [...store.user.games]
+              {profileData.games && profileData.games.length > 0 ? (
+                [...profileData.games]
                   .sort((a, b) => new Date(b.played_at) - new Date(a.played_at))
                   .map((game) => (
                     <div key={game.id_game} className="game-card">
