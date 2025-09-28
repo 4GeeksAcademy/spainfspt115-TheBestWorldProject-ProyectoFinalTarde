@@ -16,33 +16,33 @@ export const Profile = () => {
 
   const isOwnProfile = !userId || parseInt(userId) === (store.user?.id_user ?? -1);
 
-useEffect(() => {
-  if (!userId) {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      if (store.isRegistered) dispatch({ type: "logout" });
-      setShowModal(true);
+  useEffect(() => {
+    if (!userId) {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        if (store.isRegistered) dispatch({ type: "logout" });
+        setShowModal(true);
+      } else {
+        UpdateInfoStoreUser(dispatch, token)
+          .then((user) => {
+            setProfileData(user);
+            setDescription(user.description || "");
+          })
+          .catch(() => {
+            localStorage.removeItem("token");
+            dispatch({ type: "logout" });
+            setShowModal(true);
+          });
+      }
     } else {
-      UpdateInfoStoreUser(dispatch, token)
-        .then((user) => {
-          setProfileData(user);
-          setDescription(user.description || "");
+      getPublicProfile(userId)
+        .then((data) => {
+          setProfileData(data);
+          setDescription(data.description || "");
         })
-        .catch(() => {
-          localStorage.removeItem("token");
-          dispatch({ type: "logout" });
-          setShowModal(true);
-        });
+        .catch(() => navigate("/ranking"));
     }
-  } else {
-    getPublicProfile(userId)
-      .then((data) => {
-        setProfileData(data);
-        setDescription(data.description || "");
-      })
-      .catch(() => navigate("/ranking"));
-  }
-}, [userId, dispatch, navigate]);
+  }, [userId, dispatch, navigate]);
 
   const addMessage = (msg) => setMessages((prev) => [...prev, msg]);
 
@@ -196,7 +196,7 @@ useEffect(() => {
                   </h3>
                 </div>
                 <div className="profile-header-info">
-                  <div className="profile-details-grid"> 
+                  <div className="profile-details-grid">
                     <p>
                       <strong>País:</strong> {profileData.country || "No registrado"}
                     </p>
@@ -208,17 +208,17 @@ useEffect(() => {
                       <strong>Miembro desde:</strong>{" "}
                       {profileData.created_at
                         ? new Date(profileData.created_at).toLocaleDateString("es-ES", {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          })
+                          year: "numeric",
+                          month: "long",
+                          day: "numeric",
+                        })
                         : "No registrado"}
                     </p>
                   </div>
                 </div>
               </div>
-
-              <h4>Descripción Personalizada</h4>
+                        
+              <h4>Descripción</h4>
               <div className="profile-description-section">
                 {isEditing && isOwnProfile ? (
                   <textarea
@@ -246,15 +246,15 @@ useEffect(() => {
             </div>
 
             {/* Botones de jugar y cerrar sesion */}
-            { isOwnProfile && (
-            <div className="profile-action-buttons">
+            {isOwnProfile && (
+              <div className="profile-action-buttons">
                 <button className="profile-btn start-game-btn" onClick={() => navigate("/game")}>
-                    Jugar
+                  Jugar
                 </button>
                 <button className="profile-btn logout-btn" onClick={handleLogout}>
-                    Cerrar sesión
+                  Cerrar sesión
                 </button>
-            </div>
+              </div>
             )}
           </div>
 
