@@ -24,9 +24,9 @@ useEffect(() => {
       setShowModal(true);
     } else {
       UpdateInfoStoreUser(dispatch, token)
-        .then(() => {
-          setProfileData(store.user);
-          setDescription(store.user?.description || "");
+        .then((user) => {
+          setProfileData(user);
+          setDescription(user.description || "");
         })
         .catch(() => {
           localStorage.removeItem("token");
@@ -42,7 +42,7 @@ useEffect(() => {
       })
       .catch(() => navigate("/ranking"));
   }
-}, [userId, store.user, dispatch, navigate]);
+}, [userId, dispatch, navigate]);
 
   const addMessage = (msg) => setMessages((prev) => [...prev, msg]);
 

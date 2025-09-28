@@ -2,11 +2,14 @@ import React, { useEffect, useState } from "react";
 import "../styles/ranking.css";
 import { getLeaderboard } from "../ApiServices";
 import { Link } from "react-router-dom";
+import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Ranking = () => {
     const [players, setPlayers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null)
+
+    const { store } = useGlobalReducer();
 
     useEffect(() => {
         getLeaderboard()
@@ -63,8 +66,8 @@ export const Ranking = () => {
                                     <tr key={game.id_game}>
                                         <td>{index + 1}</td>
                                         <td>
-                                            <Link to={`/profile/${game.user.id_user}`}>
-                                                {game.user.username}
+                                            <Link to={store.user?.id_user === game.user.id_user ? "/profile" : `/profile/${game.user.id_user}`}>
+                                            {game.user.username}
                                             </Link>
                                         </td>
                                         <td>{game.final_score}</td>

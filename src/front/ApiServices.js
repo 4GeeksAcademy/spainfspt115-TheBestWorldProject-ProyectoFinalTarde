@@ -58,37 +58,40 @@ export const getCitiesByCountry = async (countryName) => {
 //-----------------------------------------------------------------------------//
 
 export const UpdateInfoStoreUser = async (dispatch, token) => {
+  if (!token) return null;
 
-    if (!token) return;
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_BACKEND_URL}/api/profile`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    try {
-        const response = await fetch(
-            `${import.meta.env.VITE_BACKEND_URL}/api/profile`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
+    if (!response.ok) {
+      throw new Error("No se pudo cargar el usuario");
+    }
 
-        if (!response.ok) {
-            throw new Error("No se pudo cargar el usuario");
-        }
+    const user = await response.json();
 
-        const user = await response.json();
+    dispatch({
+      type: "update_user",
+      payload: { user, token },
+    });
 
-        dispatch({
-            type: "update_user",
-            payload: {user, token},
-        });
-    } catch (err) {
-        console.error("Error Al la informacion del usuario", err);
-        localStorage.removeItem("token");
-        dispatch({type: "logout"});
-    };
-}
+    return user;
+  } catch (err) {
+    console.error("Error al cargar la info del usuario", err);
+    localStorage.removeItem("token");
+    dispatch({ type: "logout" });
+    return null;
+  }
+};
+
 
 // funcion de login
 export const login = async (credentials) => {
