@@ -19,7 +19,7 @@ export const Profile = () => {
   useEffect(() => {
     if (!userId) {
       const token = localStorage.getItem("token");
-      console.log(token + "el token");
+      // console.log(token + "el token");
       
       if (!token) {
         if (store.isRegistered) dispatch({ type: "logout" });
@@ -31,7 +31,7 @@ export const Profile = () => {
             setDescription(user.description || "");
           })
           .catch(() => {
-            console.log("algo falla ---------");
+            // console.log("algo falla ---------");
             localStorage.removeItem("token");
             dispatch({ type: "logout" });
             setShowModal(true);

@@ -21,7 +21,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 
 CORS(app, resources={r"/api/*": {"origins": os.getenv('VITE_FRONTEND_URL')}})
-CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+# CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
 
 app.url_map.strict_slashes = False
 
@@ -74,4 +74,4 @@ def serve_any_other_file(path):
 
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
-    app.run(host='0.0.0.0', port=PORT, debug=True)
+    # app.run(host='0.0.0.0', port=PORT, debug=True)
