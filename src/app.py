@@ -15,13 +15,14 @@ from flask_cors import CORS
 from datetime import timedelta
 
 
+
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
 app = Flask(__name__)
 
 CORS(app, resources={r"/api/*": {"origins": os.getenv('VITE_FRONTEND_URL')}})
-# CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)
+#CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 app.url_map.strict_slashes = False
 
@@ -51,9 +52,13 @@ setup_commands(app)
 app.register_blueprint(api, url_prefix='/api')
 
 
+
+
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
+
+
 
 
 @app.route('/')
@@ -72,6 +77,7 @@ def serve_any_other_file(path):
     return response
 
 
+
 if __name__ == '__main__':
     PORT = int(os.environ.get('PORT', 3001))
-    # app.run(host='0.0.0.0', port=PORT, debug=True)
+    app.run(host='0.0.0.0', port=PORT, debug=True)

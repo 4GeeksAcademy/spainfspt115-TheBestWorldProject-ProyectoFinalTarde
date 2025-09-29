@@ -26,7 +26,7 @@ export const Login = () => {
                 navigate("/profile");
             })
             .catch(err => {
-                setError(err.message || "Credenciales inválidas");
+                setError("Credenciales inválidas");
             });
     };
 
