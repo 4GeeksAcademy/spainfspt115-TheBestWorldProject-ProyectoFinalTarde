@@ -28,7 +28,7 @@ export const Signup = () => {
           setShowModal(true);
         })
         .catch(err => {
-          setError(err.message || "Error al registrar el usuario");
+          setError("Error al registrar el usuario");
         });
     
   };
