@@ -8,7 +8,7 @@ import useGlobalReducer from "../front/hooks/useGlobalReducer.jsx";
 import { useNavigate } from "react-router-dom";
 import LoadingScene from "./scenes/LoadingScene.jsx";
 
-const defaultFont = '"Pixelify Sans", sans-serif';
+const defaultFont = '"Alagard", sans-serif';
 const origTextFactory = Phaser.GameObjects.GameObjectFactory.prototype.text;
 
 Phaser.GameObjects.GameObjectFactory.prototype.text = function(x, y, text, style = {}) {
