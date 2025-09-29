@@ -1,0 +1,191 @@
+/* ===== NAVBAR PRINCIPAL ===== */
+.navbar-custom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(18, 18, 18, 0.6);
+  box-shadow: 0 0 10px #590ead;
+  backdrop-filter: blur(8px);
+  transition: background-color 0.4s ease, box-shadow 0.4s ease;
+  position: relative;
+  padding: 0.5rem 1rem;
+}
+
+/* Efecto neon al pasar ratón sobre todo el navbar */
+.navbar-custom:hover {
+  box-shadow:
+    0 0 12px #590ead,
+    0 0 18px #ff0000,
+    0 0 24px #ffae00;
+}
+
+/* ===== LOGO BOTÓN ===== */
+#logo-button {
+  height: 80px;
+  width: 80px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#logo-button img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  /* animation: bounce 2s infinite; */
+}
+
+#logo-button img:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 15px #ffff00,
+    0 0 20px #ff8c00,
+    0 0 25px #ffe135;
+}
+
+/* ===== LINKS ESTILO NEÓN ===== */
+.navbar-custom .nav-link {
+  position: relative;
+  color: #fff !important;
+  font-weight: 700;
+  text-shadow: 0 0 6px #590ead;
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+  padding-bottom: 6px;
+  animation: bounce 2s infinite;
+}
+
+.navbar-custom .nav-link::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #590ead;
+  box-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
+  transition: width 0.25s ease, left 0.25s ease;
+}
+
+.navbar-custom .nav-link:hover {
+  color: #ffae00 !important;
+  text-shadow:
+    0 0 8px #fff700,
+    0 0 16px #ffe135,
+    0 0 32px #fffacd;
+}
+
+.navbar-custom .nav-link:hover::after {
+  width: 100%;
+  left: 0;
+  background: linear-gradient(90deg, #fffacd, #ffef99, #ffe135);
+  box-shadow:
+    0 0 12px #fff700,
+    0 0 20px #ffe135,
+    0 0 30px #fffacd;
+}
+
+/* ===== BRILLO ACTIVO ===== */
+.navbar-custom .active-link {
+  color: #ffea70 !important;
+  text-shadow:
+    0 0 10px #fffacd,
+    0 0 20px #ffe135,
+    0 0 40px #fff700,
+    0 0 60px #fffacd;
+  animation: goldenGlow 1.5s infinite alternate, bounce 2s infinite;
+}
+
+@keyframes goldenGlow {
+  0% {
+    text-shadow:
+      0 0 10px #fffacd,
+      0 0 20px #ffe135,
+      0 0 40px #fff700,
+      0 0 60px #fffacd;
+  }
+
+  100% {
+    text-shadow:
+      0 0 15px #fffacd,
+      0 0 30px #ffe135,
+      0 0 60px #fff700,
+      0 0 90px #fffacd;
+  }
+}
+
+/* ===== BLOQUE CENTRADO ===== */
+.navbar-center {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+/* ===== BLOQUE DERECHO ===== */
+.navbar-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ===== BOTÓN PAYPAL ===== */
+#donate-button img {
+  width: 80px !important;
+  height: 80px !important;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #590ead;
+  transition: all 0.3s ease;
+  object-fit: cover;
+  animation: bounce 2s infinite;
+}
+
+#donate-button img:hover {
+  transform: scale(1.05);
+  box-shadow:
+    0 0 15px #ffff00,
+    0 0 20px #ff8c00,
+    0 0 25px #ffe135;
+}
+
+/* ===== ANIMACIÓN BOUNCE ===== */
+@keyframes bounce {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 992px) {
+  .navbar-center {
+    position: static;
+    transform: none;
+    justify-content: center;
+    margin-top: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  #donate-button-container {
+    position: static;
+    margin-top: 0.5rem;
+  }
+
+  .navbar-right {
+    position: static;
+    margin-top: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

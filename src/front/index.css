@@ -1,0 +1,27 @@
+@font-face {
+  font-family: "Alagard";
+  src: url("https://res.cloudinary.com/dixwk4tan/raw/upload/v1759090743/Alagard_e8c9qc.woff2") format("woff2"),
+       url("https://res.cloudinary.com/dixwk4tan/raw/upload/v1759090754/Alagard_p9yjvd.woff") format("woff");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+body {
+  font-family: "Alagard", sans-serif;
+  color: #ffffff;
+}
+
+* {
+  font-family: "Alagard", sans-serif !important;
+  color: #ffffff !important;
+}
+
+
+.dropdown-menu .dropdown-item:hover,
+.dropdown-menu .dropdown-item:focus,
+.dropdown-menu .dropdown-item:active {
+  background-color: #ffc107 !important;
+  color: #ffffff !important;
+}
