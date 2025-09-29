@@ -12,7 +12,7 @@ let wordPool = {
 
 export async function loadWordsFromAPI() {
   try {
-    const perDifficulty = 30;
+    const perDifficulty = 90;
     for (let diff = 1; diff <= 3; diff++) {
       const words = await getRandomWords(diff, perDifficulty);
       wordPool[diff] = words.map((w) => w.word);
