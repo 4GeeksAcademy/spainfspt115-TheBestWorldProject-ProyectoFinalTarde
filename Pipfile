@@ -21,6 +21,7 @@ sqlalchemy = "*"
 flask-jwt-extended = "*"
 flask-bcrypt = "*"
 requests = "*"
+flask-cors = "*"
 tomli = "*"
 
 [requires]
