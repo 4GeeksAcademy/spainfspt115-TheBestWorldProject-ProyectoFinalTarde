@@ -1,39 +1,79 @@
 // Import necessary components from react-router-dom and other parts of the application.
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useGlobalReducer from "../hooks/useGlobalReducer";  // Custom hook for accessing the global state.
+import { useState } from "react";
 
 export const Demo = () => {
   // Access the global state and dispatch function using the useGlobalReducer hook.
   const { store, dispatch } = useGlobalReducer()
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (password !== confirmPassword) {
+      alert("Las contraseñas no coinciden")
+      return;
+    }
+
+  }
+
 
   return (
-    <div className="container">
-      <ul className="list-group">
-        {/* Map over the 'todos' array from the store and render each item as a list element */}
-        {store && store.todos?.map((item) => {
-          return (
-            <li
-              key={item.id}  // React key for list items.
-              className="list-group-item d-flex justify-content-between"
-              style={{ background: item.background }}> 
-              
-              {/* Link to the detail page of this todo. */}
-              <Link to={"/single/" + item.id}>Link to: {item.title} </Link>
-              
-              <p>Open file ./store.js to see the global store that contains and updates the list of colors</p>
-              
-              <button className="btn btn-success" 
-                onClick={() => dispatch({
-                  type: "add_task", 
-                  payload: { id: item.id, color: '#ffa500' }
-                })}>
-                Change Color
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-      <br />
+    <div>
+      <div className="container  mt-5">
+        <div className="card row shadow d-flex justify-content-center" style={{ width: "25rem" }}>
+          <div className="card-body">
+            <div className="card-title justify-content-center d-flex fs-1 border-bottom border-dark">Registrate acá</div>
+            <div className="card-body mt-5">
+              <form onSubmit={handleSubmit}>
+                <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
+                <input type="email"
+                  className="form-control"
+                  id="exampleFormControlInput1"
+                  placeholder="name@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required />
+                <label htmlFor="contraseña" className="form-label mt-2">Password</label>
+                <input type="password"
+                       className="form-control" 
+                       id="contraseña" 
+                       placeholder="********"
+                       value={password}
+                       onChange={(e) => setPassword(e.target.value)} 
+                       required />
+                <label htmlFor="confirmarContraseña" className="form-label mt-2">Confirm your password</label>
+                <input type="password" 
+                       className="form-control" 
+                       id="confirmarContraseña" 
+                       placeholder="********"
+                       value={confirmPassword}
+                       onChange={(e) => setConfirmPassword(e.target.value)} 
+                       required />
+                <div className="d-flex gap-2">
+                  <button className="btn btn-success mt-3" type="submit">Registrar</button>
+                  <Link to="/">
+                  <button className="btn btn-primary mt-3">Login</button></Link>
+                </div>
+
+
+
+              </form>
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+
+
+
+
+
 
       <Link to="/">
         <button className="btn btn-primary">Back home</button>

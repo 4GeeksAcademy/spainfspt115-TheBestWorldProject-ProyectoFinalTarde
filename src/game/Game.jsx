@@ -1,120 +1,92 @@
-import Phaser from "phaser";
 import React, { useEffect } from "react";
-import bgImg from "../front/assets/bg.png";
-import bgMusic from "../front/assets/bg.mp3";
+import Phaser from "phaser";
+import MenuScene from "./scenes/MenuScene";
+import GameScene from "./scenes/GameScene";
+import GameOverScene from "./scenes/GameOverScene";
+import SettingsScene from "./scenes/SettingsScene";
+import useGlobalReducer from "../front/hooks/useGlobalReducer.jsx";
+import { useNavigate } from "react-router-dom";
+import LoadingScene from "./scenes/LoadingScene.jsx";
 
-//Escena de juego
-export default function Game() {
-    useEffect(() => {
-        const game = new Phaser.Game({
-            type: Phaser.AUTO,
-            width: 800,
-            height: 600,
-            backgroundColor: "#222",
-            parent: "game-container",
-            scene: GameScene,
-            dom: { createContainer: true }
-        });
-        return () => game.destroy(true);
-    }, []);
+const defaultFont = '"Pixelify Sans", sans-serif';
+const origTextFactory = Phaser.GameObjects.GameObjectFactory.prototype.text;
 
-    return <div id="game-container" style={{ width: 800, height: 600, margin: "auto" }} />;
-}
+Phaser.GameObjects.GameObjectFactory.prototype.text = function(x, y, text, style = {}) {
+  if (!style.fontFamily && !style.font) {
+    style.fontFamily = defaultFont;
+    style.fontSize = style.fontSize || "24px";
+    style.color = style.color || "#ffffff";
+  }
+  return origTextFactory.call(this, x, y, text, style);
+};
 
-class GameScene extends Phaser.Scene {
-    constructor() {
-        super("scene-game");
+export const Game = () => {
 
-        this.words = ["resident", "fortnite", "bycarloss", "onichan", "itadori", "gojo", "repo", "programar", "fokin", "hola"];
-    }
-    //Imagen y musica
-    preload() {
-        this.load.image("bg", bgImg);
-        this.load.audio("bgMusic", bgMusic);
-    }
+  const { store } = useGlobalReducer();
+  
+  let userId = store?.user?.id_user;
+  
+  const navigate = useNavigate();
 
-    create() {
-        this.score = 0;
-        this.isPlaying = true;
+  useEffect(() => {
 
-        this.bgMusic = this.sound.add("bgMusic");
-        this.bgMusic.play();
+    const game = new Phaser.Game({
+      type: Phaser.AUTO,
+      backgroundColor: "#222",
+      parent: "game-container",
+      scene: [LoadingScene, MenuScene, SettingsScene, GameScene, GameOverScene],
+      dom: { createContainer: true },
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: window.innerWidth,
+        height: window.innerHeight,
+      },
+      physics: {
+        default: "arcade",
+        arcade: {
+          debug: true,
+        },
+      },
+      fps: {
+        target: 60,
+        forceSetTimeOut: true,
+      },
+      settings: {
+        bgMusicVolume: 1,
+        bgMusicLoop: true,
+      },
+    });
 
-        this.add.image(0, 0, "bg").setOrigin(0, 0);
-
-        this.textScore = this.add.text(this.sys.game.config.width - 120, 10, "Score:0", {
-            font: "25px Arial",
-            fill: "#000000",
-        });
-
-        this.textTime = this.add.text(10, 10, "Remaining Time:00", {
-            font: "25px Arial",
-            fill: "#ffffffff",
-        });
-
-        this.timedEvent = this.time.delayedCall(60000, this.gameOver, [], this);
-
-        const inputEl = document.createElement("input");
-        Object.assign(inputEl.style, {
-            padding: "8px 12px",
-            fontSize: "18px",
-            width: "360px",
-            borderRadius: "6px",
-            border: "2px solid rgba(255,255,255,0.15)",
-            background: "rgba(255,255,255,0.05)",
-            color: "#fff",
-            outline: "none"
-        });
-        this.domInput = this.add.dom(400, 520, inputEl).setOrigin(0.5);
-
-        inputEl.addEventListener("keydown", (e) => {
-            if (e.key === "Enter" && inputEl.value.trim() !== "") {
-                this.checkWord(inputEl.value.trim());
-                inputEl.value = "";
-            }
-        });
-
-        this.newWord();
-        inputEl.focus();
+    if (userId != undefined && userId != null) {
+      game.registry.set("userId", userId);
+    } else {
+      game.registry.set("userId", "pepe");
     }
 
-    update() {
-        this.remainingTime = this.timedEvent.getRemainingSeconds();
-        this.textTime.setText(`Remaining Time: ${Math.round(this.remainingTime)}`);
+    const resize = () => {
+      game.scale.resize(window.innerWidth, window.innerHeight);
+    
     }
 
-    newWord() {
-        this.currentWord = Phaser.Utils.Array.GetRandom(this.words);
-        if (this.wordText) this.wordText.destroy();
-        this.wordText = this.add.text(400, 300, this.currentWord, { fontSize: "48px", fill: "#aaa" }).setOrigin(0.5);
+    window.addEventListener("resize", resize);
+
+    game.registry.set("exitToProfile",  () => navigate("/profile"));
+
+    return () => {
+      window.removeEventListener("resize", resize);  
+      game.destroy(true);
+
     }
 
-    checkWord(word) {
-        if (!this.isPlaying) return;
+  }, []);
 
-        if (word.toLowerCase() === this.currentWord) {
-            this.score += 10;
-            this.textScore.setText("Score: " + this.score);
-            this.wordText.setStyle({ fill: "#0f0" });
-            this.time.delayedCall(200, () => this.newWord());
-        } else {
-            this.wordText.setTint(0xff0000);
-            this.time.delayedCall(300, () => this.wordText.clearTint());
-        }
-    }
-
-    gameOver() {
-        this.physics.pause();
-        this.add.text(this.sys.game.config.width / 2 - 100, this.sys.game.config.height / 2, "Game Over", {
-            font: "40px Arial",
-            fill: "#ff0000",
-        });
-
-        this.add.text(
-            this.sys.game.config.width / 2 - 100,
-            this.sys.game.config.height / 2 + 50,
-            `Score: ${this.score}`,
-            { font: "30px Arial", fill: "#000" }
-        );
-    }
+  return (
+    <div
+      className="container-fluid p-0 m-0 d-flex justify-content-center align-items-center overflow-hidden"
+      style={{ height: "100vh", width: "100vw" }}
+    >
+      <div id="game-container" className="w-100 h-100" />
+    </div>
+  );
 }
