@@ -19,6 +19,8 @@ export const Profile = () => {
   useEffect(() => {
     if (!userId) {
       const token = localStorage.getItem("token");
+      console.log(token + "el token");
+      
       if (!token) {
         if (store.isRegistered) dispatch({ type: "logout" });
         setShowModal(true);
