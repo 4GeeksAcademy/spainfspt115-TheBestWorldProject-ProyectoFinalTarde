@@ -29,6 +29,7 @@ export const Profile = () => {
             setDescription(user.description || "");
           })
           .catch(() => {
+            console.log("algo falla ---------");
             localStorage.removeItem("token");
             dispatch({ type: "logout" });
             setShowModal(true);
