@@ -1,112 +1,110 @@
 /* Overlay del modal */
 .confirmation-modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1050;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1050;
 }
 
 /* Card estilo neón */
 .confirmation-modal-card {
-    background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(6px);
-    border: 2px solid #590ead;
-    box-shadow: 0 0 12px #590ead, inset 0 0 8px #590ead;
-    color: #fff;
-    border-radius: 12px;
-    padding: 1.5rem 2rem;
-    min-width: 320px;
-    max-width: 90%;
-    text-align: center;
-    transition: all 0.3s ease-in-out;
-    animation: glowIn 1s ease-in-out;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(6px);
+  border: 2px solid #590ead;
+  box-shadow: 0 0 12px #590ead, inset 0 0 8px #590ead;
+  color: #fff;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+  min-width: 320px;
+  max-width: 90%;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  animation: glowIn 1s ease-in-out;
 }
 
 /* Hover efecto neón y movimiento */
 .confirmation-modal-card:hover {
-    box-shadow:
-        0 0 15px #590ead,
-        0 0 20px #ff0000,
-        0 0 25px #ffae00,
-        inset 0 0 10px #590ead;
-    transform: translateY(-3px);
+  box-shadow: 0 0 12px #590ead, 0 0 18px #8214ff, 0 0 24px #a0b1ff,
+    inset 0 0 10px #590ead;
+  transform: translateY(-3px);
 }
 
 /* Título del modal */
 .confirmation-modal-title {
-    margin-bottom: 1rem;
-    font-size: 1.2rem;
-    font-weight: 600;
-    text-shadow: 0 0 6px #590ead, 0 0 12px #ff0000, 0 0 16px #ffae00;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-shadow: 0 0 6px #590ead, 0 0 12px #ff0000, 0 0 16px #ffae00;
 }
 
 /* Mensaje del modal */
 .confirmation-modal-message {
-    margin-bottom: 1.5rem;
-    font-size: 0.98rem;
-    line-height: 1.4;
+  margin-bottom: 1.5rem;
+  font-size: 0.98rem;
+  line-height: 1.4;
 }
 
 /* Contenedor de botones */
 .confirmation-modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 0.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
 }
 
 /* Botón estilo neón */
 .confirmation-close-btn {
-    background: none;
-    border: none;
-    cursor: pointer;
-    display: inline-block;
-    position: relative;
-    color: #fff;
-    font-weight: bold;
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
-    text-shadow: 0 0 6px #590ead;
-    box-shadow: 0 0 6px #590ead;
-    border-radius: 6px;
-    transition: all 0.3s ease-in-out;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  position: relative;
+  color: #fff;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  text-shadow: 0 0 6px #590ead;
+  box-shadow: 0 0 6px #590ead;
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
 }
 
 .confirmation-close-btn::after {
-    content: "";
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    width: 0;
-    height: 2px;
-    background: #590ead;
-    box-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
-    transition: width 0.25s ease, left 0.25s ease;
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 0;
+  height: 2px;
+  background: #590ead;
+  box-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
+  transition: width 0.25s ease, left 0.25s ease;
 }
 
 .confirmation-close-btn:hover {
-    color: #ffae00 !important;
-    text-shadow: 0 0 8px #590ead, 0 0 12px #ff0000, 0 0 16px #ffae00;
-    box-shadow: 0 0 10px #590ead, 0 0 14px #ff0000, 0 0 18px #ffae00, inset 0 0 6px #590ead;
-    transform: translateY(-1px);
+  color: #ffae00 !important;
+  text-shadow: 0 0 8px #590ead, 0 0 12px #ff0000, 0 0 16px #ffae00;
+  box-shadow: 0 0 10px #590ead, 0 0 14px #ff0000, 0 0 18px #ffae00,
+    inset 0 0 6px #590ead;
+  transform: translateY(-1px);
 }
 
 .confirmation-close-btn:hover::after {
-    width: 100%;
-    left: 0;
+  width: 100%;
+  left: 0;
 }
 
 /* Animación glow */
 @keyframes glowIn {
-    from {
-        box-shadow: none;
-        opacity: 0;
-    }
+  from {
+    box-shadow: none;
+    opacity: 0;
+  }
 
-    to {
-        box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
-        opacity: 1;
-    }
+  to {
+    box-shadow: 0 0 15px #590ead, inset 0 0 10px #590ead;
+    opacity: 1;
+  }
 }

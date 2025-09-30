@@ -108,13 +108,11 @@ body {
 }
 
 .card-neon:hover {
-  box-shadow:
-    0 0 20px #aa00ff,
-    0 0 25px #ff0000,
-    0 0 30px #ffaa00,
-    inset 0 0 15px #aa00ff;
-  transform: translateY(-3px);
+  box-shadow: 0 0 15px #7a4dff, 0 0 20px #7a4dff, 0 0 25px #7a4dff,
+    inset 0 0 10px #7a4dff;
+  transform: translateY(-5px);
 }
+
 
 .card-body {
   display: flex;
@@ -156,9 +154,9 @@ body {
 
 .btn-play:hover {
   box-shadow:
-    0 0 15px #ff00ff,
-    0 0 20px #aa00ff,
-    0 0 25px #ffaa00;
+    0 0 12px #590ead,
+    0 0 18px #8214ff,
+    0 0 24px #a0b1ff;
   transform: translateY(-2px);
 }
 
