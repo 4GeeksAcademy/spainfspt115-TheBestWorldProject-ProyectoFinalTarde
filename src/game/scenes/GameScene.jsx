@@ -120,6 +120,24 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
+  updateMultiplier(success) {
+    if (success) {
+      this.comboCount++;
+      if (this.comboCount >= 10) this.multiplier = 10;
+      else if (this.comboCount >= 8) this.multiplier = 5;
+      else if (this.comboCount >= 5) this.multiplier = 3;
+      else if (this.comboCount >= 3) this.multiplier = 2;
+      else this.multiplier = 1;
+    } else {
+      this.comboCount = 0;
+      this.multiplier = 1;
+    }
+
+    if (this.hud?.updateMultiplier) {
+      this.hud.updateMultiplier(this.multiplier);
+    }
+  }
+
   //DEBUG
   logPoolsAndProbs() {
     try {
@@ -215,7 +233,7 @@ export default class GameScene extends Phaser.Scene {
       gigaChance: 0.002
     };
 
-    this.logPoolsAndProbs();
+    // this.logPoolsAndProbs();
 
     this.time.addEvent({
       delay: 15000,
@@ -230,7 +248,7 @@ export default class GameScene extends Phaser.Scene {
           this.enemySpawner.delay -= 100;
         }
 
-        this.logPoolsAndProbs();
+        // this.logPoolsAndProbs();
       }
     });
 

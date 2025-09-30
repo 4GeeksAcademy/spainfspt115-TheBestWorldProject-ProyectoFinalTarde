@@ -144,8 +144,10 @@ export function handleInput(event, scene) {
 
     if (hadErrors) {
       scene.stats.failedWords++;
+      scene.updateMultiplier(false);
     } else {
       scene.stats.correctWords++;
+      scene.updateMultiplier(true);
     }
 
     enemy.setData("hadErrors", false);
@@ -165,6 +167,8 @@ export function handleInput(event, scene) {
     } else {
       points = word.length;
     }
+
+    points = points * scene.multiplier;
 
     if (midLetter) floatingScore(scene, midLetter.x, midLetter.y, points);
 

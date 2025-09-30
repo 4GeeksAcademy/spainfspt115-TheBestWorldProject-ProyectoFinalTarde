@@ -4,6 +4,7 @@ import { animateScaleText } from "./Effects";
 
 export function createHUD(scene, maxLives = 3) {
   const width = scene.sys.game.config.width;
+  const MULTIPLIER_GAP = 56; // separación extra respecto al score
 
   // === VIDAS (corazones) ===
   const hearts = [];
@@ -28,16 +29,71 @@ export function createHUD(scene, maxLives = 3) {
     })
     .setOrigin(0, 0);
 
+  const rightOfScore = () => {
+    const b = textScore.getBounds();
+    return b.x + b.width;
+  };
+
+  // === MULTIPLIER ===
+  const textMultiplier = scene.add
+    .text(rightOfScore() + MULTIPLIER_GAP, textScore.y, "x1", {
+      fontSize: "28px",
+      fill: "#fff2cc",
+      stroke: "#000000",
+      strokeThickness: 4,
+    })
+    .setOrigin(0, 0)
+    .setVisible(false)
+    .setDepth(2000);
+
+  // === helpers color ===
+  function lerpHex(fromHex, toHex, t01) {
+    const from = Phaser.Display.Color.HexStringToColor(fromHex);
+    const to = Phaser.Display.Color.HexStringToColor(toHex);
+    const steps = 100;
+    const step = Math.round(Phaser.Math.Clamp(t01, 0, 1) * steps);
+    const c = Phaser.Display.Color.Interpolate.ColorWithColor(from, to, steps, step);
+    return Phaser.Display.Color.RGBToString(c.r, c.g, c.b, 255, "#");
+  }
+
+  function colorForMultiplier(m) {
+    const t = (Phaser.Math.Clamp(m, 2, 10) - 2) / (10 - 2);
+    return lerpHex("#fff2cc", "#ff0000", t);
+  }
+
+  // === SCORE ===
   function updateScore(score, animate = true) {
     textScore.setText("SCORE: " + (score ?? 0));
+
+    textMultiplier.x = rightOfScore() + MULTIPLIER_GAP;
+    textMultiplier.y = textScore.y;
+
     if (animate) animateScaleText(scene, textScore);
+  }
+
+  // === MULTIPLICADOR ===
+  function updateMultiplier(multiplier) {
+    if (multiplier <= 1) {
+      textMultiplier.setVisible(false);
+      return;
+    }
+
+    textMultiplier.setVisible(true);
+    textMultiplier.setText("x" + multiplier);
+
+    textMultiplier.x = rightOfScore() + MULTIPLIER_GAP;
+    textMultiplier.y = textScore.y;
+
+    textMultiplier.setStyle({ fill: colorForMultiplier(multiplier) });
+
+    animateScaleText(scene, textMultiplier);
   }
 
   // === PODERES ===
   const powerConfigs = {
-    fuego: { color: "#ff0000" }, // rojo
-    hielo: { color: "#00bfff" }, // azul
-    rayo: { color: "#ffff00" },  // amarillo
+    fuego: { color: "#ff0000" },
+    hielo: { color: "#00bfff" },
+    rayo:  { color: "#ffff00" },
   };
 
   const powers = {};
@@ -107,7 +163,6 @@ export function createHUD(scene, maxLives = 3) {
     const steps = duration;
     let elapsed = 0;
 
-    // empieza negro
     power.text.setColor("#000000");
 
     const timer = scene.time.addEvent({
@@ -116,7 +171,6 @@ export function createHUD(scene, maxLives = 3) {
       callback: () => {
         elapsed++;
 
-        // interpolamos color negro → color base
         const base = power.color;
         const col = Phaser.Display.Color.Interpolate.ColorWithColor(
           Phaser.Display.Color.HexStringToColor("#000000"),
@@ -138,5 +192,15 @@ export function createHUD(scene, maxLives = 3) {
     });
   }
 
-  return { hearts, textScore, powers, updateScore, fillHearts, loseLife, setPowerCooldown };
+  return {
+    hearts,
+    textScore,
+    powers,
+    updateScore,
+    fillHearts,
+    loseLife,
+    setPowerCooldown,
+    textMultiplier,
+    updateMultiplier,
+  };
 }
