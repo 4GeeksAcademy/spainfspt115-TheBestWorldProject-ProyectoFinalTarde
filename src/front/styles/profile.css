@@ -9,10 +9,10 @@ body {
 .profile-container {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr; /* Izquierda - Centro - Derecha */
-  gap: 80px; /* AUMENTADO: Más espacio entre las columnas principales */
+  gap: 80px;
   padding: 40px;
   box-sizing: border-box;
-  align-items: stretch; /* Estira columnas al mismo alto */
+  align-items: stretch;
 }
 
 /* COLUMNAS */
@@ -21,14 +21,14 @@ body {
 .profile-right {
   display: flex;
   flex-direction: column;
-  gap: 30px; /* AUMENTADO: Más espacio entre las tarjetas en las columnas */
+  gap: 30px;
 }
 
 /* TARJETAS PRINCIPALES OCUPAN TODO EL ALTO */
 .profile-left > .profile-card,
 .center-column-wrapper > .profile-card,
 .profile-right > .profile-card {
-  flex: 1; /* Ocupa todo el espacio disponible */
+  flex: 1;
   display: flex;
   flex-direction: column;
 }
@@ -59,13 +59,11 @@ body {
   flex-direction: column;
 }
 
-/* NUEVA REGLA PARA EL TÍTULO DE ESTADÍSTICAS */
 .profile-card-stats h4 {
-  color: #c091ff; /* Color morado */
+  color: #c091ff;
   text-shadow: 0 0 5px #c091ff, 0 0 10px #c091ff;
 }
 
-/* NUEVA REGLA PARA LAS PALABRAS DE LAS ESTADÍSTICAS */
 .profile-card-stats p {
   font-size: 1.1rem;
 }
@@ -87,9 +85,9 @@ body {
   border-radius: 15px;
   padding: 25px;
   transition: all 0.3s ease-in-out;
-  display: flex; /* Asegura que la tarjeta es un contenedor flexible */
-  flex-direction: column; /* Asegura que los elementos se apilen verticalmente */
-  gap: 30px; /* AÑADIDO: Más espacio entre los elementos dentro de la tarjeta */
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
 }
 
 .profile-card-profile:hover {
@@ -120,7 +118,7 @@ body {
 }
 
 .profile-btn {
-  height:40px ;
+  height: 40px;
   flex: 1;
   padding: 1.2rem;
   border-radius: 6px;
@@ -136,14 +134,15 @@ body {
 
 .profile-btn:hover {
   background-color: rgba(132, 1, 255, 0.274);
-  box-shadow: 0 0 15px #590ead, 0 0 20px #ff0000, 0 0 25px #ffae00,
+  box-shadow:  0 0 15px #7a4dff,
+        0 0 20px #7a4dff,
+        0 0 25px #7a4dff,
     inset 0 0 10px #590ead;
   transform: translateY(-2px);
 }
 
-/* NUEVA REGLA PARA EL TÍTULO DEL HISTORIAL */
 .profile-card-history h4 {
-  color: #c091ff; /* Color morado */
+  color: #c091ff;
   text-shadow: 0 0 5px #c091ff, 0 0 10px #c091ff;
 }
 
@@ -181,7 +180,7 @@ body {
   text-shadow: 0 0 8px #590ead, 0 0 16px #590ead;
 }
 
-/* NUEVAS REGLAS PARA EL DISEÑO DE DOS COLUMNAS */
+/* GRID DETALLES PERFIL */
 .profile-details-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -195,7 +194,7 @@ body {
   margin: 0;
 }
 
-/* VENTANA VACÍA DEBAJO DEL PERFIL */
+/* VENTANA VACÍA */
 .profile-center-below {
   flex: 1;
   width: 100%;
@@ -214,7 +213,6 @@ body {
   width: 100%;
 }
 
-
 .profile-action-buttons {
   display: flex;
   flex-direction: row;
@@ -232,6 +230,7 @@ body {
   border: 1px solid #7700ff;
   box-shadow: 0 0 15px #8c00ff;
 }
+
 .profile-action-buttons .profile-btn:hover {
   background-color: rgba(123, 61, 240, 0.274);
   box-shadow: 0 0 15px #1f112e, 0 0 20px #00ccff, 0 0 25px #0084ff,
@@ -290,7 +289,7 @@ textarea {
   justify-content: flex-end;
 }
 
-/* HISTORIAL DE PARTIDAS */
+/* HISTORIAL */
 .profile-right {
   display: flex;
   flex-direction: column;
@@ -307,25 +306,7 @@ textarea {
   border-bottom: 1px solid #590ead;
 }
 
-/* RESPONSIVE */
-@media (max-width: 1024px) {
-  .profile-container {
-    grid-template-columns: 1fr;
-    gap: 30px;
-  }
-
-  .center-column-wrapper,
-  .profile-left,
-  .profile-right {
-    align-items: center;
-  }
-
-  .profile-card {
-    max-width: 90%;
-  }
-}
-
-/* text area y descripcion */
+/* TEXT AREA Y DESCRIPCION */
 .description-section {
   width: 100%;
   margin-top: 20px;
@@ -335,7 +316,6 @@ textarea {
 .profile-description {
   white-space: pre-wrap;
   word-wrap: break-word;
-
   background-color: rgba(0, 0, 0, 0.3);
   padding: 10px;
   border-radius: 8px;
@@ -357,3 +337,95 @@ textarea {
   margin-top: 10px;
 }
 
+/* Tablets */
+@media (max-width: 1024px) {
+  .profile-container {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding: 20px;
+  }
+
+  .center-column-wrapper,
+  .profile-left,
+  .profile-right {
+    align-items: center;
+  }
+
+  .profile-card {
+    max-width: 95%;
+  }
+
+  .profile-action-buttons {
+    gap: 40px;
+  }
+
+  .profile-username {
+    font-size: 2rem;
+  }
+}
+
+/* Móviles */
+@media (max-width: 600px) {
+  .profile-container {
+    padding: 15px;
+    gap: 20px;
+  }
+
+  .profile-username {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+
+  .profile-header-top {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .profile-avatar img {
+    width: 70px;
+    height: 70px;
+  }
+
+  .profile-details-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .profile-action-buttons {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .profile-action-buttons .profile-btn {
+    width: 100%;
+    max-width: 250px;
+    font-size: 16px;
+    height: 45px;
+  }
+
+  .profile-card {
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .profile-card-stats,
+  .profile-card-profile,
+  .profile-card-history {
+    height: auto;
+    max-height: none;
+  }
+
+  .profile-btn {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+
+  .modal-card {
+    padding: 15px;
+  }
+
+  .modal-title {
+    font-size: 1.2rem;
+  }
+}

@@ -42,84 +42,96 @@ export const Navbar = () => {
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Links centrados */}
-        <ul className="navbar-nav gap-4 navbar-center d-none d-lg-flex">
-          <li className="nav-item">
-            <Link
-              to="/"
-              className={`nav-link fw-bold ${location.pathname === "/" ? "active-link" : ""}`}
-            >
-              Inicio
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              to="/about"
-              className={`nav-link fw-bold ${location.pathname === "/about" ? "active-link" : ""}`}
-            >
-              Info
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              to="/profile"
-              className={`nav-link fw-bold ${location.pathname === "/profile" ? "active-link" : ""}`}
-            >
-              Perfil
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              to="/ranking"
-              className={`nav-link fw-bold ${location.pathname === "/ranking" ? "active-link" : ""}`}
-            >
-              Ranking
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link
-              to="/donations"
-              className={`nav-link fw-bold ${location.pathname === "/donations" ? "active-link" : ""}`}
-            >
-              Donaciones
-            </Link>
-          </li>
-        </ul>
-
-        {/* LogIn / SignUp */}
-        <div className="d-none d-lg-flex ms-auto align-items-center gap-3">
-          {!store?.isRegistered ? (
-            <>
+        {/* Menú */}
+        <div className="collapse navbar-collapse" id="navbarNav">
+          {/* Links centrales */}
+          <ul className="navbar-nav gap-4 navbar-center">
+            <li className="nav-item">
               <Link
-                to="/login"
-                className={`nav-link fw-bold ${location.pathname === "/login" ? "active-link" : ""}`}
+                to="/"
+                className={`nav-link fw-bold ${
+                  location.pathname === "/" ? "active-link" : ""
+                }`}
               >
-                Iniciar Sesión
+                Inicio
               </Link>
+            </li>
+            <li className="nav-item">
               <Link
-                to="/signup"
-                className={`nav-link fw-bold ${location.pathname === "/signup" ? "active-link" : ""}`}
+                to="/about"
+                className={`nav-link fw-bold ${
+                  location.pathname === "/about" ? "active-link" : ""
+                }`}
               >
-                Registro
+                Info
               </Link>
-            </>
-          ) : (
-            <div style={{ width: "160px" }} />
-          )}
-        </div>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="/profile"
+                className={`nav-link fw-bold ${
+                  location.pathname === "/profile" ? "active-link" : ""
+                }`}
+              >
+                Perfil
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="/ranking"
+                className={`nav-link fw-bold ${
+                  location.pathname === "/ranking" ? "active-link" : ""
+                }`}
+              >
+                Ranking
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                to="/donations"
+                className={`nav-link fw-bold ${
+                  location.pathname === "/donations" ? "active-link" : ""
+                }`}
+              >
+                Donaciones
+              </Link>
+            </li>
+          </ul>
 
-        <div className="logout-button">
-          {store.isRegistered && (
-            <div className="d-flex align-items-center">
-              <button className="nav-link" onClick={handleLogout}>
+          {/* Botones a la derecha */}
+          <div className="navbar-right ms-auto">
+            {!store?.isRegistered ? (
+              <>
+                <Link
+                  to="/login"
+                  className={`nav-link fw-bold ${
+                    location.pathname === "/login" ? "active-link" : ""
+                  }`}
+                >
+                  Iniciar Sesión
+                </Link>
+                <Link
+                  to="/signup"
+                  className={`nav-link fw-bold ${
+                    location.pathname === "/signup" ? "active-link" : ""
+                  }`}
+                >
+                  Registro
+                </Link>
+              </>
+            ) : (
+              <button className="nav-link fw-bold" onClick={handleLogout}>
                 Cerrar Sesión
               </button>
-            </div>
-          )}
+            )}
+          </div>
         </div>
 
         {/* Modal de logout */}
