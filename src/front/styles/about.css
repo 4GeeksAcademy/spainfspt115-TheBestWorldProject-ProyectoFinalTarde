@@ -1,6 +1,3 @@
-/* =========================
-   Estilos generales About
-   ========================= */
 .about-container {
   position: relative;
   min-height: 70vh;
@@ -111,16 +108,6 @@
     opacity: 1;
   }
 }
-
-@media (max-width: 768px) {
-  .about-card {
-    padding: 1.5rem;
-  }
-}
-
-/* =========================
-   Efectos individuales por desarrollador
-   ========================= */
 
 /* Carlos - efecto neón + zoom */
 .dev-carlos {
@@ -251,11 +238,7 @@
   }
 }
 
-/* =========================
-   Tamaño de fuente y iconos
-   ========================= */
-
-/* Aumentar tamaño de los nombres de desarrolladores */
+/* Aumentar tamaño de los nombres */
 .about-card li {
   font-size: 1.3rem;
   font-weight: 600;
@@ -273,4 +256,55 @@
   font-size: 1.2rem;
   margin-right: 0.5rem;
   vertical-align: middle;
+}
+
+/* Tablets */
+@media (max-width: 992px) {
+  .about-container {
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+
+  .about-card {
+    max-width: 90%;
+    padding: 1.2rem;
+  }
+
+  .about-card h1 {
+    font-size: 2rem;
+  }
+
+  .about-card li {
+    font-size: 1.1rem;
+  }
+}
+
+/* Móviles */
+@media (max-width: 600px) {
+  .about-container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .about-card {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .about-card h1 {
+    font-size: 1.6rem;
+  }
+
+  .about-card h3 {
+    font-size: 1.2rem;
+  }
+
+  .about-card li {
+    font-size: 1rem;
+  }
+
+  .about-card .btn {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
 }

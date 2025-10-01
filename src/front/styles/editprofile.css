@@ -6,7 +6,6 @@
     justify-content: center;
     align-items: center;
     padding: 0;
-    
 }
 
 /* Card estilo neón */
@@ -177,7 +176,6 @@
         box-shadow: none;
         opacity: 0;
     }
-
     to {
         box-shadow: 0 0 12px #590ead, inset 0 0 8px #590ead;
         opacity: 1;
@@ -189,28 +187,84 @@
         transform: translateY(-15px);
         opacity: 0;
     }
-
     to {
         transform: translateY(0);
         opacity: 1;
     }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Tablets */
+@media (max-width: 992px) {
+    .edit-card {
+        padding: 1rem;
+        width: 95%;
+    }
+
+    .edit-card h2 {
+        font-size: 1.1rem;
+    }
+
+    .avatar-selection img {
+        width: 45px;
+        height: 45px;
+    }
+
+    .edit-card .form-control,
+    .edit-card .form-select {
+        font-size: 0.85rem;
+    }
+}
+
+/* Móviles */
+@media (max-width: 600px) {
     .edit-container {
         height: auto;
-        padding: 0;
-        /* eliminado padding sobrante */
+        padding: 1rem 0;
     }
 
     .edit-card {
         padding: 0.8rem;
-        width: 95%;
+        width: 100%;
+    }
+
+    .edit-card h2 {
+        font-size: 1rem;
+    }
+
+    .avatar-selection {
+        gap: 4px;
     }
 
     .avatar-selection img {
-        width: 40px;
-        height: 40px;
+        width: 38px;
+        height: 38px;
+    }
+
+    .btn,
+    .profile-btn {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.5rem;
+    }
+}
+
+/* Extra pequeño */
+@media (max-width: 400px) {
+    .edit-card {
+        padding: 0.6rem;
+    }
+
+    .edit-card h2 {
+        font-size: 0.9rem;
+    }
+
+    .avatar-selection img {
+        width: 34px;
+        height: 34px;
+    }
+
+    .edit-card .form-control,
+    .edit-card .form-select {
+        font-size: 0.75rem;
+        padding: 0.25rem 0.4rem;
     }
 }
