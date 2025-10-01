@@ -37,7 +37,9 @@
 
 #logo-button img:hover {
   transform: scale(1.05);
-  box-shadow: 0 0 15px #ffff00, 0 0 20px #ff8c00, 0 0 25px #ffe135;
+  box-shadow: 0 0 15px #7a4dff,
+        0 0 20px #7a4dff,
+        0 0 25px #7a4dff;
 }
 
 /* ===== LINKS ===== */

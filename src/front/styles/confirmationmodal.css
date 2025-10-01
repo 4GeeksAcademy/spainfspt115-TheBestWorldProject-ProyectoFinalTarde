@@ -86,7 +86,9 @@
 .confirmation-close-btn:hover {
   color: #ffae00 !important;
   text-shadow: 0 0 8px #590ead, 0 0 12px #ff0000, 0 0 16px #ffae00;
-  box-shadow: 0 0 10px #590ead, 0 0 14px #ff0000, 0 0 18px #ffae00,
+ box-shadow: 0 0 15px #7a4dff,
+        0 0 20px #7a4dff,
+        0 0 25px #7a4dff,
     inset 0 0 6px #590ead;
   transform: translateY(-1px);
 }
