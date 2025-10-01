@@ -58,9 +58,9 @@
 /* Hover multicolor */
 .card-neon:hover {
     box-shadow:
-        0 0 15px #590ead,
-        0 0 20px #ff0000,
-        0 0 25px #ffae00,
+        0 0 15px #7a4dff
+        0 0 20px #7a4dff,
+        0 0 25px #7a4dff,
         inset 0 0 10px #590ead;
     transform: translateY(-3px);
 }
@@ -80,9 +80,9 @@
 
 .card-neon input:hover {
     box-shadow:
-        0 0 8px #590ead,
-        0 0 12px #ff0000,
-        0 0 16px #ffae00;
+        0 0 15px #7a4dff
+        0 0 20px #7a4dff,
+        0 0 25px #7a4dff,
 }
 
 /* Botón dentro de card */
@@ -102,9 +102,9 @@
 
 .card-neon button:hover {
     box-shadow:
-        0 0 15px #590ead,
-        0 0 20px #ff0000,
-        0 0 25px #ffae00,
+        0 0 15px #7a4dff
+        0 0 20px #7a4dff,
+        0 0 25px #7a4dff,
         inset 0 0 10px #590ead;
     transform: translateY(-2px);
 }
@@ -123,9 +123,9 @@
 
 .card-neon a:hover {
     text-shadow:
-        0 0 6px #590ead,
-        0 0 12px #ff0000,
-        0 0 16px #ffae00;
+        0 0 15px #7a4dff
+        0 0 20px #7a4dff,
+        0 0 25px #7a4dff,
 }
 
 /* Error */

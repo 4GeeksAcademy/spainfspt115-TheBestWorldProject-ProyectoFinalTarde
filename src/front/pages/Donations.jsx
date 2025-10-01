@@ -32,7 +32,7 @@ export const Donations = () => {
             url: "https://www.paypal.com/donate/?hosted_button_id=6YDTSL4RFEXKQ"
         },
         {
-            src: "https://res.cloudinary.com/dixwk4tan/image/upload/v1758889456/Moneda2_snl8yh.png",
+            src: "https://res.cloudinary.com/dcau19bj1/image/upload/v1759340046/Moneda_chica_vyn3lk.png",
             url: "https://gofund.me/05f63abdf"
         }
     ];
