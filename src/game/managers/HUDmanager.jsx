@@ -140,16 +140,21 @@ export function createHUD(scene, maxLives = 3) {
   }
 
   function loseLife(livesLeft, onEmpty) {
+    if (!createHUD._emptyAlreadyNotified) createHUD._emptyAlreadyNotified = false;
+
     if (hearts[livesLeft]) {
       const heart = hearts[livesLeft];
       heart.stop();
       heart.play("heart_break");
       if (livesLeft === 1) playFx(scene, "last_live_fx");
+
+      if (livesLeft === 0 && !createHUD._emptyAlreadyNotified) {
+        createHUD._emptyAlreadyNotified = true;
+        scene.time.delayedCall(0, () => { try { onEmpty?.(); } catch (e) {} });
+      }
+
       heart.once(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
         heart.setFrame(HEART_FRAMES.EMPTY);
-        if (livesLeft === 0 && typeof onEmpty === "function") {
-          onEmpty();
-        }
       });
     }
   }

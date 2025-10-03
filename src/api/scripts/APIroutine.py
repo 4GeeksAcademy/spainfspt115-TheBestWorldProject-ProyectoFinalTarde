@@ -3,7 +3,7 @@ import requests
 import os
 
 API_EXTERNAL = "https://rae-api.com/api/random/"
-API_BACKEND = "https://sample-service-name-c0mi.onrender.com/api/words"
+API_BACKEND = "https://sample-service-name-hbls.onrender.com/api/words"
 
 def loop():
     while True:
