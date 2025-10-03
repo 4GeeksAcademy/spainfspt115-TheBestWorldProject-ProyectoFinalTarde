@@ -10,10 +10,11 @@ export default class MenuScene extends Phaser.Scene {
   }
 
   create() {
-    // BACKGROUND
+    const gSound = this.sound.get("game_song");
+    if (gSound && gSound.isPlaying) gSound.stop();
+
     createMenuBackground(this);
 
-    // MUSICA
     let music = this.sound.get("menu_song");
     if (!music) {
       music = this.sound.add("menu_song", {
@@ -21,11 +22,9 @@ export default class MenuScene extends Phaser.Scene {
         volume: GameSettings.audio.global.volume * GameSettings.audio.music.volume,
       });
     }
-
     if (!music.isPlaying && GameSettings.audio.music.on && GameSettings.audio.global.on) {
       music.play();
     }
-
     music.setVolume(GameSettings.audio.global.volume * GameSettings.audio.music.volume);
     music.setMute(!(GameSettings.audio.music.on && GameSettings.audio.global.on));
 

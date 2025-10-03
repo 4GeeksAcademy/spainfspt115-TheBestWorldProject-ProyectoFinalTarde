@@ -13,9 +13,15 @@ import { GameSettings } from "../managers/GameSettings";
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
+    this._gameOverStarted = false;
   }
 
   async create() {
+    //MUSIC MANAGER
+    const menuMusic = this.sound.get("menu_song");
+    if (menuMusic && menuMusic.isPlaying) {
+      menuMusic.stop();
+    }
 
     // Game Stats
     this.stats = {
@@ -199,6 +205,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   async startGame() {
+    this._gameOverStarted = false;
     this.isPlaying = true;
 
     // --- detener musica de menu ---
@@ -298,7 +305,30 @@ export default class GameScene extends Phaser.Scene {
   }
 
   async gameOver() {
-    
+    if (this._gameOverStarted) return;
+    this._gameOverStarted = true;
+    this.isPlaying = false;
+
+    this.input.keyboard?.removeAllListeners?.();
+    this.tweens.killAll();
+    this.time.removeAllEvents();
+
+    if (this.enemySpawner) {
+      this.enemySpawner.remove?.(false);
+      this.enemySpawner.paused = true;
+    }
+    this.enemies?.getChildren?.().forEach(enemy => {
+      if (!enemy) return;
+      if (enemy.body) {
+        enemy.body.enable = false;
+        enemy.body.setVelocity(0, 0);
+      }
+      enemy.anims?.stop();
+    });
+
+    this.sound.stopByKey?.("game_song");
+    this.sound.stopAll();
+
     const user = this.registry.get("userId");
     
     if (user != "pepe") {
@@ -328,30 +358,9 @@ export default class GameScene extends Phaser.Scene {
       await saveGame(payload).catch(err => console.error("Error al guardar datos de la partida", err));
     }
 
-    if (!this.isPlaying) return;
-    this.isPlaying = false;
-
-    if (this.keyListener) {
-      this.input.keyboard.removeListener("keydown", this.keyListener);
-      this.keyListener = null;
-    }
-
-    if (this.enemySpawner) {
-      this.enemySpawner.remove(false);
-      this.enemySpawner = null;
-    }
-
-    this.enemies.getChildren().forEach(enemy => {
-      if (enemy.body) {
-        enemy.body.enable = false;
-        enemy.body.stop?.();
-      }
-      enemy.anims?.stop();
-    });
-
     this.activeEnemy = null;
-    this.enemies.clear(true, true);
-    this.projectiles.clear(true, true);
+    this.enemies?.clear?.(true, true);
+    this.projectiles?.clear?.(true, true);
 
     clearWordPool();
 
