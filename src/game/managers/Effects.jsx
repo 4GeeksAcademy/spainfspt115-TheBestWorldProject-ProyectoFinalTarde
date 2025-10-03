@@ -68,7 +68,7 @@ export function explodeWord(scene, wordGroup) {
       x: letter.x + dx,
       y: letter.y + dy,
       alpha: 0,
-      scale: 0,
+      scale: 2,
       angle: Phaser.Math.Between(-180, 180),
       duration: 500,
       ease: "Power1",
