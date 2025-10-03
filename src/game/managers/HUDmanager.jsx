@@ -4,7 +4,7 @@ import { animateScaleText } from "./Effects";
 
 export function createHUD(scene, maxLives = 3) {
   const width = scene.sys.game.config.width;
-  const MULTIPLIER_GAP = 56; // separación extra respecto al score
+  const MULTIPLIER_GAP = 60;
 
   // === VIDAS (corazones) ===
   const hearts = [];

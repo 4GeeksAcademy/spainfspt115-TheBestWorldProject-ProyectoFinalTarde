@@ -11,7 +11,7 @@ export function shakeLetter(scene, letter) {
   // tweenear la propiedad 'shakeOffset' del objeto letter
   scene.tweens.add({
     targets: letter,
-    shakeOffset: 8,    // desplazamiento horizontal
+    shakeOffset: 8,
     duration: 80,
     yoyo: true,
     repeat: 2,
@@ -115,7 +115,7 @@ export function animateScaleText(scene, target) {
 
   target.setScale(0).setAlpha(0);
 
-  // Animacion de aparición
+  // Animacion de aparicion
   scene.tweens.add({
     targets: target,
     scale: { from: 0, to: 1.2 },

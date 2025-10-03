@@ -159,7 +159,7 @@ export function handleInput(event, scene) {
 
     const midLetter = letters[Math.floor(letters.length / 2)];
 
-    // efecto de explosión
+    // efecto de explosion
     enemy.setData("__wordExploding", true);
     explodeWord(scene, letters);
 
@@ -247,7 +247,6 @@ function renderPowerWord(scene) {
       if (power.text) {
         power.text.setText(label);
         power.text.setAlpha(1);
-        // NO tocamos color: HUDmanager lo actualiza con el cooldown
       }
       return;
     }
@@ -270,7 +269,7 @@ function renderPowerWord(scene) {
     const typedLen = Math.min(clean.length + 1, power.letters.length);
     power.letters.forEach((letter, i) => {
       if (i < typedLen) {
-        letter.setColor("#00ff00"); // verde al escribir
+        letter.setColor("#00ff00");
       } else {
         letter.setColor(baseHex);
       }

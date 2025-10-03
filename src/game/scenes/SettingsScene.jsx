@@ -13,9 +13,13 @@ export default class SettingsScene extends Phaser.Scene {
     const { width, height } = this.sys.game.config;
     const centerX = width / 2;
 
-    this.add.text(centerX, height * 0.05, "Ajustes del juego", {
-      fontSize: "42px",
-      fill: "#11e0e7ff"
+    // --- titulo mejorado ---
+    this.add.text(centerX, height * 0.05, "⚙ Ajustes del juego", {
+      fontSize: "46px",
+      fontStyle: "bold",
+      color: "#FFD700",
+      stroke: "#000",
+      strokeThickness: 6
     }).setOrigin(0.5);
 
     // --- Audio ---
@@ -28,7 +32,7 @@ export default class SettingsScene extends Phaser.Scene {
     audioOptions.forEach(opt => {
       this.add.text(centerX - 155, height * opt.y, opt.name, {
         fontSize: "26px",
-        fill: "#fff"
+        color: "#fff"
       }).setOrigin(0.5);
 
       this.createVolumeBar(centerX - 90, height * opt.y,
@@ -40,68 +44,82 @@ export default class SettingsScene extends Phaser.Scene {
 
       const toggle = this.add.text(centerX + 190, height * opt.y,
         GameSettings.audio[opt.key].on ? "ON" : "OFF", {
-          fontSize: "20px",
-          fill: GameSettings.audio[opt.key].on ? "#0f0" : "#f00"
+          fontSize: "22px",
+          fontStyle: "bold",
+          color: GameSettings.audio[opt.key].on ? "#0f0" : "#f00",
+          stroke: "#000",
+          strokeThickness: 3
         }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
       toggle.on("pointerdown", () => {
         GameSettings.audio[opt.key].on = !GameSettings.audio[opt.key].on;
         toggle.setText(GameSettings.audio[opt.key].on ? "ON" : "OFF")
-          .setStyle({ fill: GameSettings.audio[opt.key].on ? "#0f0" : "#f00" });
+          .setStyle({ color: GameSettings.audio[opt.key].on ? "#0f0" : "#f00" });
         this.updateAllVolumes();
       });
     });
 
     // --- Accesibilidad ---
-    this.add.text(centerX, height * 0.50, "---Accesibilidad---", {
-      fontSize: "28px",
-      fill: "#ffffffff"
+    this.add.text(centerX, height * 0.50, "--- Accesibilidad ---", {
+      fontSize: "30px",
+      color: "#FFD700",
+      stroke: "#000",
+      strokeThickness: 4
     }).setOrigin(0.5);
 
     // Flash
     this.add.text(centerX - 120, height * 0.58, "Flash efectos:", {
       fontSize: "22px",
-      fill: "#fff"
+      color: "#fff"
     }).setOrigin(0.5);
 
     const flashToggle = this.add.text(centerX + 120, height * 0.58,
       GameSettings.accessibility.flash ? "ON" : "OFF", {
-        fontSize: "20px",
-        fill: GameSettings.accessibility.flash ? "#0f0" : "#f00"
-      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        fontSize: "22px",
+        fontStyle: "bold",
+        color: GameSettings.accessibility.flash ? "#0f0" : "#f00",
+        stroke: "#000",
+        strokeThickness: 3
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
     flashToggle.on("pointerdown", () => {
       GameSettings.accessibility.flash = !GameSettings.accessibility.flash;
       flashToggle.setText(GameSettings.accessibility.flash ? "ON" : "OFF")
-        .setStyle({ fill: GameSettings.accessibility.flash ? "#0f0" : "#f00" });
+        .setStyle({ color: GameSettings.accessibility.flash ? "#0f0" : "#f00" });
     });
 
     // Shake
     this.add.text(centerX - 120, height * 0.66, "Shake efectos:", {
       fontSize: "22px",
-      fill: "#fff"
+      color: "#fff"
     }).setOrigin(0.5);
 
     const shakeToggle = this.add.text(centerX + 120, height * 0.66,
       GameSettings.accessibility.shake ? "ON" : "OFF", {
-        fontSize: "20px",
-        fill: GameSettings.accessibility.shake ? "#0f0" : "#f00"
-      }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+        fontSize: "22px",
+        fontStyle: "bold",
+        color: GameSettings.accessibility.shake ? "#0f0" : "#f00",
+        stroke: "#000",
+        strokeThickness: 3
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
 
     shakeToggle.on("pointerdown", () => {
       GameSettings.accessibility.shake = !GameSettings.accessibility.shake;
       shakeToggle.setText(GameSettings.accessibility.shake ? "ON" : "OFF")
-        .setStyle({ fill: GameSettings.accessibility.shake ? "#0f0" : "#f00" });
+        .setStyle({ color: GameSettings.accessibility.shake ? "#0f0" : "#f00" });
     });
 
     // Boton volver
-    this.add.text(centerX, height * 0.85, "Volver al menú", {
-      fontSize: "26px",
-      fill: "#ffffffff"
-    }).setOrigin(0.5).setInteractive({ useHandCursor: true })
-      .on("pointerdown", () => this.scene.start("MenuScene"))
-      .on("pointerover", function () { this.setStyle({ fill: "#ff0" }); })
-      .on("pointerout", function () { this.setStyle({ fill: "#11e0e7ff" }); });
+    const backBtn = this.add.text(centerX, height * 0.85, "⬅ Volver al menú", {
+      fontSize: "28px",
+      color: "#fff",
+      stroke: "#FFD700",
+      strokeThickness: 3
+    }).setOrigin(0.5).setInteractive({ useHandCursor: true });
+
+    backBtn.on("pointerover", () => backBtn.setStyle({ color: "#FFD700" }));
+    backBtn.on("pointerout", () => backBtn.setStyle({ color: "#fff" }));
+    backBtn.on("pointerdown", () => this.scene.start("MenuScene"));
   }
 
   createVolumeBar(x, y, initialValue, callback) {
@@ -109,7 +127,7 @@ export default class SettingsScene extends Phaser.Scene {
     const barHeight = 5;
 
     const barBg = this.add.rectangle(x, y, barWidth, barHeight, 0x555555).setOrigin(0, 0.5);
-    const barFill = this.add.rectangle(x, y, barWidth * initialValue, barHeight, 0x00ff00).setOrigin(0, 0.5);
+    const barFill = this.add.rectangle(x, y, barWidth * initialValue, barHeight, 0xFFD700).setOrigin(0, 0.5);
     const handle = this.add.circle(x + barWidth * initialValue, y, 8, 0xffffff).setInteractive({ draggable: true });
 
     this.input.setDraggable(handle);
