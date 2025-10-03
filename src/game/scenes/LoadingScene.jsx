@@ -312,10 +312,8 @@ export default class LoadingScene extends Phaser.Scene {
         this.time.delayedCall(remaining, () => {
             this.time.delayedCall(tipDuration, () => {
                 this.tipTimer.remove();
-                this.cameras.main.fadeOut(500, 0, 0, 0);
-                this.cameras.main.once("camerafadeoutcomplete", () => {
-                    this.scene.start(this.nextScene, this.nextData);
-                });
+                this.cameras.main.fadeOut(0, 0, 0, 0);
+                this.scene.start(this.nextScene, this.nextData);
             });
         });
     }

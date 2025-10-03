@@ -36,9 +36,6 @@ export default class GameScene extends Phaser.Scene {
     this.width = this.sys.game.config.width;
     this.height = this.sys.game.config.height;
 
-    // === CARGA DE PALABRAS ===
-    await loadWordsFromAPI();
-
     // === AJUSTES REGISTRO ===
     const showScore = this.registry.get("showScore") ?? true;
 
@@ -76,6 +73,12 @@ export default class GameScene extends Phaser.Scene {
       torchMin: 2,
       torchMax: 12,
     });
+
+    const pool = getWordPool?.() || {};
+    const needsWords = !(pool[1]?.length || pool[2]?.length || pool[3]?.length);
+    if (needsWords) {
+      await loadWordsFromAPI();
+    }
 
     // contador inicial
     this.startCountdown();
