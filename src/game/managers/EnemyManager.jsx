@@ -152,6 +152,9 @@ export function killEnemy(enemy, scene) {
   enemy.setData("dying", true);
   enemy.setData("__inputDead", true);
 
+  const ring = enemy.getData("__highlight");
+  if (ring) { ring.destroy(); enemy.setData("__highlight", null); }
+
   const type = enemy.getData("type");
   const dir = enemy.getData("direction");
   const key = `${type}_death_${dir}`;
@@ -175,6 +178,9 @@ export function enemyAttack(enemy, scene) {
 
   enemy.setData("attacking", true);
   enemy.setData("__inputDead", true);
+
+  const ring = enemy.getData("__highlight");
+  if (ring) { ring.destroy(); enemy.setData("__highlight", null); }
 
   const type = enemy.getData("type");
   const subType = enemy.getData("subType");
@@ -210,6 +216,8 @@ export function enemyAttack(enemy, scene) {
 
 export function updateEnemyWordPosition(enemy) {
   if (!enemy || !enemy.active) return;
+
+  if (enemy.getData("__wordExploding")) return;
 
   const letters = enemy.getData("wordLetters");
   if (!letters || letters.length === 0) return;

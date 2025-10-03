@@ -13,9 +13,15 @@ import { GameSettings } from "../managers/GameSettings";
 export default class GameScene extends Phaser.Scene {
   constructor() {
     super("GameScene");
+    this._gameOverStarted = false;
   }
 
   async create() {
+    //MUSIC MANAGER
+    const menuMusic = this.sound.get("menu_song");
+    if (menuMusic && menuMusic.isPlaying) {
+      menuMusic.stop();
+    }
 
     // Game Stats
     this.stats = {
@@ -29,9 +35,6 @@ export default class GameScene extends Phaser.Scene {
 
     this.width = this.sys.game.config.width;
     this.height = this.sys.game.config.height;
-
-    // === CARGA DE PALABRAS ===
-    await loadWordsFromAPI();
 
     // === AJUSTES REGISTRO ===
     const showScore = this.registry.get("showScore") ?? true;
@@ -70,6 +73,12 @@ export default class GameScene extends Phaser.Scene {
       torchMin: 2,
       torchMax: 12,
     });
+
+    const pool = getWordPool?.() || {};
+    const needsWords = !(pool[1]?.length || pool[2]?.length || pool[3]?.length);
+    if (needsWords) {
+      await loadWordsFromAPI();
+    }
 
     // contador inicial
     this.startCountdown();
@@ -120,70 +129,23 @@ export default class GameScene extends Phaser.Scene {
     });
   }
 
-  //DEBUG
-  logPoolsAndProbs() {
-    try {
-      const pool = getWordPool?.() || {};
-      const d = this.difficulty || { diff1: 0, diff2: 0, diff3: 0, gigaChance: 0 };
-
-      const hasGiga = {
-        slime: (pool.giga_slime?.length || 0) > 0,
-        orc: (pool.giga_orc?.length || 0) > 0,
-        vampire: (pool.giga_vampire?.length || 0) > 0,
-      };
-
-      const pGigaTotal =
-        (d.gigaChance || 0) *
-        ((hasGiga.slime ? d.diff1 : 0) + (hasGiga.orc ? d.diff2 : 0) + (hasGiga.vampire ? d.diff3 : 0));
-
-      const pNormals = {
-        slime: d.diff1 * (hasGiga.slime ? (1 - d.gigaChance) : 1),
-        orc: d.diff2 * (hasGiga.orc ? (1 - d.gigaChance) : 1),
-        vampire: d.diff3 * (hasGiga.vampire ? (1 - d.gigaChance) : 1),
-      };
-
-      const pGigas = {
-        giga_slime: hasGiga.slime ? d.diff1 * d.gigaChance : 0,
-        giga_orc: hasGiga.orc ? d.diff2 * d.gigaChance : 0,
-        giga_vampire: hasGiga.vampire ? d.diff3 * d.gigaChance : 0,
-      };
-
-      console.groupCollapsed("Spawn: pools y probabilidades");
-      console.table({
-        "diff1 (slime)": d.diff1,
-        "diff2 (orc)": d.diff2,
-        "diff3 (vampire)": d.diff3,
-        gigaChance: d.gigaChance ?? 0,
-        "pGigaTotal (≈)": Number(pGigaTotal.toFixed(4)),
-      });
-
-      console.table({
-        "p slime": Number(pNormals.slime.toFixed(4)),
-        "p orc": Number(pNormals.orc.toFixed(4)),
-        "p vampire": Number(pNormals.vampire.toFixed(4)),
-        "p giga_slime": Number(pGigas.giga_slime.toFixed(5)),
-        "p giga_orc": Number(pGigas.giga_orc.toFixed(5)),
-        "p giga_vampire": Number(pGigas.giga_vampire.toFixed(5)),
-      });
-
-      console.log("GIGA pools (conteos):", {
-        giga_slime: pool.giga_slime?.length || 0,
-        giga_orc: pool.giga_orc?.length || 0,
-        giga_vampire: pool.giga_vampire?.length || 0,
-      });
-      console.log("GIGA samples:", {
-        giga_slime: pool.giga_slime ?? [],
-        giga_orc: pool.giga_orc ?? [],
-        giga_vampire: pool.giga_vampire ?? [],
-      });
-
-      console.groupEnd();
-    } catch (e) {
-      console.warn("No se pudo loguear pools/probabilidades:", e);
+  updateMultiplier(success) {
+    if (success) {
+      this.comboCount++;
+      if (this.comboCount >= 40) this.multiplier = 10;
+      else if (this.comboCount >= 20) this.multiplier = 5;
+      else if (this.comboCount >= 10) this.multiplier = 3;
+      else if (this.comboCount >= 5) this.multiplier = 2;
+      else this.multiplier = 1;
+    } else {
+      this.comboCount = 0;
+      this.multiplier = 1;
     }
+    this.hud.updateMultiplier(this.multiplier);
   }
 
   async startGame() {
+    this._gameOverStarted = false;
     this.isPlaying = true;
 
     // --- detener musica de menu ---
@@ -215,23 +177,11 @@ export default class GameScene extends Phaser.Scene {
       gigaChance: 0.002
     };
 
-    this.logPoolsAndProbs();
-
     this.time.addEvent({
       delay: 15000,
-      loop: true,
-      callback: () => {
-        this.difficulty.diff1 = Math.max(0.3, this.difficulty.diff1 - 0.05);
-        this.difficulty.diff2 = Math.min(0.5, this.difficulty.diff2 + 0.03);
-        this.difficulty.diff3 = Math.min(0.3, this.difficulty.diff3 + 0.02);
-        this.difficulty.gigaChance = Math.min(0.05, this.difficulty.gigaChance + 0.001);
-
-        if (this.enemySpawner?.delay > 1000) {
-          this.enemySpawner.delay -= 100;
-        }
-
-        this.logPoolsAndProbs();
-      }
+      callback: this.updateDifficulty,
+      callbackScope: this,
+      loop: true
     });
 
     // === player ===
@@ -268,6 +218,19 @@ export default class GameScene extends Phaser.Scene {
     enemyAttack(enemy, this);
   }
 
+  updateDifficulty() {
+    let { diff1, diff2, diff3, gigaChance } = this.difficulty;
+
+    diff1 = Math.max(0.2, diff1 - 0.02);
+    diff2 = Math.min(0.5, diff2 + 0.01);
+    diff3 = Math.min(0.3, diff3 + 0.01);
+    gigaChance = Math.min(0.15, gigaChance + 0.005);
+
+    this.difficulty = { diff1, diff2, diff3, gigaChance };
+
+    // console.log("Nueva dificultad:", this.difficulty);
+  }
+
   update() {
     if (!this.isPlaying) return;
 
@@ -283,7 +246,30 @@ export default class GameScene extends Phaser.Scene {
   }
 
   async gameOver() {
-    
+    if (this._gameOverStarted) return;
+    this._gameOverStarted = true;
+    this.isPlaying = false;
+
+    this.input.keyboard?.removeAllListeners?.();
+    this.tweens.killAll();
+    this.time.removeAllEvents();
+
+    if (this.enemySpawner) {
+      this.enemySpawner.remove?.(false);
+      this.enemySpawner.paused = true;
+    }
+    this.enemies?.getChildren?.().forEach(enemy => {
+      if (!enemy) return;
+      if (enemy.body) {
+        enemy.body.enable = false;
+        enemy.body.setVelocity(0, 0);
+      }
+      enemy.anims?.stop();
+    });
+
+    this.sound.stopByKey?.("game_song");
+    this.sound.stopAll();
+
     const user = this.registry.get("userId");
     
     if (user != "pepe") {
@@ -313,30 +299,9 @@ export default class GameScene extends Phaser.Scene {
       await saveGame(payload).catch(err => console.error("Error al guardar datos de la partida", err));
     }
 
-    if (!this.isPlaying) return;
-    this.isPlaying = false;
-
-    if (this.keyListener) {
-      this.input.keyboard.removeListener("keydown", this.keyListener);
-      this.keyListener = null;
-    }
-
-    if (this.enemySpawner) {
-      this.enemySpawner.remove(false);
-      this.enemySpawner = null;
-    }
-
-    this.enemies.getChildren().forEach(enemy => {
-      if (enemy.body) {
-        enemy.body.enable = false;
-        enemy.body.stop?.();
-      }
-      enemy.anims?.stop();
-    });
-
     this.activeEnemy = null;
-    this.enemies.clear(true, true);
-    this.projectiles.clear(true, true);
+    this.enemies?.clear?.(true, true);
+    this.projectiles?.clear?.(true, true);
 
     clearWordPool();
 

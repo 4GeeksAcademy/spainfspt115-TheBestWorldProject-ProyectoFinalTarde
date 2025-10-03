@@ -11,7 +11,7 @@ export function shakeLetter(scene, letter) {
   // tweenear la propiedad 'shakeOffset' del objeto letter
   scene.tweens.add({
     targets: letter,
-    shakeOffset: 8,    // desplazamiento horizontal
+    shakeOffset: 8,
     duration: 80,
     yoyo: true,
     repeat: 2,
@@ -53,7 +53,11 @@ export function spawnWordEffect(scene, letters) {
 // --- explosion de palabra ---
 export function explodeWord(scene, wordGroup) {
   if (!wordGroup) return;
-  wordGroup.getChildren().forEach(letter => {
+
+  const items = Array.isArray(wordGroup) ? wordGroup : wordGroup.getChildren?.() || [];
+  if (items.length === 0) return;
+
+  items.forEach(letter => {
     const angle = Phaser.Math.Between(0, 360);
     const distance = Phaser.Math.Between(50, 150);
     const dx = distance * Math.cos(angle * (Math.PI / 180));
@@ -64,7 +68,7 @@ export function explodeWord(scene, wordGroup) {
       x: letter.x + dx,
       y: letter.y + dy,
       alpha: 0,
-      scale: 0,
+      scale: 2,
       angle: Phaser.Math.Between(-180, 180),
       duration: 500,
       ease: "Power1",
@@ -111,7 +115,7 @@ export function animateScaleText(scene, target) {
 
   target.setScale(0).setAlpha(0);
 
-  // Animacion de aparición
+  // Animacion de aparicion
   scene.tweens.add({
     targets: target,
     scale: { from: 0, to: 1.2 },
