@@ -1,8 +1,9 @@
-import { shakeLetter, floatingScore } from "./Effects";
+import { shakeLetter, floatingScore, explodeWord } from "./Effects";
 import { activatePower } from "./PowerManager";
 import { launchProjectiles } from "./ProjectileManager";
 import { killEnemy, updateSpeedEnemy } from "./EnemyManager";
 import { playFx } from "./AudioManager";
+
 
 export function handleInput(event, scene) {
   if (!scene.isPlaying) return;
@@ -86,12 +87,13 @@ export function handleInput(event, scene) {
   // === ENEMIGOS ===
   if (!/^[a-zñ]$/i.test(key)) return;
 
+  // --- si no hay enemigo activo, elegir uno ---
   if (!scene.activeEnemy) {
     const enemies = scene.enemies
       .getChildren()
       .filter((e) => e && e.getData && e.getData("pendingProjectiles") === 0)
       .filter((e) => isEnemyOnScreen(scene, e))
-      .filter(isValidForInput); // 🚀 solo objetivos válidos
+      .filter(isValidForInput);
 
     const candidates = enemies.filter((e) => {
       const word = e.getData("word");
@@ -105,9 +107,11 @@ export function handleInput(event, scene) {
       const dCurr = Phaser.Math.Distance.Between(player.x, player.y, curr.x, curr.y);
       return dCurr < dPrev ? curr : prev;
     });
+
     highlightEnemy(scene.activeEnemy, true);
   }
 
+  // --- procesar input en el enemigo activo ---
   const enemy = scene.activeEnemy;
   if (!enemy?.active) return;
 
@@ -139,6 +143,7 @@ export function handleInput(event, scene) {
   enemy.setData("typed", typed);
   renderEnemyWord(word, typed, letters);
 
+  // --- palabra completada ---
   if (typed === word) {
     const hadErrors = enemy.getData("hadErrors") || false;
 
@@ -153,7 +158,11 @@ export function handleInput(event, scene) {
     enemy.setData("hadErrors", false);
 
     const midLetter = letters[Math.floor(letters.length / 2)];
-    letters.forEach((letter) => letter.destroy());
+
+    // efecto de explosión
+    enemy.setData("__wordExploding", true);
+    explodeWord(scene, letters);
+
     enemy.setData("typed", "");
     enemy.setData("wordLetters", []);
 
@@ -195,6 +204,7 @@ export function handleInput(event, scene) {
 function isValidForInput(enemy) {
   if (!enemy || !enemy.active || !enemy.getData) return false;
   if (enemy.getData("__inputDead") || enemy.getData("dying") || enemy.getData("attacking")) return false;
+  if (enemy.getData("__frozen")) return false;
   const letters = enemy.getData("wordLetters");
   if (!letters || letters.length === 0) return false;
   const word = enemy.getData("word");
@@ -315,25 +325,18 @@ function destroyPowerOverlay(scene, power) {
 export function clearActiveEnemy(scene) {
   if (scene.activeEnemy) {
     const enemy = scene.activeEnemy;
-    if (
-      !enemy.active ||
-      enemy.getData("__doomed") ||
-      enemy.getData("dying") ||
-      enemy.getData("attacking") ||
-      enemy.getData("__inputDead") ||
-      (enemy.getData("wordLetters")?.length === 0)
-    ) {
-      scene.activeEnemy = null;
-      return;
-    }
     highlightEnemy(enemy, false);
     scene.activeEnemy = null;
   }
 }
 
 function highlightEnemy(enemy, active) {
-  if (active && enemy.setStrokeStyle) enemy.setStrokeStyle(3, 0xffff00);
-  else if (enemy.setStrokeStyle) enemy.setStrokeStyle();
+  if (!enemy || !enemy.setStrokeStyle) return;
+  if (active) {
+    enemy.setStrokeStyle(3, 0xffff00);
+  } else {
+    enemy.setStrokeStyle();
+  }
 }
 
 function isEnemyOnScreen(scene, enemy) {

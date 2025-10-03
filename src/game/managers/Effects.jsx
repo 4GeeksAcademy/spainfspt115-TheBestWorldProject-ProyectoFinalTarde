@@ -53,7 +53,11 @@ export function spawnWordEffect(scene, letters) {
 // --- explosion de palabra ---
 export function explodeWord(scene, wordGroup) {
   if (!wordGroup) return;
-  wordGroup.getChildren().forEach(letter => {
+
+  const items = Array.isArray(wordGroup) ? wordGroup : wordGroup.getChildren?.() || [];
+  if (items.length === 0) return;
+
+  items.forEach(letter => {
     const angle = Phaser.Math.Between(0, 360);
     const distance = Phaser.Math.Between(50, 150);
     const dx = distance * Math.cos(angle * (Math.PI / 180));
