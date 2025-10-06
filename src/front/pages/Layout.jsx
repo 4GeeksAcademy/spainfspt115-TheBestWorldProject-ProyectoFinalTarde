@@ -45,7 +45,7 @@ export const Layout = () => {
           className={`flex-grow-1 d-flex flex-column justify-content-center align-items-center`}
           style={{
             height: isHome
-              ? "calc(100vh - 80px - 60px)" // Ajusta 80px navbar + 60px footer
+              ? "calc(100vh - 80px - 60px)"
               : "auto",
             overflow: isHome ? "hidden" : "visible",
           }}
