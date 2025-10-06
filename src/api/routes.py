@@ -71,14 +71,24 @@ def signup():
     data = request.get_json()
     if not data.get("email") or not data.get("password") or not data.get("username"):
         return jsonify({"msg": "Email, nombre de usuario y contraseña son requeridos"}), 400
+    
     # verificar duplicados por email o username
-    existing_user = User.query.filter(
-        (User.email == data["email"]) | (User.username == data["username"])
+    existing_email = User.query.filter(
+        (User.email == data["email"])
     ).first()
+
+    if existing_email:
+        return jsonify({"msg": "email ya registrados"}), 400
+    
+    existing_user = User.query.filter(
+        (func.lower(User.username) == data["username"].lower())
+    ).first()
+
     if existing_user:
-        return jsonify({"msg": "Usuario o email ya registrados"}), 400
+        return jsonify({"msg": "Usuario ya registrados"}), 400
+    
     new_user = User(
-        email=data["email"],
+        email=str(data["email"]).lower(),
         username=data["username"],
         country=data.get("country"),
         city=data.get("city"),
