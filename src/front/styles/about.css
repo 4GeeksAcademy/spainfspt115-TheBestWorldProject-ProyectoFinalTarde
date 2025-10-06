@@ -111,8 +111,8 @@
 
 /* Carlos - efecto neón + zoom */
 .dev-carlos {
-  color: #00ffe5;
-  text-shadow: 0 0 5px #00ffe5, 0 0 10px #00a6a0;
+  color: #ff0303;
+  text-shadow: 0 0 5px #ff0303, 0 0 10px #ff0303;
   transition: transform 0.3s ease;
 }
 
@@ -122,120 +122,47 @@
 
 /* Javier - efecto máquina de escribir */
 .dev-javier {
-  background: linear-gradient(90deg, #ffcc00, #ff0000);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  position: relative;
-  overflow: hidden;
+  color: #00ff40;
+  text-shadow: 0 0 5px #00ff40, 0 0 10px #00ff40;
+  transition: transform 0.3s ease;
 }
 
-.dev-javier::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.4),
-    rgba(255, 255, 255, 0)
-  );
-  transform: skewX(-25deg);
-  animation: shine 2s infinite;
+.dev-javier:hover {
+  transform: scale(1.1);
 }
 
-@keyframes shine {
-  0% {
-    left: 125%;
-  }
-
-  100% {
-    left: -75%;
-  }
-}
 
 /* Konstantin - efecto gradiente */
 .dev-konstantin {
-  background: linear-gradient(90deg, #ff0080, #7928ca);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  position: relative;
-  overflow: hidden;
+  color: #ff00ff;
+  text-shadow: 0 0 5px #ff00ff, 0 0 10px #ff00ff;
+  transition: transform 0.3s ease;
 }
 
-.dev-konstantin::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -75%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.4),
-    rgba(255, 255, 255, 0)
-  );
-  transform: skewX(-25deg);
-  animation: shine 2s infinite;
-}
-
-@keyframes shine {
-  0% {
-    left: -75%;
-  }
-
-  100% {
-    left: 125%;
-  }
+.dev-konstantin:hover {
+  transform: scale(1.1);
 }
 
 /* Arturo - efecto bounce */
 .dev-arturo {
-  color: #ff4500;
-  display: inline-block;
-  animation: bounce 2s infinite;
+  color: #0004ff;
+  text-shadow: 0 0 5px #0004ff, 0 0 10px #0004ff;
+  transition: transform 0.3s ease;
 }
 
-@keyframes bounce {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-
-  50% {
-    transform: translateY(-5px);
-  }
+.dev-arturo:hover {
+  transform: scale(1.1);
 }
 
 /* Constantin - efecto glow */
 .dev-constantin {
-  color: #00ff7f;
-  text-shadow: 0 0 5px #a71691, 0 0 15px #1d06ec;
-  font-weight: bold;
-  display: inline-block;
-  animation: neonPulse 2s infinite alternate;
+  color: #a303ff;
+  text-shadow: 0 0 5px #a303ff, 0 0 10px #a303ff;
+  transition: transform 0.3s ease;
 }
 
-@keyframes neonPulse {
-  0% {
-    text-shadow: 0 0 5px #a71691, 0 0 15px #1d06ec, 0 0 20px #00ff7f;
-    transform: scale(1);
-  }
-
-  50% {
-    text-shadow: 0 0 10px #a71691, 0 0 25px #1d06ec, 0 0 30px #00ff7f;
-    transform: scale(1.05);
-  }
-
-  100% {
-    text-shadow: 0 0 5px #a71691, 0 0 15px #1d06ec, 0 0 20px #00ff7f;
-    transform: scale(1);
-  }
+.dev-constantin:hover {
+  transform: scale(1.1);
 }
 
 /* Aumentar tamaño de los nombres */

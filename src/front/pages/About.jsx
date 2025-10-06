@@ -24,7 +24,7 @@ export const About = () => {
 
       <div className="about-card">
         <h1>Sobre el Juego</h1>
-        <p className="lead">Trabajo, trabajo.</p>
+        <p className="lead">La pagina es un proyecto hecho por 5 estudiantes de 4GeeksAcademy que tuvieron la idea de crear un juego para practicar la mecanografia de una manera creativa. Es un juego en el que eres un mago al que intentaran derribar a no ser que escribas la palabra que tienen las criaturas asociadas, teninedo como apoyo 3 habilidades que puedes utilizar siempre que las necesites.</p>
 
         <h3>Desarrolladores</h3>
         <ul>
