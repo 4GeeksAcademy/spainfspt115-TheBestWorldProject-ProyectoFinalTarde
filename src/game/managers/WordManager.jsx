@@ -10,6 +10,27 @@ let wordPool = {
   giga_vampire: []
 };
 
+let wordCycle = {
+  1: [],
+  2: [],
+  3: [],
+  giga_slime: [],
+  giga_orc: [],
+  giga_vampire: []
+};
+
+function pullFromCycle(key) {
+  if (wordCycle[key].length > 0) {
+    return wordCycle[key].shift();
+  }
+  if (wordPool[key]?.length > 0) {
+    wordCycle[key] = Phaser.Utils.Array.Shuffle([...wordPool[key]]);
+    return wordCycle[key].shift();
+  }
+  console.warn(`[WordManager] Pool vacío para ${key}`);
+  return "fallback";
+}
+
 export async function loadWordsFromAPI() {
   try {
     const perDifficulty = 90;
@@ -18,16 +39,21 @@ export async function loadWordsFromAPI() {
       wordPool[diff] = words.map((w) => w.word);
     }
 
-    // --- palabras para GIGAS desde backend ---
     const gigas = await getGigaWords();
     wordPool.giga_slime = (gigas.giga_slime || []).map(w => w.word);
     wordPool.giga_orc = (gigas.giga_orc || []).map(w => w.word);
     wordPool.giga_vampire = (gigas.giga_vampire || []).map(w => w.word);
 
-    // fallback si no hay nada en DB
     if (wordPool.giga_slime.length === 0) wordPool.giga_slime = ["hipermegacosa"];
     if (wordPool.giga_orc.length === 0) wordPool.giga_orc = ["supergiganteorc"];
     if (wordPool.giga_vampire.length === 0) wordPool.giga_vampire = ["ultravampirismo"];
+
+    wordCycle[1] = Phaser.Utils.Array.Shuffle([...wordPool[1]]);
+    wordCycle[2] = Phaser.Utils.Array.Shuffle([...wordPool[2]]);
+    wordCycle[3] = Phaser.Utils.Array.Shuffle([...wordPool[3]]);
+    wordCycle.giga_slime = Phaser.Utils.Array.Shuffle([...wordPool.giga_slime]);
+    wordCycle.giga_orc = Phaser.Utils.Array.Shuffle([...wordPool.giga_orc]);
+    wordCycle.giga_vampire = Phaser.Utils.Array.Shuffle([...wordPool.giga_vampire]);
 
   } catch (err) {
     console.error("Error al cargar palabras:", err);
@@ -39,11 +65,21 @@ export async function loadWordsFromAPI() {
       giga_orc: ["supergiganteorc"],
       giga_vampire: ["ultravampirismo"]
     };
+
+    wordCycle[1] = [...wordPool[1]];
+    wordCycle[2] = [...wordPool[2]];
+    wordCycle[3] = [...wordPool[3]];
+    wordCycle.giga_slime = [...wordPool.giga_slime];
+    wordCycle.giga_orc = [...wordPool.giga_orc];
+    wordCycle.giga_vampire = [...wordPool.giga_vampire];
   }
 }
 
 export function clearWordPool() {
   wordPool = { 1: [], 2: [], 3: [] };
+  wordCycle[1] = [];
+  wordCycle[2] = [];
+  wordCycle[3] = [];
 }
 
 export function getRandomWord(scene) {
@@ -67,17 +103,17 @@ export function getRandomWord(scene) {
   // --- chance de giga ---
   if (Math.random() < (probs.gigaChance ?? 0)) {
     if (chosenDiff === 1 && wordPool.giga_slime.length > 0) {
-      return Phaser.Utils.Array.GetRandom(wordPool.giga_slime);
+      return pullFromCycle("giga_slime");
     }
     if (chosenDiff === 2 && wordPool.giga_orc.length > 0) {
-      return Phaser.Utils.Array.GetRandom(wordPool.giga_orc);
+      return pullFromCycle("giga_orc");
     }
     if (chosenDiff === 3 && wordPool.giga_vampire.length > 0) {
-      return Phaser.Utils.Array.GetRandom(wordPool.giga_vampire);
+      return pullFromCycle("giga_vampire");
     }
   }
 
-  return Phaser.Utils.Array.GetRandom(wordPool[chosenDiff]);
+  return pullFromCycle(chosenDiff);
 }
 
 export function getWordPool() {

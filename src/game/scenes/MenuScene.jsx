@@ -31,17 +31,21 @@ export default class MenuScene extends Phaser.Scene {
     const { width, height } = this.sys.game.config;
     const centerX = width / 2;
 
-    // --- titulo ---
+    // --- titulo mejorado ---
     const title = this.add.text(centerX, height * 0.15, "- M E C A M A G I C -", {
-      fontSize: "40px",
+      fontSize: "56px",
+      fontStyle: "bold",
       color: "#fff",
-      fontStyle: "bold"
+      stroke: "#FFD700",
+      strokeThickness: 6
     }).setOrigin(0.5);
 
     // === boton: iniciar partida ===
     const startButton = this.add.text(centerX, height * 0.35, "Iniciar Partida", {
       fontSize: "32px",
-      fill: "#fff"
+      color: "#fff",
+      stroke: "#000",
+      strokeThickness: 3
     }).setOrigin(0.5).setInteractive();
 
     startButton.on("pointerdown", () => {
@@ -51,39 +55,36 @@ export default class MenuScene extends Phaser.Scene {
     });
 
     // === boton: tabla de scores ===
-    const scoreButton = this.add
-      .text(centerX, height * 0.43, "Tabla de Scores", {
-        fontSize: "32px",
-        fill: "#fff",
-      })
-      .setOrigin(0.5)
-      .setInteractive();
+    const scoreButton = this.add.text(centerX, height * 0.43, "Tabla de Scores", {
+      fontSize: "32px",
+      color: "#fff",
+      stroke: "#000",
+      strokeThickness: 3
+    }).setOrigin(0.5).setInteractive();
 
     scoreButton.on("pointerdown", () => {
       this.showModal();
     });
 
     // === boton: ajustes ===
-    const settingsButton = this.add
-      .text(centerX, height * 0.51, "Ajustes", {
-        fontSize: "32px",
-        fill: "#fff",
-      })
-      .setOrigin(0.5)
-      .setInteractive();
+    const settingsButton = this.add.text(centerX, height * 0.51, "Ajustes", {
+      fontSize: "32px",
+      color: "#fff",
+      stroke: "#000",
+      strokeThickness: 3
+    }).setOrigin(0.5).setInteractive();
 
     settingsButton.on("pointerdown", () => {
       this.scene.start("SettingsScene");
     });
 
     // === boton: salir ===
-    const exitButton = this.add
-      .text(centerX, height * 0.59, "Salir", {
-        fontSize: "32px",
-        fill: "#fff",
-      })
-      .setOrigin(0.5)
-      .setInteractive();
+    const exitButton = this.add.text(centerX, height * 0.59, "Salir", {
+      fontSize: "32px",
+      color: "#fff",
+      stroke: "#000",
+      strokeThickness: 3
+    }).setOrigin(0.5).setInteractive();
 
     exitButton.on("pointerdown", () => {
       const goProfile = this.game.registry.get("exitToProfile");
@@ -94,24 +95,20 @@ export default class MenuScene extends Phaser.Scene {
         scene.tweens?.killAll();
         scene.sound?.stopAll();
         scene.input?.removeAllListeners();
-        if (scene.children) scene.children.removeAll(true); // destruye todos los objetos graficos
+        if (scene.children) scene.children.removeAll(true);
         if (scene.physics?.world) scene.physics.world.shutdown();
       });
 
-      // Destruir animaciones globales
       this.anims.destroy();
-
-      // Finalmente destruir el juego completo
       this.game.destroy(true);
 
-      // Redirigir al perfil (React Router)
       if (typeof goProfile === "function") goProfile();
     });
 
-    // === EFECTO HOVER para botones ===
+    // === EFECTO HOVER ===
     [startButton, scoreButton, settingsButton, exitButton].forEach((button) => {
-      button.on("pointerover", () => button.setStyle({ fill: "#ff0" }));
-      button.on("pointerout", () => button.setStyle({ fill: "#fff" }));
+      button.on("pointerover", () => button.setStyle({ color: "#FFD700" }));
+      button.on("pointerout", () => button.setStyle({ color: "#fff" }));
     });
   }
 
@@ -128,14 +125,14 @@ export default class MenuScene extends Phaser.Scene {
 
     const boxWidth = width * 0.45;
     const boxHeight = height * 0.75;
-    const box = this.add.rectangle(centerX, centerY, boxWidth, boxHeight, 0x1a1a1a, 0.95)
-      .setStrokeStyle(4, 0xffcc00, 0.8);
+    const box = this.add.rectangle(centerX, centerY, boxWidth, boxHeight, 0x1a1a1a, 0.9)
+      .setStrokeStyle(3, 0xffcc00, 0.8);
 
     // === Titulo ===
     const title = this.add.text(centerX, centerY - boxHeight / 2 + 40, "🏆 Leaderboard 🏆", {
       fontSize: "34px",
       fontStyle: "bold",
-      color: "#ffcc00",
+      color: "#FFD700",
       stroke: "#000",
       strokeThickness: 6,
     }).setOrigin(0.5);
@@ -165,7 +162,6 @@ export default class MenuScene extends Phaser.Scene {
     // Agrupar modal
     this.modal = this.add.container(0, 0, [shadow, box, title, content, closeBtn]);
 
-    // Animacion
     this.tweens.add({
       targets: this.modal,
       alpha: { from: 0, to: 1 },
@@ -216,24 +212,6 @@ export default class MenuScene extends Phaser.Scene {
 
         if (id === userId) userInTop = true;
         content.add(row);
-
-        if (i === 0) {
-          this.tweens.add({
-            targets: row,
-            scale: { from: 1, to: 1.2 },
-            yoyo: true,
-            repeat: -1,
-            duration: 1000,
-            ease: "Sine.easeInOut",
-          });
-          this.tweens.add({
-            targets: row,
-            alpha: { from: 1, to: 0.7 },
-            yoyo: true,
-            repeat: -1,
-            duration: 800,
-          });
-        }
       });
 
       // === Usuario fuera del top 10 ===

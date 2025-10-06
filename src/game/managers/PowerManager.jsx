@@ -29,7 +29,7 @@ function forceClearActiveEnemy(scene, enemyJustKilled = null) {
 }
 
 export function activatePower(scene, power) {
-  const cooldowns = { fuego: 12, hielo: 10, rayo: 6 };
+  const cooldowns = { fuego: 30, hielo: 20, rayo: 12 };
   const hudPower = scene.hud?.powers?.[power];
   if (!hudPower || !hudPower.ready) return;
 

@@ -152,6 +152,9 @@ export function killEnemy(enemy, scene) {
   enemy.setData("dying", true);
   enemy.setData("__inputDead", true);
 
+  const ring = enemy.getData("__highlight");
+  if (ring) { ring.destroy(); enemy.setData("__highlight", null); }
+
   const type = enemy.getData("type");
   const dir = enemy.getData("direction");
   const key = `${type}_death_${dir}`;
@@ -171,38 +174,32 @@ export function killEnemy(enemy, scene) {
 // ataque con animacion antes de quitar vida
 export function enemyAttack(enemy, scene) {
   if (!enemy || !enemy.active) return;
-  if (enemy.getData("attacking") || enemy.getData("dying")) return;
+  if (enemy.getData("attacking")) return;
 
   enemy.setData("attacking", true);
   enemy.setData("__inputDead", true);
-  if (enemy.body) {
-    enemy.body.setVelocity(0, 0);
-  }
+
+  const ring = enemy.getData("__highlight");
+  if (ring) { ring.destroy(); enemy.setData("__highlight", null); }
 
   const type = enemy.getData("type");
   const subType = enemy.getData("subType");
   const dir = enemy.getData("direction");
   const key = `${type}_attack_${dir}`;
 
+  enemy.play(key);
+
   if (type === "orc" || subType === "giga_orc") playFx(scene, "orc_attack_fx");
   if (type === "slime" || subType === "giga_slime") playFx(scene, "slime_attack_fx");
   if (type === "vampire" || subType === "giga_vampire") playFx(scene, "vampire_attack_fx");
-
-  enemy.play(key);
-
   enemy.once(Phaser.Animations.Events.ANIMATION_COMPLETE_KEY + key, () => {
     const lives = scene.player.loseLife();
-
     scene.hud.loseLife(lives, () => {
-      if (scene._gameOverStarted) return;
-
-      scene.isPlaying = false;
       if (scene.enemySpawner) scene.enemySpawner.paused = true;
-
       scene.enemies.getChildren().forEach(cenemy => {
         if (cenemy.body) {
           cenemy.body.enable = false;
-          cenemy.body.setVelocity(0, 0);
+          cenemy.body.stop?.();
         }
         cenemy.anims?.stop();
       });
@@ -213,18 +210,14 @@ export function enemyAttack(enemy, scene) {
     });
 
     enemy.getData("wordLetters")?.forEach((letter) => letter.destroy());
-    if (enemy && enemy.active) enemy.destroy();
-
-    if (lives <= 0 && !scene._gameOverStarted) {
-      scene.time.delayedCall(1200, () => {
-        try { scene.gameOver?.(); } catch (e) {}
-      });
-    }
+    enemy.destroy();
   });
 }
 
 export function updateEnemyWordPosition(enemy) {
   if (!enemy || !enemy.active) return;
+
+  if (enemy.getData("__wordExploding")) return;
 
   const letters = enemy.getData("wordLetters");
   if (!letters || letters.length === 0) return;
