@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import "../styles/donations.css";
-import useGlobalReducer from "../hooks/useGlobalReducer";
 
 export const Donations = () => {
     const [hoverIndex, setHoverIndex] = useState(null);
     const [displayedText, setDisplayedText] = useState("");
-    const {store} = useGlobalReducer();
 
-    const fullText = `¿Ves las monedas a los lados? Puedes brindarnos tu ayuda pinchando en la que más te convenga. No es necesario pero nos ayudaria mucho a avanzar con este proyecto y sobre todo nos motivaria a seguir mejorando y crear cosas nuevas. ¡Gracias por tu apoyo!`;
-    
+    const fullText = `Ves las monedas a los lados, puedes brindarnos tu ayuda pinchando en la que más te conviene. Gracias de todo corazón.
+    Quiero agradecerte tu interés mostrado en este juego. Quiero decirte que tu opinión nos importa y queremos saberla, escríbemos a la siguiente dirección email@email.com. `;
+
     useEffect(() => {
         let index = 0;
 
@@ -33,13 +32,13 @@ export const Donations = () => {
             url: "https://www.paypal.com/donate/?hosted_button_id=6YDTSL4RFEXKQ"
         },
         {
-            src: "https://res.cloudinary.com/dcau19bj1/image/upload/v1759769680/Moneda_chica_sin_bordes_wb0wla.png",
+            src: "https://res.cloudinary.com/dcau19bj1/image/upload/v1759340046/Moneda_chica_vyn3lk.png",
             url: "https://gofund.me/05f63abdf"
         }
     ];
 
     return (
-        <div className="donations-container ">
+        <div className="donations-container">
             <video
                 className="bg-video"
                 autoPlay
@@ -55,8 +54,7 @@ export const Donations = () => {
                 />
             </video>
 
-            <div className="dontaions">
-                <div className="monedas">
+            <div className="line-container">
                 {/* Moneda izquierda */}
                 <a
                     href={monedas[0].url}
@@ -68,9 +66,21 @@ export const Donations = () => {
                     <img
                         src={monedas[0].src}
                         alt="Moneda izquierda"
-                        className={`moneda-mago ${hoverIndex === 0 ? "hover spin" : ""}`}
+                        className={`coin-img ${hoverIndex === 0 ? "hover spin" : ""}`}
                     />
                 </a>
+
+                {/* Cuadro central */}
+                <div className="box">
+                    {/* Título */}
+                    <h1 className="text-title">Hola querido amigo nuestro</h1>
+
+                    {/* Texto animado letra por letra */}
+                    <span className="text">
+                        {displayedText}
+                        <span className={`cursor ${displayedText.length === fullText.length ? "hidden" : ""}`}>|</span>
+                    </span>
+                </div>
 
                 {/* Moneda derecha */}
                 <a
@@ -83,26 +93,9 @@ export const Donations = () => {
                     <img
                         src={monedas[1].src}
                         alt="Moneda derecha"
-                        className={`moneda-maga ${hoverIndex === 1 ? "hover spin" : ""}`}
+                        className={`coin-img ${hoverIndex === 1 ? "hover spin" : ""}`}
                     />
                 </a>
-            </div>
-            <div className="contenido">
-                
-
-                {/* Cuadro central */}
-                <div className="box">
-                    {/* Título */}
-                    <h1 className="text-title">Hola {store.isRegistered ? store.user?.username : "Usuario"}</h1>
-
-                    {/* Texto animado letra por letra */}
-                    <span className="text">
-                        {displayedText}
-                        <span className={`cursor ${displayedText.length === fullText.length ? "hidden" : ""}`}>|</span>
-                    </span>
-                </div>
-
-            </div>
             </div>
         </div>
     );
